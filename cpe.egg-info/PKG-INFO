@@ -1,0 +1,11 @@
+Metadata-Version: 1.0
+Name: cpe
+Version: 0.1dev
+Summary: Contains classes for treatment of CPE identifiers
+Home-page: UNKNOWN
+Author: Alejandro Galindo
+Author-email: alejandro.galindo.contractor@bbva.com
+License: UNKNOWN
+Description: This package validates CPE identifiers and platforms (set of CPE ids) and comparisons between them.
+Keywords: CPE platform standard
+Platform: UNKNOWN
