@@ -9,6 +9,8 @@ Description: Contiene los elementos y la funcionalidad común
              entre versiones de CPE.
 '''
 
+import pprint
+
 
 class CPEBASE(object):
     """
@@ -31,6 +33,8 @@ class CPEBASE(object):
         self.cpe_dict = {}
 
     def __str__(self):
+        pp = pprint.PrettyPrinter(indent=5, width=80)
+
         return "CPE %s => %s\n\n%s\n" % (self.VERSION,
                                          self.cpe_uri,
-                                         self.cpe_dict)
+                                         pp.pprint(self.cpe_dict))
