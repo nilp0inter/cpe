@@ -37,4 +37,4 @@ class CPEBASE(object):
 
         return "CPE %s => %s\n\n%s\n" % (self.VERSION,
                                          self.cpe_uri,
-                                         pp.pprint(self.cpe_dict))
+                                         pp.pformat(self.cpe_dict))
