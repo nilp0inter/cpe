@@ -45,7 +45,7 @@ class CPE1_1(CPEBASE):
 
     - TEST: two operators in a subcomponent
     >>> uri = 'cpe://microsoft:windows:~2000!2007'
-    >>> CPE1_1(uri) # doctest: +ELLIPSIS
+    >>> CPE1_1(uri)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "cpe/CPE1_1/cpe1_1.py", line 56, in __init__
@@ -346,7 +346,6 @@ class CPE1_1(CPEBASE):
             - list of subcomponents of i'th component
         '''
 
-        NONAME = ""
         lc = []
         if (part not in self.cpe_dict.keys()):
             raise KeyError("Part key is not exist")
