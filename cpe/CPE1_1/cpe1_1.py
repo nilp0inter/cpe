@@ -93,6 +93,10 @@ class CPE1_1(CPEBASE):
     >>> CPE1_1(uri) # doctest: +ELLIPSIS
     <__main__.CPE1_1 object at 0x...>
 
+    - TEST: CPE with special characters
+    >>> uri = 'cpe:///sun_microsystem:sun@os:5.9:#update'
+    >>> CPE1_1(uri) # doctest: +ELLIPSIS
+    <__main__.CPE1_1 object at 0x...>
     """
 
     # CPE version
@@ -149,7 +153,8 @@ class CPE1_1(CPEBASE):
             raise TypeError(msg)
 
         # Compilation of regular expression associated with name of components
-        name_pattern = "[\d\w\.\-,\(\)@#]+"
+        PUNC = "\._\-,\(\)@#"
+        name_pattern = "[\d\w%s]+" % PUNC
         name_rxc = re.compile(name_pattern, re.IGNORECASE)
 
         # ###################
