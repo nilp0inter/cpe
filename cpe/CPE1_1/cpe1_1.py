@@ -153,7 +153,7 @@ class CPE1_1(CPEBASE):
             raise TypeError(msg)
 
         # Compilation of regular expression associated with name of components
-        PUNC = "\._\-,\(\)@#"
+        PUNC = "\._\-,\(\)@\#"
         name_pattern = "[\d\w%s]+" % PUNC
         name_rxc = re.compile(name_pattern, re.IGNORECASE)
 
@@ -290,19 +290,19 @@ class CPE1_1(CPEBASE):
         Returns the number of component names of CPE ID.
         "a!b" is a component, not two components.
 
-        - TEST: a component with two components
+        - TEST: a CPE name without components
         >>> uri = "cpe:///"
         >>> c = CPE1_1(uri)
         >>> len(c)
         0
 
-        - TEST: components with a subcomponent
+        - TEST: a CPE name with some elements
         >>> uri = "cpe:/cisco::3825/cisco:ios:12.3:enterprise"
         >>> c = CPE1_1(uri)
         >>> len(c)
         7
 
-        - TEST: a component with two components
+        - TEST: a component with two subcomponents
         >>> uri = "cpe:///adobe:acrobat:6.0:std!pro"
         >>> c = CPE1_1(uri)
         >>> len(c)
