@@ -111,6 +111,25 @@ class CPE2_2(CPEBASE):
     KEY_TYPE_OS = "o"
     KEY_TYPE_APP = "a"
 
+    part_keys = [KEY_TYPE,
+                 KEY_VENDOR,
+                 KEY_PRODUCT,
+                 KEY_VERSION,
+                 KEY_UPDATE,
+                 KEY_EDITION,
+                 KEY_LANGUAGE]
+
+    # Mapping between order of parts and its value
+    order_parts_dict = {
+        0: KEY_TYPE,
+        1: KEY_VENDOR,
+        2: KEY_PRODUCT,
+        3: KEY_VERSION,
+        4: KEY_UPDATE,
+        5: KEY_EDITION,
+        6: KEY_LANGUAGE
+    }
+
     def __init__(self, cpe_uri):
         """
         Checks that a CPE name defined with URI style is valid and,
@@ -126,17 +145,6 @@ class CPE2_2(CPEBASE):
         self.uri = cpe_uri.lower()
 
         self._validate_uri()
-
-        # Mapping between order of parts and its value
-        self.order_parts_dict = {
-            0: CPE2_2.KEY_TYPE,
-            1: CPE2_2.KEY_VENDOR,
-            2: CPE2_2.KEY_PRODUCT,
-            3: CPE2_2.KEY_VERSION,
-            4: CPE2_2.KEY_UPDATE,
-            5: CPE2_2.KEY_EDITION,
-            6: CPE2_2.KEY_LANGUAGE
-        }
 
     def _validate_uri(self):
         """
@@ -198,30 +206,26 @@ class CPE2_2(CPEBASE):
             msg += "Error to split CPE ID parts"
             raise TypeError(msg)
 
-        parts_key = [CPE2_2.KEY_TYPE,
-                     CPE2_2.KEY_VENDOR,
-                     CPE2_2.KEY_PRODUCT,
-                     CPE2_2.KEY_VERSION,
-                     CPE2_2.KEY_UPDATE,
-                     CPE2_2.KEY_EDITION,
-                     CPE2_2.KEY_LANGUAGE]
-
         # Compilation of regular expression associated with value of CPE part
         part_value_pattern = "[\d\w\._\-~%]+"
         part_value_rxc = re.compile(part_value_pattern, re.IGNORECASE)
 
-        for pk in parts_key:
+        # Count of parts in CPE ID
+        count = self.__len__()
+
+        for i, pk in enumerate(CPE2_2.part_keys):
             value = parts_match.group(pk)
 
-            if (value is not None):
+            if (value is None):
+                if (i < count):
+                    value = ""
+            else:
                 if (part_value_rxc.match(value) is None):
                     msg = "Malformed CPE, part value must have "
                     msg += "only the following characters:"
                     msg += " alfanumeric, '.', '_', '-', '~', '%'"
 
                     raise TypeError(msg)
-            else:
-                value = ""
 
             self.cpe_dict[pk] = value
 
@@ -235,13 +239,19 @@ class CPE2_2(CPEBASE):
         >>> uri = "cpe:/"
         >>> c = CPE2_2(uri)
         >>> len(c)
-        7
+        0
 
         - TEST: a CPE name with some elements
         >>> uri = "cpe:/a:i4s:javas"
         >>> c = CPE2_2(uri)
         >>> len(c)
-        7
+        3
+
+        - TEST: a CPE name with some elements
+        >>> uri = "cpe:/a:i4s:::javas"
+        >>> c = CPE2_2(uri)
+        >>> len(c)
+        5
 
         - TEST: a component with all subcomponents
         >>> uri = "cpe:/a:acme:product:1.0:update2:-:en-us"
@@ -250,7 +260,18 @@ class CPE2_2(CPEBASE):
         7
         """
 
-        return len(self.cpe_dict.keys())
+        #count = 7
+
+        #for pk in CPE2_2.part_keys:
+        #    if self.cpe_dict[pk] is None:
+        #        count -= 1
+
+        #return count
+        count = self.uri.count(":")
+        if count == 1:
+            return 0
+        else:
+            return count
 
     def __getitem__(self, i):
         """
@@ -263,12 +284,18 @@ class CPE2_2(CPEBASE):
         True
 
         - TEST: existing empty item
-        >>> uri = 'cpe:/h:nvidia.buena_2~~pero_rara:11.0::'
+        >>> uri = 'cpe:/h:nvidia.buena_2~~pero_rara::sp2'
         >>> c = CPE2_2(uri)
-        >>> c[4] == ""
+        >>> c[2] == ""
         True
 
-        - TEST: nonexistent item
+        - TEST: not existing valid item
+        >>> uri = 'cpe:/h:nvidia.buena_2~~pero_rara::sp2'
+        >>> c = CPE2_2(uri)
+        >>> c[5] == None
+        True
+
+        - TEST: not valid item
         >>> uri = 'cpe:/h:nvidia.buena_2~~pero_rara:11.0'
         >>> c = CPE2_2(uri)
         >>> c[11]
@@ -279,18 +306,36 @@ class CPE2_2(CPEBASE):
         KeyError: 'index not exists. Possible values: 0-6'
         """
 
-        if i not in self.order_parts_dict.keys():
-            max_index = len(self.order_parts_dict.keys()) - 1
+        if i not in CPE2_2.order_parts_dict.keys():
+            max_index = len(CPE2_2.order_parts_dict.keys()) - 1
             msg = "index not exists. Possible values: 0-%s" % max_index
             raise KeyError(msg)
 
-        part_key = self.order_parts_dict[i]
+        part_key = CPE2_2.order_parts_dict[i]
 
         return self.cpe_dict[part_key]
 
     def isHardware(self):
         """
         Returns True if CPE ID corresponds to hardware elem.
+
+        - TEST: is HW
+        >>> uri = 'cpe:/h:nvidia:nvidia.buena_2~~pero_rara:11.0'
+        >>> c = CPE2_2(uri)
+        >>> c.isHardware() == True
+        True
+
+        - TEST: is not HW
+        >>> uri = 'cpe:/o:microsoft:windows:xp'
+        >>> c = CPE2_2(uri)
+        >>> c.isHardware() == False
+        True
+
+        - TEST: is not HW
+        >>> uri = 'cpe:/a:microsoft:ie:10'
+        >>> c = CPE2_2(uri)
+        >>> c.isHardware() == False
+        True
         """
 
         # Value of part type of CPE ID
@@ -304,6 +349,24 @@ class CPE2_2(CPEBASE):
     def isOperatingSystem(self):
         """
         Returns True if CPE ID corresponds to operating system elem.
+
+        - TEST: is not OS
+        >>> uri = 'cpe:/h:nvidia:nvidia.buena_2~~pero_rara:11.0'
+        >>> c = CPE2_2(uri)
+        >>> c.isOperatingSystem() == False
+        True
+
+        - TEST: is OS
+        >>> uri = 'cpe:/o:microsoft:windows:xp'
+        >>> c = CPE2_2(uri)
+        >>> c.isOperatingSystem() == True
+        True
+
+        - TEST: is not OS
+        >>> uri = 'cpe:/a:microsoft:ie:10'
+        >>> c = CPE2_2(uri)
+        >>> c.isOperatingSystem() == False
+        True
         """
 
         # Value of part type of CPE ID
@@ -317,19 +380,68 @@ class CPE2_2(CPEBASE):
     def isApplication(self):
         """
         Returns True if CPE ID corresponds to application elem.
+
+        - TEST: is not application
+        >>> uri = 'cpe:/h:nvidia:nvidia.buena_2~~pero_rara:11.0'
+        >>> c = CPE2_2(uri)
+        >>> c.isApplication() == False
+        True
+
+        - TEST: is not application
+        >>> uri = 'cpe:/o:microsoft:windows:xp'
+        >>> c = CPE2_2(uri)
+        >>> c.isApplication() == False
+        True
+
+        - TEST: is application
+        >>> uri = 'cpe:/a:microsoft:ie:10'
+        >>> c = CPE2_2(uri)
+        >>> c.isApplication() == True
+        True
         """
 
         # Value of part type of CPE ID
         type_value = self.cpe_dict[CPE2_2.KEY_TYPE]
 
         isApp = type_value == CPE2_2.KEY_TYPE_APP
-        isEmpty = type_value == ""
+        isEmpty = (type_value == "") or (type_value is None)
 
         return (isApp or isEmpty)
+
+    def getType(self):
+        """
+        Returns the part type of CPE ID.
+
+        - TEST: is application
+        >>> uri = 'cpe:/a:microsoft:ie:10'
+        >>> c = CPE2_2(uri)
+        >>> c.getType()
+        'a'
+
+        - TEST: is operating system
+        >>> uri = 'cpe:/o:microsoft:xp'
+        >>> c = CPE2_2(uri)
+        >>> c.getType()
+        'o'
+
+        - TEST: is hardware
+        >>> uri = 'cpe:/h:cisco'
+        >>> c = CPE2_2(uri)
+        >>> c.getType()
+        'h'
+        """
+
+        return self.cpe_dict[CPE2_2.KEY_TYPE]
 
     def getVendor(self):
         """
         Returns the vendor name of CPE ID.
+
+        - TEST: is application
+        >>> uri = 'cpe:/a:microsoft:ie:10'
+        >>> c = CPE2_2(uri)
+        >>> c.getVendor()
+        'microsoft'
         """
 
         return self.cpe_dict[CPE2_2.KEY_VENDOR]
@@ -337,6 +449,12 @@ class CPE2_2(CPEBASE):
     def getProduct(self):
         """
         Returns the product name of CPE ID.
+
+        - TEST: is application
+        >>> uri = 'cpe:/a:microsoft:ie:10'
+        >>> c = CPE2_2(uri)
+        >>> c.getProduct()
+        'ie'
         """
 
         return self.cpe_dict[CPE2_2.KEY_PRODUCT]
@@ -344,6 +462,12 @@ class CPE2_2(CPEBASE):
     def getVersion(self):
         """
         Returns the version of product of CPE ID.
+
+        - TEST: is application
+        >>> uri = 'cpe:/a:microsoft:ie:10'
+        >>> c = CPE2_2(uri)
+        >>> c.getVersion()
+        '10'
         """
 
         return self.cpe_dict[CPE2_2.KEY_VERSION]
@@ -351,6 +475,12 @@ class CPE2_2(CPEBASE):
     def getUpdate(self):
         """
         Returns the update or service pack information of CPE ID.
+
+        - TEST: is operating system
+        >>> uri = 'cpe:/o:microsoft:windows_xp::sp2:pro'
+        >>> c = CPE2_2(uri)
+        >>> c.getUpdate()
+        'sp2'
         """
 
         return self.cpe_dict[CPE2_2.KEY_UPDATE]
@@ -358,6 +488,12 @@ class CPE2_2(CPEBASE):
     def getEdition(self):
         """
         Returns the edition of product of CPE ID.
+
+        - TEST: is operating system
+        >>> uri = 'cpe:/o:microsoft:windows_xp::sp2:pro'
+        >>> c = CPE2_2(uri)
+        >>> c.getEdition()
+        'pro'
         """
 
         return self.cpe_dict[CPE2_2.KEY_EDITION]
@@ -365,6 +501,12 @@ class CPE2_2(CPEBASE):
     def getLanguage(self):
         """
         Returns the internationalization information of CPE ID.
+
+        - TEST: is application
+        >>> uri = 'cpe:/a:mozilla:firefox:2.0.0.6::osx:es-es'
+        >>> c = CPE2_2(uri)
+        >>> c.getLanguage()
+        'es-es'
         """
 
         return self.cpe_dict[CPE2_2.KEY_LANGUAGE]
@@ -376,10 +518,41 @@ class CPE2_2(CPEBASE):
 
         return self.uri
 
+    def __eq__(self, cpe):
+        """
+        Return True if "cpe" is equal to self object.
+
+        - TEST: is application
+        >>> uri = 'cpe:/a:mozilla:firefox:2.0.0.6::osx:es-es'
+        >>> c = CPE2_2(uri)
+        >>> c == c
+        True
+
+        - TEST: is application
+        >>> uri = 'cpe:/a:mozilla:firefox:2.0.0.6::osx:es-es'
+        >>> c = CPE2_2(uri)
+        >>> uri2 = 'cpe:/a:mozilla'
+        >>> c2 = CPE2_2(uri2)
+        >>> c == c2
+        False
+        """
+
+        eqPart = self.cpe_dict[CPE2_2.KEY_TYPE] == cpe.getType()
+        eqVendor = self.cpe_dict[CPE2_2.KEY_VENDOR] == cpe.getVendor()
+        eqProduct = self.cpe_dict[CPE2_2.KEY_PRODUCT] == cpe.getProduct()
+        eqVersion = self.cpe_dict[CPE2_2.KEY_VERSION] == cpe.getVersion()
+        eqUpdate = self.cpe_dict[CPE2_2.KEY_UPDATE] == cpe.getUpdate()
+        eqEdition = self.cpe_dict[CPE2_2.KEY_EDITION] == cpe.getEdition()
+        eqLanguage = self.cpe_dict[CPE2_2.KEY_LANGUAGE] == cpe.getLanguage()
+
+        return (eqPart and eqVendor and eqProduct and eqVersion and
+                eqUpdate and eqEdition and eqLanguage)
+
+
 if __name__ == "__main__":
-#    #uri = 'cpe:/'
+#    uri = 'cpe:/'
 #    uri = 'cpe:/::::::'
-#    #uri = 'cpe:/o:microsoft:windows_xp:::pro'
+#    uri = 'cpe:/o:microsoft:windows_xp:::pro'
 #    #uri = 'cpe:/a:acme:product:1.0:update2:pro:en-us'
 #    #uri = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
 #
@@ -388,7 +561,7 @@ if __name__ == "__main__":
 #    print(ce)
 #    print("Elements: %s") % len(ce)
 #    print("")
-#    for i in range(len(ce)):
+#    for i in range(0, 7):
 #        print("Element %s: %s") % (i, ce[i])
 #    print("")
 #    print("IS HARDWARE: %s") % ce.isHardware()
