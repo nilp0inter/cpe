@@ -124,7 +124,7 @@ class CPESet2_2(object):
 
         return self.K[i]
 
-    def name_matching(self, cpe):
+    def name_match(self, cpe):
         """
         Accepts a set of CPE Names K and a candidate CPE Name X. It returns
         'True' if X matches any member of K, and 'False' otherwise.
@@ -146,7 +146,7 @@ class CPESet2_2(object):
         >>> s.append(c1)
         >>> s.append(c2)
         >>> s.append(m)
-        >>> s.name_matching(m)
+        >>> s.name_match(m)
         True
 
         - test: matching with any values (cpe in set)
@@ -159,7 +159,7 @@ class CPESet2_2(object):
         >>> s = CPESet2_2()
         >>> s.append(c1)
         >>> s.append(c2)
-        >>> s.name_matching(m)
+        >>> s.name_match(m)
         True
 
         - test: not matching
@@ -172,7 +172,7 @@ class CPESet2_2(object):
         >>> s = CPESet2_2()
         >>> s.append(c1)
         >>> s.append(c2)
-        >>> s.name_matching(m)
+        >>> s.name_match(m)
         False
         """
 
@@ -194,39 +194,6 @@ class CPESet2_2(object):
 
                 if match:
                     break
-                #match = comp_cpe == comp_n
-
-               # print(comp_cpe)
-               # print(comp_n)
-               # print("")
-
-               # if not match:
-
-               #     # comp_cpe is simple text?
-
-               #     cpe_is_text = ((comp_cpe is not None) and
-               #                    (comp_cpe != "-") and
-               #                    (comp_cpe != ""))
-
-               #     match = cpe_is_text and (comp_n != "-")
-
-               #     if not match:
-
-               #         # comp_cpe is None?
-
-               #         cpe_is_none = ((comp_cpe == "") or
-               #                        (comp_cpe is None))
-
-               #         match = cpe_is_none and (comp_n != "-")
-
-               #         if not match:
-
-               #             # Search another n CPE name
-               #             break
-
-           # if match:
-           #     break
-
         return match
 
 if __name__ == "__main__":
@@ -243,7 +210,7 @@ if __name__ == "__main__":
 #
 #    print(s.__unicode__())
 #    print(c3)
-#    print(s.name_matching(c3))
+#    print(s.name_match(c3))
 
     import doctest
     doctest.testmod()

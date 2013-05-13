@@ -236,7 +236,7 @@ class CPESet1_1(object):
 
         return match
 
-    def name_matching(self, cpe):
+    def name_match(self, cpe):
         """
         Accepts a set of known instance CPE Names and a candidate CPE Name,
         and delivers the answer 'true' if the candidate can be shown to be
@@ -257,7 +257,7 @@ class CPESet1_1(object):
         >>> s = CPESet1_1()
         >>> s.append(c1)
         >>> s.append(c2)
-        >>> s.name_matching(c2)
+        >>> s.name_match(c2)
         True
 
         - TEST: matching with ANY values (cpe in set)
@@ -270,7 +270,7 @@ class CPESet1_1(object):
         >>> s.append(c2)
         >>> uri3 = 'cpe:/cisco'
         >>> c3 = CPE1_1(uri3)
-        >>> s.name_matching(c3)
+        >>> s.name_match(c3)
         True
 
         - TEST: matching with ANY values (cpe in set)
@@ -283,7 +283,7 @@ class CPESet1_1(object):
         >>> s.append(c2)
         >>> uri3 = 'cpe://microsoft:::'
         >>> c3 = CPE1_1(uri3)
-        >>> s.name_matching(c3)
+        >>> s.name_match(c3)
         True
 
         - TEST: matching with NOT (cpe in set)
@@ -293,7 +293,7 @@ class CPESet1_1(object):
         >>> s.append(c1)
         >>> uri2 = 'cpe://microsoft:windows:vista'
         >>> c2 = CPE1_1(uri2)
-        >>> s.name_matching(c2)
+        >>> s.name_match(c2)
         True
 
         - TEST: matching with OR (cpe in set)
@@ -306,7 +306,7 @@ class CPESet1_1(object):
         >>> s.append(c2)
         >>> uri3 = 'cpe://microsoft:windows:vista'
         >>> c3 = CPE1_1(uri3)
-        >>> s.name_matching(c3)
+        >>> s.name_match(c3)
         True
         """
 
@@ -405,7 +405,7 @@ if __name__ == "__main__":
 
 #    print(s.__unicode__())
 #    print(c3)
-#    print(s.name_matching(c3))
+#    print(s.name_match(c3))
 
     import doctest
     doctest.testmod()
