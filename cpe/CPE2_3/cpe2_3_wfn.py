@@ -444,17 +444,18 @@ class CPE2_3_WFN(CPE2_3_BASE):
         """
 
         wfn = "wfn:["
-        for k, v in enumerate(CPE2_3_WFN.wfn_order_parts_dict):
+        for i, k in enumerate(CPE2_3_WFN.wfn_order_parts_dict):
             if k in self.cpe_dict.keys():
-                wfn += self.cpe_dict[k]
+                wfn += k
                 wfn += "="
+                v = self.cpe_dict[k]
 
                 if v == CPE2_3_WFN.VALUE_INT_ANY:
                     wfn += CPE2_3_WFN.VALUE_ANY
                 elif v == CPE2_3_WFN.VALUE_INT_NA:
                     wfn += CPE2_3_WFN.VALUE_NA
                 else:
-                    wfn += '"v", '
+                    wfn += '"%s", ' % v
 
         wfn = wfn[0:len(wfn)-2]
         wfn += "]"
@@ -835,7 +836,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2_2)
         >>> wfn.get_wfn_string()
         wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.*",update="sp?",edition=ANY,language=ANY]
-        
+
         - TEST: legacy edition attribute as well as the four extended attributes
           are unpacked from the edition component of the URI
         >>> uri = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
@@ -898,6 +899,294 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
             #unbind the parsed string
             wfn.set(comp_key, CPE2_3_WFN._decode(v))
+
+        return wfn
+
+    @classmethod
+    def _process_quoted_chars(cls, s):
+        """
+        Inspect each character in string s. Certain nonalpha
+        characters pass thru without escaping into the result,
+        but most retain escaping.
+        """
+
+        result = ""
+        idx = 0
+        while (idx < len(s)):
+            c = s[idx, idx]  # get the idx'th character of s
+        if c != "\\":
+            # unquoted characters pass thru unharmed
+            result = "%s%s" % (result, c)
+        else:
+            # Escaped characters are examined
+            nextchr = s[idx + 1, idx + 1]
+
+            if (nextchr == ".") or (nextchr == "-") or (nextchr == "_"):
+                # the period, hyphen and underscore pass unharmed
+                result = "%s%s" % (result, nextchr)
+                idx = idx + 1
+            else:
+                # all others retain escaping
+                result = "%s\\%s" % (result, nextchr)
+                idx = idx + 2
+                continue
+            idx = idx + 1
+
+        return result
+
+    @classmethod
+    def _bind_value_for_fs(cls, v):
+        """
+        Convert the value v to its proper string representation for
+        insertion into the formatted string.
+        """
+        if v == CPE2_3_WFN.VALUE_ANY:
+            return "*"
+        elif v == CPE2_3_WFN.VALUE_NA:
+            return "-"
+        else:
+            return CPE2_3_WFN._process_quoted_chars(v)
+
+    def bind_to_fs(self):
+        """
+        Bind WFN (self) to formatted string.
+
+        Converts the binding style WFN to formatted string
+        and returns a formatted string object.
+
+        - TEST: Microsoft Internet Explorer 8.0.6001 Beta (any edition). The
+          unspecified attributes bind to “*” in the formatted string binding.
+        >>> wfn = 'wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.0\.6001",update="beta",edition=ANY]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_fs()
+        cpe:2.3:a:microsoft:internet_explorer:8.0.6001:beta:*:*:*:*:*:*
+
+        - TEST: Microsoft Internet Explorer 8.* SP? (any edition). The
+          unspecified attributes default to ANY and are thus bound to “*”. Also
+          note how the unquoted special characters in the WFN are carried over
+          into the formatted string.
+        >>> wfn = 'wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.*",update="sp?",edition=ANY]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_fs()
+        cpe:2.3:a:microsoft:internet_explorer:8.*:sp?:*:*:*:*:*:*
+
+        - TEST: HP Insight 7.4.0.1570 Online Edition for Windows 2003 x64. The
+          NA binds to the lone hyphen, the unspecified edition, language and
+          other all bind to the asterisk, and the extended attributes appear in
+          their own fields.
+        >>> wfn = 'wfn:[part="a",vendor="hp",product="insight", version="7\.4\.0\.1570",update=NA, sw_edition="online",target_sw="win2003",target_hw="x64"]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_fs()
+        cpe:2.3:a:hp:insight:7.4.0.1570:-:*:*:online:win2003:x64:*
+
+        - TEST: HP OpenView Network Manager 7.51 (any update) for Linux. The
+          unspecified attributes update, edition, language, sw_edition,
+          target_hw, and other each bind to an asterisk in the
+          formatted string.
+        >>> wfn = 'wfn:[part="a",vendor="hp",product="openview_network_manager", version="7\.51",target_sw="linux"]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_fs()
+        cpe:2.3:a:hp:openview_network_manager:7.51:*:*:*:*:linux:*:*
+
+        - TEST: Foo\Bar Big$Money 2010 Special Edition for iPod Touch 80GB. The
+          \\ and \$ carry over into the binding, and all the other
+          unspecified attributes bind to the asterisk.
+        >>> wfn = 'wfn:[part="a",vendor="foo\\bar",product="big\$money_2010", sw_edition="special",target_sw="ipod_touch",target_hw="80gb"]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_fs()
+        cpe:2.3:a:foo\\bar:big\$money_2010:*:*:*:*:special:ipod_touch:80gb:*
+        """
+
+        # Initialize the output with the CPE v2.3 string prefix.
+        fs = "cpe:2.3:"
+
+        for a in CPE2_3_WFN._wfn_part_keys:
+            v = CPE2_3_WFN._bind_value_for_fs(self.get(a))
+            fs = "%s%s" % (fs, v)
+
+            # Add a colon except at the very end
+            if (a != CPE2_3_WFN.KEY_OTHER):
+                fs = "%s:" % fs
+
+        return fs
+
+    def unbind_fs(cls, fs):
+        """
+        The algorithm parses the eleven fields of the formatted string, then
+        unbinds each string result. If a field contains only an asterisk, it is
+        unbound to the logical value ANY. If a field contains only a hyphen, it
+        is unbound to the logical value NA. Quoting of non-alphanumeric
+        characters is restored as needed, but the two special characters
+        (asterisk and question mark) are permitted to appear without a preceding
+        escape character. The unbinding procedure performs limited error
+        checking.
+
+        - TEST: the periods in the version string are quoted in the WFN, and all
+          the asterisks are unbound to the logical value ANY
+        >>> uri = 'cpe:2.3:a:microsoft:internet_explorer:8.0.6001:beta:*:*:*:*:*:*'
+        >>> fs = CPE2_3_FS(uri)
+        >>> wfn = CPE2_3_WFN.unbind_fs(fs)
+        >>> wfn.get_wfn_string()
+        wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]
+
+        - TEST: the embedded special characters are unbound untouched in the WFN
+        >>> uri = 'cpe:2.3:a:microsoft:internet_explorer:8.*:sp?:*:*:*:*:*:*'
+        >>> fs = CPE2_3_FS(uri)
+        >>> wfn = CPE2_3_WFN.unbind_fs(fs)
+        >>> wfn.get_wfn_string()
+        wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.*", update="sp?", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]
+
+        - TEST: the lone hyphen in the update field unbinds to the logical value
+          NA, and the lone asterisks unbind to the logical value ANY
+        >>> uri = 'cpe:2.3:a:hp:insight_diagnostics:7.4.0.1570:-:*:*:online:win2003:x64:*'
+        >>> fs = CPE2_3_FS(uri)
+        >>> wfn = CPE2_3_WFN.unbind_fs(fs)
+        >>> wfn.get_wfn_string()
+        wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\.4\.0\.1570", update=NA, edition=ANY, language=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY]
+
+        - TEST: This raises an error during unbinding, due to the embedded
+          unquoted asterisk in the version attribute.
+        >>> uri = 'cpe:2.3:a:hp:insight_diagnostics:7.4.*.1570:*:*:*:*:*:*'
+        >>> fs = CPE2_3_FS(uri)
+        >>> wfn = CPE2_3_WFN.unbind_fs(fs)
+        >>> wfn.get_wfn_string()
+        error
+
+        - TEST: the quoted special characters retain their quoting in the WFN
+        >>> uri = 'cpe:2.3:a:foo\\bar:big\$money:2010:*:*:*:special:ipod_touch:80gb:*'
+        >>> fs = CPE2_3_FS(uri)
+        >>> wfn = CPE2_3_WFN.unbind_fs(fs)
+        >>> wfn.get_wfn_string()
+        wfn:[part="a", vendor="foo\\bar", product="big\$money", version="2010", update=ANY, edition=ANY, language=ANY, sw_edition="special", target_sw="ipod_touch", target_hw="80gb", other=ANY]
+        """
+
+        # Initialize the empty WFN
+        wfn = CPE2_3_WFN()
+
+        # NB: the cpe scheme is the 0th component, the cpe version is the
+        # 1st. So we start parsing at the 2nd component.
+        for a in range(2, 12):
+            v = fs[a]  # get the a'th field string
+            v = CPE2_3_WFN._unbind_value_fs(v)  # unbind the string
+
+            # set the value of the corresponding attribute
+            att_key = CPE2_3_WFN._wfn_order_part_keys[a]
+            wfn.set(CPE2_3_WFN._wfn_parts_dict[att_key], v)
+
+        return wfn
+
+    def _unbind_value_fs(cls, s):
+        """
+        Takes a string value s and returns the appropriate logical value
+        if s is the bound form of a logical value.
+        If s is some general value string,
+        add quoting of non-alphanumerics as needed.
+        """
+
+        if s == "*":
+            return CPE2_3_WFN.VALUE_ANY_VALUE
+        elif s == "-":
+            return CPE2_3_WFN.VALUE_NOT_APPLICABLE
+        else:
+            # add quoting to any unquoted non-alphanumeric characters,
+            # but leave the two special characters alone,
+            # as they may appear quoted or unquoted.
+            return CPE2_3_WFN._add_quoting(s)
+
+    def _add_quoting(cls, s):
+        """
+        Inspect each character in string s. Copy quoted characters,
+        with their escaping, into the result. Look for unquoted non
+        alphanumerics and if not "*" or "?", add escaping.
+        """
+
+        result = ""
+        idx = 0
+        embedded = False
+        while (idx < len(s)):
+            c = s[idx, idx]  # get the idx'th character of s
+            if (CPE2_3_WFN._is_alphanum(c) or c == "_"):
+                # Alphanumeric characters pass untouched
+                result = "%s%s" % (result, c)
+                idx = idx + 1
+                embedded = True
+                continue
+
+            if c == "\\":
+                # Anything quoted in the bound string stays quoted
+                # in the unbound string.
+                result = "%s%s" % (result, s[idx, idx + 1])
+                idx = idx + 2
+                embedded = True
+                continue
+
+            if (c == "*"):
+                # An unquoted asterisk must appear at the beginning or
+                # end of the string.
+                if (idx == 0) or (idx == (len(s)-1)):
+                    result = "%s%s" % (result, c)
+                    idx = idx + 1
+                    embedded = True
+                    continue
+            else:
+                msg = "error"
+                raise ValueError(msg)
+
+            if (c == "?"):
+                # An unquoted question mark must appear at the beginning or
+                # end of the string, or in a leading or trailing sequence:
+                # - ? legal at beginning or end
+                # - embedded is false, so must be preceded by ?
+                # - embedded is true, so must be followed by ?
+                if (((idx == 0) or (idx == (len(s) - 1))) or ((not embedded) and (s[idx - 1, idx - 1] == "?")) or (embedded and (s[idx + 1, idx + 1] == "?"))):
+                    result = "%s%s" % (result, c)
+                    idx = idx + 1
+                    embedded = False
+                    continue
+                else:
+                    msg = "error"
+                    raise ValueError(msg)
+
+            # all other characters must be quoted
+            result = "%s\\%s" % (result, c)
+            idx = idx + 1
+            embedded = True
+
+        return result
+
+    def convert_uri_to_fs(cls, uri):
+        """
+        Returns the CPE2_3_FS object associated with
+        the input CPE2_3_URI object.
+
+        Given a URI uri which conforms to the CPE v2.2 specification,
+        the procedure for converting it to a formatted string has two steps:
+
+        1. Unbind uri to WFN
+        2. Bind WFN to formatted string
+        """
+
+        wfn = CPE2_3_WFN.unbind_uri(uri)
+        fs = wfn.bind_to_fs()
+
+        return fs
+
+    def convert_fs_to_uri(cls, fs):
+        """
+        Returns the CPE2_3_URI object associated with
+        the input CPE2_3_FS object.
+
+        Given a formatted string fs, the procedure for converting it
+        to a URI has two steps:
+
+        1. Unbind formatted string to WFN
+        2. Bind WFN to uri (CPE v2.2)
+        """
+
+        wfn = CPE2_3_WFN.unbind_fs(fs)
+        uri = wfn.bind_to_uri()
+
+        return uri
 
     def isHardware(self):
         """
