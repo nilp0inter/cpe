@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# flake8: noqa
 
 '''
 File: cpe2_3_wfn.py
@@ -12,13 +11,13 @@ Description: Module for the treatment of identifiers in accordance with
 '''
 
 
-from cpe2_3 import CPE2_3
+from cpe2_3_base import CPE2_3_BASE
 
 import re
 import itertools
 
 
-class CPE2_3_WFN(CPE2_3):
+class CPE2_3_WFN(CPE2_3_BASE):
     """
     Implementation of CPE 2.3 specification.
 
@@ -27,22 +26,11 @@ class CPE2_3_WFN(CPE2_3):
     >>> CPE2_3_WFN(wfn)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-      File "cpe/CPE2_3/cpe2_3_wfn.py", line 131, in __init__
-        self._validate_uri()
-      File "cpe/CPE2_3/cpe2_3_wfn.py", line 202, in _validate_uri
+      File "cpe2_3_wfn.py", line 131, in __init__
+        self._validate_wfn()
+      File "cpe2_3_wfn.py", line 202, in _validate_wfn
         raise TypeError(msg)
     TypeError: Input identifier is not a valid CPE ID: Error to split CPE ID parts
-
-    - TEST: WFN with whitespaces
-    >>> wfn = 'cpe con espacios'
-    >>> CPE2_3_WFN(wfn)
-    Traceback (most recent call last):
-      File "<stdin>", line 1, in <module>
-      File "cpe/CPE2_3/cpe2_3_wfn.py", line 131, in __init__
-        self._validate_uri()
-      File "cpe/CPE2_3/cpe2_3_wfn.py", line 170, in _validate_uri
-        raise TypeError(msg)
-    TypeError: Malformed CPE, it must not have whitespaces
 
     - TEST: an empty CPE.
     >>> wfn = 'wfn:[]'
@@ -56,39 +44,34 @@ class CPE2_3_WFN(CPE2_3):
       File "<stdin>", line 1, in <module>
       File "cpe/CPE2_3/cpe2_3_wfn.py", line 131, in __init__
         1: CPE2_3.KEY_VENDOR,
-      File "cpe/CPE2_3/cpe2_3_wfn.py", line 202, in _validate_uri
+      File "cpe/CPE2_3/cpe2_3_wfn.py", line 202, in _validate_wfn
         CPE2_3.KEY_VERSION,
     TypeError: Input identifier is not a valid CPE ID: Error to split CPE ID parts
 
     - TEST: an operating system CPE
-    >>> wfn = 'wfn:[part="o", vendor="acme", product="producto", version="1.0",
-    >>> update="update2", edition="pro", language="en-us"]'
+    >>> wfn = 'wfn:[part="o", vendor="acme", product="producto", version="1\.0", update="update2", edition="pro", language="en-us"]'
     >>> CPE2_3_WFN(wfn) # doctest: +ELLIPSIS
     <__main__.CPE2_3_WFN object at 0x...>
 
     - TEST: an application CPE
-    >>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics",
-    >>> version="7\.4\.0\.1570", sw_edition="online", target_sw="windows_2003",
-    >>> target_hw="x64", language=ANY, other=NA]'
+    >>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\.4\.0\.1570", sw_edition="online", target_sw="windows_2003", target_hw="x64", language=ANY, other=NA]'
     >>> CPE2_3_WFN(wfn) # doctest: +ELLIPSIS
     <__main__.CPE2_3_WFN object at 0x...>
 
     - TEST: an application CPE
-    >>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics",
-    >>> version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+    >>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
     >>> CPE2_3_WFN(wfn) # doctest: +ELLIPSIS
     <__main__.CPE2_3_WFN object at 0x...>
 
     - TEST: an CPE with special characters
-    >>> wfn = 'wfn:[part="h", vendor="hp", product="insight\diagnostics",
-    >>> version="8.0~"]'
+    >>> wfn = 'wfn:[part="h", vendor="hp", product="insight\diagnostics", version="8.0~"]'
     >>> CPE2_3_WFN(wfn) # doctest: +ELLIPSIS
     >>> CPE2_3_WFN(wfn)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "cpe2_3_wfn.py", line 158, in __init__
-        self._validate_uri()
-      File "cpe2_3_wfn.py", line 278, in _validate_uri
+        self._validate_wfn()
+      File "cpe2_3_wfn.py", line 278, in _validate_wfn
         raise TypeError(msg)
     TypeError: Malformed CPE, vendor value is invalid
     """
@@ -132,11 +115,11 @@ class CPE2_3_WFN(CPE2_3):
         '~': "%7e"
     }
 
-    wfn_part_keys = set(itertools.chain(CPE2_3.uri_part_keys,
-                                        CPE2_3.extend_part_keys))
+    wfn_part_keys = set(itertools.chain(CPE2_3_BASE.uri_part_keys,
+                                        CPE2_3_BASE.extend_part_keys))
 
-    wfn_order_parts_dict = set(itertools.chain(CPE2_3.uri_order_parts_dict,
-                                               CPE2_3.extend_order_parts_dict))
+    wfn_order_parts_dict = set(itertools.chain(CPE2_3_BASE.uri_order_parts_dict,
+                                               CPE2_3_BASE.extend_order_parts_dict))
 
     def __init__(self, cpe_str="wfn:[]"):
         """
@@ -148,7 +131,7 @@ class CPE2_3_WFN(CPE2_3):
         (a WFN containing no attribute-value pairs).
         """
 
-        CPE2_3.__init__(self)
+        CPE2_3_BASE.__init__(self, cpe_str)
 
         # Store CPE identifier:
         #     CPE names are case-insensitive.
@@ -165,23 +148,27 @@ class CPE2_3_WFN(CPE2_3):
         """
 
         # Compilation of regular expression associated with value of CPE part
-        punc_no_dash = "[\!|;|\#|\$|%|&|'|\(|\)|\+|\.|/"
-        punc_no_dash += ":|\<|=|\>|@|\[|\|\^|`|\{|\||\}|~]"
-        punc_w_dash = "%s|\-" % punc_no_dash
+        punc_no_dash = "\!\;\#\$\%\&\'\(\)\+\,\./\:\<\=\>\@\[\]\^\`\{\|\}\~"
+        punc_w_dash = "%s\-" % punc_no_dash
 
-        special = "[\?\*]"
+        special = "\?\*"
         quoted1 = "\\(\\|%s|%s)" % (special, punc_no_dash)
+        #print "quoted1: %s" % quoted1
         quoted2 = "\\(\\|%s|%s)" % (special, punc_w_dash)
+        #print "quoted2: %s" % quoted2
         unreserved = "[%s%s_]" % (CPE2_3_WFN.ALPHA, CPE2_3_WFN.DIGIT)
 
         body1 = "(%s|%s)" % (unreserved, quoted1)
         body2 = "(%s|%s)" % (unreserved, quoted2)
-        body = "((%s%s*)|%s{2})" % (body1, body2, body2)
+        body = "(%s%s*|%s{2})" % (body1, body2, body2)
+        print body
+        print
 
-        spec_chrs = "(\?+|\*)"
+        spec_chrs = "\?+|\*"
 
-        avstring = "(%s|(%s%s*))%s?" % (body, spec_chrs, body2, spec_chrs)
+        avstring = "(%s|(%s)%s*)(%s)?" % (body, spec_chrs, body2, spec_chrs)
 
+        print avstring
         value_string_pattern = "^%s$" % avstring
 
         part_value_rxc = re.compile(value_string_pattern)
@@ -240,34 +227,28 @@ class CPE2_3_WFN(CPE2_3):
         k. other
         """
 
-        # CPE ID must not have whitespaces
-        if (self.str.find(" ") != -1):
-            msg = "Malformed CPE, it must not have whitespaces"
-            raise ValueError(msg)
-
         # #####################
         #  CHECK CPE ID PARTS
         # #####################
 
         # Compilation of regular expression associated with parts of CPE ID
-        typesys = "%s=?P<%s>\"(h|o|a)\"" % (CPE2_3.KEY_PART, CPE2_3.KEY_PART)
+        typesys = "%s=(?P<%s>\"(h|o|a)\")?" % (CPE2_3_BASE.KEY_PART, CPE2_3_BASE.KEY_PART)
 
-        aux_pattern = "%s=?P<%s>[^,]+"
-        vendor = aux_pattern % (CPE2_3.KEY_VENDOR, CPE2_3.KEY_VENDOR)
-        product = aux_pattern % (CPE2_3.KEY_PRODUCT, CPE2_3.KEY_PRODUCT)
-        version = aux_pattern % (CPE2_3.KEY_VERSION, CPE2_3.KEY_VERSION)
-        update = aux_pattern % (CPE2_3.KEY_UPDATE, CPE2_3.KEY_UPDATE)
-        edition = aux_pattern % (CPE2_3.KEY_EDITION, CPE2_3.KEY_EDITION)
-        language = aux_pattern % (CPE2_3.KEY_LANGUAGE, CPE2_3.KEY_LANGUAGE)
-        sw_edition = aux_pattern % (CPE2_3.KEY_SW_EDITION, CPE2_3.KEY_SW_EDITION)
-        target_sw = aux_pattern % (CPE2_3.KEY_TARGET_SW, CPE2_3.KEY_TARGET_SW)
-        target_hw = aux_pattern % (CPE2_3.KEY_TARGET_HW, CPE2_3.KEY_TARGET_HW)
-        other = aux_pattern % (CPE2_3.KEY_OTHER, CPE2_3.KEY_OTHER)
+        aux_pattern = "%s=(?P<%s>[^\,]+)?"
+        vendor = aux_pattern % (CPE2_3_BASE.KEY_VENDOR, CPE2_3_BASE.KEY_VENDOR)
+        product = aux_pattern % (CPE2_3_BASE.KEY_PRODUCT, CPE2_3_BASE.KEY_PRODUCT)
+        version = aux_pattern % (CPE2_3_BASE.KEY_VERSION, CPE2_3_BASE.KEY_VERSION)
+        update = aux_pattern % (CPE2_3_BASE.KEY_UPDATE, CPE2_3_BASE.KEY_UPDATE)
+        edition = aux_pattern % (CPE2_3_BASE.KEY_EDITION, CPE2_3_BASE.KEY_EDITION)
+        language = aux_pattern % (CPE2_3_BASE.KEY_LANGUAGE, CPE2_3_BASE.KEY_LANGUAGE)
+        sw_edition = aux_pattern % (CPE2_3_BASE.KEY_SW_EDITION, CPE2_3_BASE.KEY_SW_EDITION)
+        target_sw = aux_pattern % (CPE2_3_BASE.KEY_TARGET_SW, CPE2_3_BASE.KEY_TARGET_SW)
+        target_hw = aux_pattern % (CPE2_3_BASE.KEY_TARGET_HW, CPE2_3_BASE.KEY_TARGET_HW)
+        other = aux_pattern % (CPE2_3_BASE.KEY_OTHER, CPE2_3_BASE.KEY_OTHER)
 
-        parts_pattern = "^wfn:\["
-        parts_pattern += "(%s)?" % typesys
+        parts_pattern = "^wfn:\[%s" % typesys
 
-        aux_parts_pattern = "(, (%s)?)?"
+        aux_parts_pattern = "(\, %s)?"
         parts_pattern += aux_parts_pattern % vendor
         parts_pattern += aux_parts_pattern % product
         parts_pattern += aux_parts_pattern % version
@@ -281,9 +262,12 @@ class CPE2_3_WFN(CPE2_3):
         parts_pattern += "\]$"
 
         parts_rxc = re.compile(parts_pattern, re.IGNORECASE)
+        print parts_pattern
+        print self.str
 
         # Partitioning of CPE ID
         parts_match = parts_rxc.match(self.str)
+        print parts_match
 
         # Validation of CPE ID parts
         if (parts_match is None):
@@ -291,7 +275,7 @@ class CPE2_3_WFN(CPE2_3):
             msg += "Error to split CPE ID parts"
             raise TypeError(msg)
 
-        for pk in CPE2_3.part_keys:
+        for pk in CPE2_3_WFN.wfn_part_keys:
             value = parts_match.group(pk)
 
             if (value is None):
@@ -310,7 +294,7 @@ class CPE2_3_WFN(CPE2_3):
 
                 elif value.count('"') == 2:
                     # String value
-                    if pk == CPE2_3.KEY_LANGUAGE:
+                    if pk == CPE2_3_BASE.KEY_LANGUAGE:
                         if not CPE2_3_WFN._is_valid_wfn_language(value):
                             msg = "Malformed CPE, language value is invalid"
                             raise TypeError(msg)
@@ -354,6 +338,7 @@ class CPE2_3_WFN(CPE2_3):
 
         count = 0
         for k, v in enumerate(self.cpe_dict):
+            print "%s  %s" % (k, v)
             if v != CPE2_3_WFN.VALUE_NULL:
                 count += 1
 
@@ -436,9 +421,20 @@ class CPE2_3_WFN(CPE2_3):
         wfn = wfn[0:len(wfn)-2]
         wfn += "]"
 
+    @classmethod
     def _trim(cls, s):
         """
         Remove trailing colons from the URI back to the first non-colon.
+
+        - TEST: trailing colons necessary
+        >>> s = '1:2::::'
+        >>> CPE2_3_WFN._trim(s)
+        1:2
+
+        - TEST: trailing colons not necessary
+        >>> s = '1:2:3:4:5:6'
+        >>> CPE2_3_WFN._trim(s)
+        1:2:3:4:5:6
         """
         reverse = s[::-1]
         idx = 0
@@ -458,6 +454,26 @@ class CPE2_3_WFN(CPE2_3):
         """
         Returns True if c is an uppercase letter, a lowercase letter,
         a digit, or the underscore, otherwise False.
+
+        - TEST: alpha
+        >>> c = 'A'
+        >>> CPE2_2_WFN._is_alphanum(c)
+        True
+
+        - TEST: num
+        >>> c = 2
+        >>> CPE2_2_WFN._is_alphanum(c)
+        True
+
+        - TEST: char is _
+        >>> c = '_'
+        >>> CPE2_2_WFN._is_alphanum(c)
+        True
+
+        - TEST: char not valid
+        >>> c = 'Ç'
+        >>> CPE2_2_WFN._is_alphanum(c)
+        False
         """
 
         alphanum_pattern = "[%s%s-]" % (CPE2_3_WFN.ALPHA, CPE2_3_WFN.DIGIT)
@@ -465,6 +481,7 @@ class CPE2_3_WFN(CPE2_3):
 
         return alphanum_rxc.match(c) is not None
 
+    @classmethod
     def _pct_encode(cls, c):
         """
         Return the appropriate percent-encoding of character c.
@@ -476,12 +493,18 @@ class CPE2_3_WFN(CPE2_3):
 
         return CPE2_3_WFN.PCE_DICT[c]
 
+    @classmethod
     def _transform_for_uri(cls, s):
         """
         Scans an input string s and applies the following transformations:
         - Pass alphanumeric characters thru untouched
         - Percent-encode quoted non-alphanumerics as needed
         - Unquoted special characters are mapped to their special forms.
+
+        -TEST: Change some special characters
+        >>> s = 'change\\too?and*'
+        >>> CPE2_3_WFN._transform_for_uri(s)
+        change\too%01and%02
         """
 
         result = ""
@@ -538,6 +561,14 @@ class CPE2_3_WFN(CPE2_3):
         """
         “Pack” the values of the five arguments into the single edition
         component. If all the values are blank, just return a blank.
+
+        - TEST: empty input
+        >>> CPE2_3_WFN._pack('edval', '', '', '', '')
+        edval
+
+        - TEST: full input
+        >>> CPE2_3_WFN._pack('ed', 'sw_ed', 't_sw', 't_hw', 'oth')
+        ~ed~sw_ed~t_sw~t_hw~oth
         """
 
         if (sw_ed == "") and (t_sw == "") and (t_hw == "") and (oth == ""):
@@ -554,27 +585,57 @@ class CPE2_3_WFN(CPE2_3):
         """
         Converts the binding style WFN to URI 2.2 version
         and returns version 2.2 CPE object
+
+        - TEST: Microsoft Internet Explorer 8.0.6001 Beta (any edition)
+        >>> wfn = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001", update="beta", edition=ANY]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_uri()
+        cpe:/a:microsoft:internet_explorer:8.0.6001:beta
+
+        - TEST: Microsoft Internet Explorer 8.* SP?
+        >>> wfn = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.*", update="sp?"]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_uri()
+        cpe:/a:microsoft:internet_explorer:8.%02:sp%01
+
+        - TEST: HP Insight Diagnostics 7.4.0.1570 Online Edition for Windows 2003 x64
+        >>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\.4\.0\.1570", update=NA, sw_edition="online", target_sw="win2003", target_hw="x64"]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_uri()
+        cpe:/a:hp:insight_diagnostics:7.4.0.1570:-:~~online~win2003~x64~
+
+        - TEST: HP OpenView Network Manager 7.51 (any update) for Linux
+        >>> wfn = 'wfn:[part="a", vendor="hp", product="openview_network_manager", version="7\.51", target_sw="linux"]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_uri()
+        cpe:/a:hp:openview_network_manager:7.51::~~~linux~~
+
+        - TEST: Foo\Bar Big$Money Manager 2010 Special Edition for iPod Touch 80GB
+        >>> wfn = 'wfn:[part="a", vendor="foo\\bar", product="big\$money_manager_2010", sw_edition="special", target_sw="ipod_touch", target_hw="80gb"]'
+        >>> w = CPE2_3_WFN(wfn)
+        >>> w.bind_to_uri()
+        cpe:/a:foo%5cbar:big%24money_manager_2010:::~~special~ipod_touch~80gb~
         """
 
         uri = "cpe:/"
 
-        for a in CPE2_3.uri_part_keys:
-            if a == CPE2_3.KEY_EDITION:
+        for a in CPE2_3_BASE.uri_part_keys:
+            if a == CPE2_3_BASE.KEY_EDITION:
                 # Call the pack() helper function to compute the proper
                 # binding for the edition element
 
-                ed = CPE2_3._bind_value_for_uri(self.getEdition())
-                sw_ed = CPE2_3._bind_value_for_uri(self.getSw_edition())
-                t_sw = CPE2_3._bind_value_for_uri(self.getTarget_sw())
-                t_hw = CPE2_3._bind_value_for_uri(self.getTarget_hw())
-                oth = CPE2_3._bind_value_for_uri(self.getOther())
+                ed = CPE2_3_BASE._bind_value_for_uri(self.getEdition())
+                sw_ed = CPE2_3_BASE._bind_value_for_uri(self.getSw_edition())
+                t_sw = CPE2_3_BASE._bind_value_for_uri(self.getTarget_sw())
+                t_hw = CPE2_3_BASE._bind_value_for_uri(self.getTarget_hw())
+                oth = CPE2_3_BASE._bind_value_for_uri(self.getOther())
 
-                v = CPE2_3._pack(ed, sw_ed, t_sw, t_hw, oth)
+                v = CPE2_3_BASE._pack(ed, sw_ed, t_sw, t_hw, oth)
             else:
                 # Get the value for a in self, then bind to a string
                 # for inclusion in the URI.
 
-                v = CPE2_3._bind_value_for_uri(self.get(a))
+                v = CPE2_3_BASE._bind_value_for_uri(self.get(a))
 
             # Append v to the URI then add a colon.
             uri += "%s:" % v
@@ -606,9 +667,9 @@ class CPE2_3_WFN(CPE2_3):
         """
 
         # Value of part type of CPE ID
-        type_value = self.cpe_dict[CPE2_3.KEY_PART]
+        type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
-        isHW = type_value == CPE2_3.KEY_PART_HW
+        isHW = type_value == CPE2_3_BASE.KEY_PART_HW
         isEmpty = type_value == CPE2_3_WFN.VALUE_NULL
         isAny = type_value == CPE2_3_WFN.VALUE_ANY
 
@@ -638,9 +699,9 @@ class CPE2_3_WFN(CPE2_3):
         """
 
         # Value of part type of CPE ID
-        type_value = self.cpe_dict[CPE2_3.KEY_PART]
+        type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
-        isOS = type_value == CPE2_3.KEY_PART_OS
+        isOS = type_value == CPE2_3_BASE.KEY_PART_OS
         isEmpty = type_value == CPE2_3_WFN.VALUE_NULL
         isAny = type_value == CPE2_3_WFN.VALUE_ANY
 
@@ -670,9 +731,9 @@ class CPE2_3_WFN(CPE2_3):
         """
 
         # Value of part type of CPE ID
-        type_value = self.cpe_dict[CPE2_3.KEY_PART]
+        type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
-        isApp = type_value == CPE2_3.KEY_PART_APP
+        isApp = type_value == CPE2_3_BASE.KEY_PART_APP
         isEmpty = type_value == CPE2_3_WFN.VALUE_NULL
         isAny = type_value == CPE2_3_WFN.VALUE_ANY
 
@@ -701,7 +762,7 @@ class CPE2_3_WFN(CPE2_3):
         'h'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_PART]
+        return self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
     def getVendor(self):
         """
@@ -714,7 +775,7 @@ class CPE2_3_WFN(CPE2_3):
         'microsoft'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_VENDOR]
+        return self.cpe_dict[CPE2_3_BASE.KEY_VENDOR]
 
     def getProduct(self):
         """
@@ -727,7 +788,7 @@ class CPE2_3_WFN(CPE2_3):
         'windows'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_PRODUCT]
+        return self.cpe_dict[CPE2_3_BASE.KEY_PRODUCT]
 
     def getVersion(self):
         """
@@ -741,7 +802,7 @@ class CPE2_3_WFN(CPE2_3):
         '8\.0'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_VERSION]
+        return self.cpe_dict[CPE2_3_BASE.KEY_VERSION]
 
     def getUpdate(self):
         """
@@ -755,7 +816,7 @@ class CPE2_3_WFN(CPE2_3):
         'sp2'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_UPDATE]
+        return self.cpe_dict[CPE2_3_BASE.KEY_UPDATE]
 
     def getEdition(self):
         """
@@ -769,7 +830,7 @@ class CPE2_3_WFN(CPE2_3):
         'pro'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_EDITION]
+        return self.cpe_dict[CPE2_3_BASE.KEY_EDITION]
 
     def getLanguage(self):
         """
@@ -783,7 +844,7 @@ class CPE2_3_WFN(CPE2_3):
         'es-es'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_LANGUAGE]
+        return self.cpe_dict[CPE2_3_BASE.KEY_LANGUAGE]
 
     def getSw_edition(self):
         """
@@ -797,7 +858,7 @@ class CPE2_3_WFN(CPE2_3):
         'home'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_SW_EDITION]
+        return self.cpe_dict[CPE2_3_BASE.KEY_SW_EDITION]
 
     def getTarget_sw(self):
         """
@@ -812,7 +873,7 @@ class CPE2_3_WFN(CPE2_3):
         NA
         """
 
-        return self.cpe_dict[CPE2_3.KEY_TARGET_SW]
+        return self.cpe_dict[CPE2_3_BASE.KEY_TARGET_SW]
 
     def getTarget_hw(self):
         """
@@ -826,7 +887,7 @@ class CPE2_3_WFN(CPE2_3):
         'x64'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_TARGET_HW]
+        return self.cpe_dict[CPE2_3_BASE.KEY_TARGET_HW]
 
     def getOther(self):
         """
@@ -840,7 +901,7 @@ class CPE2_3_WFN(CPE2_3):
         NA
         """
 
-        return self.cpe_dict[CPE2_3.KEY_OTHER]
+        return self.cpe_dict[CPE2_3_BASE.KEY_OTHER]
 
     def __unicode__(self):
         """
@@ -870,17 +931,17 @@ class CPE2_3_WFN(CPE2_3):
         False
         """
 
-        eqPart = self.cpe_dict[CPE2_3.KEY_PART] == cpe.getType()
-        eqVendor = self.cpe_dict[CPE2_3.KEY_VENDOR] == cpe.getVendor()
-        eqProduct = self.cpe_dict[CPE2_3.KEY_PRODUCT] == cpe.getProduct()
-        eqVersion = self.cpe_dict[CPE2_3.KEY_VERSION] == cpe.getVersion()
-        eqUpdate = self.cpe_dict[CPE2_3.KEY_UPDATE] == cpe.getUpdate()
-        eqEdition = self.cpe_dict[CPE2_3.KEY_EDITION] == cpe.getEdition()
-        eqLanguage = self.cpe_dict[CPE2_3.KEY_LANGUAGE] == cpe.getLanguage()
-        eqSw_edition = self.cpe_dict[CPE2_3.KEY_SW_EDITION] == cpe.getSw_edition()
-        eqTarget_sw = self.cpe_dict[CPE2_3.KEY_TARGET_SW] == cpe.getTarget_sw()
-        eqTarget_hw = self.cpe_dict[CPE2_3.KEY_TARGET_HW] == cpe.getTarget_hw()
-        eqOther = self.cpe_dict[CPE2_3.KEY_OTHER] == cpe.getOther()
+        eqPart = self.cpe_dict[CPE2_3_BASE.KEY_PART] == cpe.getType()
+        eqVendor = self.cpe_dict[CPE2_3_BASE.KEY_VENDOR] == cpe.getVendor()
+        eqProduct = self.cpe_dict[CPE2_3_BASE.KEY_PRODUCT] == cpe.getProduct()
+        eqVersion = self.cpe_dict[CPE2_3_BASE.KEY_VERSION] == cpe.getVersion()
+        eqUpdate = self.cpe_dict[CPE2_3_BASE.KEY_UPDATE] == cpe.getUpdate()
+        eqEdition = self.cpe_dict[CPE2_3_BASE.KEY_EDITION] == cpe.getEdition()
+        eqLanguage = self.cpe_dict[CPE2_3_BASE.KEY_LANGUAGE] == cpe.getLanguage()
+        eqSw_edition = self.cpe_dict[CPE2_3_BASE.KEY_SW_EDITION] == cpe.getSw_edition()
+        eqTarget_sw = self.cpe_dict[CPE2_3_BASE.KEY_TARGET_SW] == cpe.getTarget_sw()
+        eqTarget_hw = self.cpe_dict[CPE2_3_BASE.KEY_TARGET_HW] == cpe.getTarget_hw()
+        eqOther = self.cpe_dict[CPE2_3_BASE.KEY_OTHER] == cpe.getOther()
 
         return (eqPart and eqVendor and eqProduct and eqVersion and
                 eqUpdate and eqEdition and eqLanguage and eqSw_edition and
@@ -888,40 +949,25 @@ class CPE2_3_WFN(CPE2_3):
 
 
 if __name__ == "__main__":
-    ##wfn = 'cpe:/'
-    ##wfn = 'cpe:/::::::'
-    ##wfn = 'cpe:/o:microsoft:windows_xp:::pro'
-    ##wfn = 'cpe:/a:acme:product:1.0:update2:pro:en-us'
-    ##wfn = 'cpe:/a:acme:product:1.0:update2:pro:en-usss'
-    ##wfn = 'cpe:/a:acme:product:1.0:update2:pro:en-123'
-    ##wfn = 'cpe:/a:acme:product:1.0:update2:pro:e-us'
-    ##wfn = 'cpe:/a:acme:product:1.0:update2:pro:esss-us'
-    ##wfn = 'cpe:/a:acme:product:1.0:update2:~~~un~dos:es-ES'
-    ##wfn = 'cpe:/a:acme:product:1.0:update2:~~~un~dos~:es-ES'
-    ##wfn = 'cpe:/a:acme:product:1.%02:update2:~~~un~dos~:es-ES'
-    #wfn = 'cpe:/a:acme:product:1.%250:update2:~~~un~dos~:es-ES'
-    ##wfn = 'cpe:/a:acme:product:1.%80:update2:~~~un~dos~:es-ES'
-    ##wfn = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+    #wfn = 'wfn:[]'
+    wfn = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001", update="beta", edition=ANY]'
 
-    #ce = CPE2_3_WFN(wfn)
-    #print("")
-    #print(ce)
-    #print("Elements: %s") % len(ce)
-    #print("")
-    #for i in range(0, 7):
-    #    print("Element %s: %s") % (i, ce[i])
-    #print("")
-    #print("IS HARDWARE: %s") % ce.isHardware()
-    #print("IS OS: %s") % ce.isOperatingSystem()
-    #print("IS APPLICATION: %s") % ce.isApplication()
-    #print("")
-    #print("VENDOR: %s") % ce.getVendor()
-    #print("PRODUCT: %s") % ce.getProduct()
-    #print("VERSION: %s") % ce.getVersion()
-    #print("UPDATE: %s") % ce.getUpdate()
-    #print("EDITION: %s") % ce.getEdition()
-    #print("LANGUAGE: %s") % ce.getLanguage()
-    #print("")
+    ce = CPE2_3_WFN(wfn)
+    print("")
+    print(ce)
+    print("Elements: %s") % len(ce)
+    print("")
+    print("IS HARDWARE: %s") % ce.isHardware()
+    print("IS OS: %s") % ce.isOperatingSystem()
+    print("IS APPLICATION: %s") % ce.isApplication()
+    print("")
+    print("VENDOR: %s") % ce.getVendor()
+    print("PRODUCT: %s") % ce.getProduct()
+    print("VERSION: %s") % ce.getVersion()
+    print("UPDATE: %s") % ce.getUpdate()
+    print("EDITION: %s") % ce.getEdition()
+    print("LANGUAGE: %s") % ce.getLanguage()
+    print("")
 
-    import doctest
-    doctest.testmod()
+#    import doctest
+#    doctest.testmod()

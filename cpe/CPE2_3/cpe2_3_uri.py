@@ -10,12 +10,12 @@ Description: Module for the treatment of identifiers in accordance with
              (Common Platform Enumeration).
 '''
 
-from cpe2_3 import CPE2_3
+from cpe2_3_base import CPE2_3_BASE
 
 import re
 
 
-class CPE2_3_URI(CPE2_3):
+class CPE2_3_URI(CPE2_3_BASE):
     """
     Implementation of binding style uri of CPE 2.3 specification.
 
@@ -44,12 +44,12 @@ class CPE2_3_URI(CPE2_3):
     - TEST: an empty CPE.
     >>> uri = 'cpe:/'
     >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3 object at 0x...>
+    <__main__.CPE2_3_URI object at 0x...>
 
     - TEST: an empty CPE with five parts
     >>> uri = 'cpe:/::::'
     >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3 object at 0x...>
+    <__main__.CPE2_3_URI object at 0x...>
 
     - TEST: an empty CPE with bad part name
     >>> uri = 'cpe:/b::::'
@@ -57,9 +57,9 @@ class CPE2_3_URI(CPE2_3):
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "cpe/CPE2_3/cpe2_3_uri.py", line 131, in __init__
-        1: CPE2_3.KEY_VENDOR,
+        1: CPE2_3_BASE.KEY_VENDOR,
       File "cpe/CPE2_3/cpe2_3_uri.py", line 202, in _validate_uri
-        CPE2_3.KEY_VERSION,
+        CPE2_3_BASE.KEY_VERSION,
     TypeError: Input identifier is not a valid CPE ID: Error to split CPE ID parts
 
     - TEST: an CPE with too many components
@@ -68,34 +68,34 @@ class CPE2_3_URI(CPE2_3):
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
       File "cpe/CPE2_3/cpe2_3_uri.py", line 131, in __init__
-        1: CPE2_3.KEY_VENDOR,
+        1: CPE2_3_BASE.KEY_VENDOR,
       File "cpe/CPE2_3/cpe2_3_uri.py", line 202, in _validate_uri
-        CPE2_3.KEY_VERSION,
+        CPE2_3_BASE.KEY_VERSION,
     TypeError: Input identifier is not a valid CPE ID: Error to split CPE ID parts
 
     - TEST: an application CPE
     >>> uri = 'cpe:/a:acme:product:1.0:update2:pro:en-us'
     >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3 object at 0x...>
+    <__main__.CPE2_3_URI object at 0x...>
 
     - TEST: an operating system CPE
     >>> uri = 'cpe:/o:microsoft:windows_xp:::pro'
     >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3 object at 0x...>
+    <__main__.CPE2_3_URI object at 0x...>
 
     - TEST: an hardware CPE
     >>> uri = 'cpe:/h:nvidia'
     >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3 object at 0x...>
+    <__main__.CPE2_3_URI object at 0x...>
 
     - TEST: an CPE with special characters
     >>> uri = 'cpe:/h:nvidia.buena_2~~pero_rara:11.0'
     >>> CPE2_3_URI(uri)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-      File "cpe2_3_uri.py", line 158, in __init__
+      File "cpe2_3_uri.py", line 121, in __init__
         self._validate_uri()
-      File "cpe2_3_uri.py", line 278, in _validate_uri
+      File "cpe2_3_uri.py", line 241, in _validate_uri
         raise TypeError(msg)
     TypeError: Malformed CPE, vendor value is invalid
     """
@@ -109,7 +109,7 @@ class CPE2_3_URI(CPE2_3):
         style URI and, if so, stores the component in a dictionary.
         """
 
-        CPE2_3.__init__(self)
+        CPE2_3_BASE.__init__(self, cpe_str)
 
         # Store CPE identifier:
         #     CPE names are case-insensitive.
@@ -152,13 +152,13 @@ class CPE2_3_URI(CPE2_3):
         # #####################
 
         # Compilation of regular expression associated with parts of CPE ID
-        typesys = "?P<%s>(h|o|a)" % CPE2_3.KEY_PART
-        vendor = "?P<%s>[^:]+" % CPE2_3.KEY_VENDOR
-        product = "?P<%s>[^:]+" % CPE2_3.KEY_PRODUCT
-        version = "?P<%s>[^:]+" % CPE2_3.KEY_VERSION
-        update = "?P<%s>[^:]+" % CPE2_3.KEY_UPDATE
-        edition = "?P<%s>[^:]+" % CPE2_3.KEY_EDITION
-        language = "?P<%s>[^:]+" % CPE2_3.KEY_LANGUAGE
+        typesys = "?P<%s>(h|o|a)" % CPE2_3_BASE.KEY_PART
+        vendor = "?P<%s>[^:]+" % CPE2_3_BASE.KEY_VENDOR
+        product = "?P<%s>[^:]+" % CPE2_3_BASE.KEY_PRODUCT
+        version = "?P<%s>[^:]+" % CPE2_3_BASE.KEY_VERSION
+        update = "?P<%s>[^:]+" % CPE2_3_BASE.KEY_UPDATE
+        edition = "?P<%s>[^:]+" % CPE2_3_BASE.KEY_EDITION
+        language = "?P<%s>[^:]+" % CPE2_3_BASE.KEY_LANGUAGE
 
         parts_pattern = "^cpe:/"
         parts_pattern += "(%s)?" % typesys
@@ -205,7 +205,7 @@ class CPE2_3_URI(CPE2_3):
 
         string = "(%s|%s)" % (str_wo_special, str_w_special)
         value_string_pattern = "^%s$" % string
-        packed = "(%s%s){5}" % (CPE2_3.PACKED_EDITION_SEPARATOR, string)
+        packed = "(%s%s){5}" % (CPE2_3_URI.PACKED_EDITION_SEPARATOR, string)
 
         value_edition_pattern = "^(%s|%s)$" % (string, packed)
         value_lang_pattern = "^%s?$" % LANGTAG
@@ -217,19 +217,19 @@ class CPE2_3_URI(CPE2_3):
         # Count of parts in CPE ID
         count = self.__len__()
 
-        for i, pk in enumerate(CPE2_3.part_keys):
+        for i, pk in enumerate(CPE2_3_BASE.uri_part_keys):
             value = parts_match.group(pk)
 
             if (value is None):
                 if (i < count):
                     value = ""
             else:
-                if pk == CPE2_3.KEY_EDITION:
+                if pk == CPE2_3_BASE.KEY_EDITION:
                     if (edition_value_rxc.match(value) is None):
                         msg = "Malformed CPE, edition value is invalid"
                         raise TypeError(msg)
 
-                elif pk == CPE2_3.KEY_LANGUAGE:
+                elif pk == CPE2_3_BASE.KEY_LANGUAGE:
                     if (lang_value_rxc.match(value) is None):
                         msg = "Malformed CPE, language value is invalid"
                         raise TypeError(msg)
@@ -311,12 +311,13 @@ class CPE2_3_URI(CPE2_3):
         KeyError: 'index not exists. Possible values: 0-6'
         """
 
-        if i not in CPE2_3.order_parts_dict.keys():
-            max_index = len(CPE2_3.order_parts_dict.keys()) - 1
+        keys = CPE2_3_BASE.uri_order_parts_dict.keys()
+        if i not in keys:
+            max_index = len(keys) - 1
             msg = "index not exists. Possible values: 0-%s" % max_index
             raise KeyError(msg)
 
-        part_key = CPE2_3.order_parts_dict[i]
+        part_key = CPE2_3_BASE.uri_order_parts_dict[i]
 
         return self.cpe_dict[part_key]
 
@@ -344,9 +345,9 @@ class CPE2_3_URI(CPE2_3):
         """
 
         # Value of part type of CPE ID
-        type_value = self.cpe_dict[CPE2_3.KEY_PART]
+        type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
-        isHW = type_value == CPE2_3.KEY_PART_HW
+        isHW = type_value == CPE2_3_BASE.KEY_PART_HW
         isEmpty = type_value == ""
 
         return (isHW or isEmpty)
@@ -375,9 +376,9 @@ class CPE2_3_URI(CPE2_3):
         """
 
         # Value of part type of CPE ID
-        type_value = self.cpe_dict[CPE2_3.KEY_PART]
+        type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
-        isOS = type_value == CPE2_3.KEY_PART_OS
+        isOS = type_value == CPE2_3_BASE.KEY_PART_OS
         isEmpty = type_value == ""
 
         return (isOS or isEmpty)
@@ -406,9 +407,9 @@ class CPE2_3_URI(CPE2_3):
         """
 
         # Value of part type of CPE ID
-        type_value = self.cpe_dict[CPE2_3.KEY_PART]
+        type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
-        isApp = type_value == CPE2_3.KEY_PART_APP
+        isApp = type_value == CPE2_3_BASE.KEY_PART_APP
         isEmpty = (type_value == "") or (type_value is None)
 
         return (isApp or isEmpty)
@@ -436,7 +437,7 @@ class CPE2_3_URI(CPE2_3):
         'h'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_PART]
+        return self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
     def getVendor(self):
         """
@@ -449,7 +450,7 @@ class CPE2_3_URI(CPE2_3):
         'microsoft'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_VENDOR]
+        return self.cpe_dict[CPE2_3_BASE.KEY_VENDOR]
 
     def getProduct(self):
         """
@@ -462,7 +463,7 @@ class CPE2_3_URI(CPE2_3):
         'ie'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_PRODUCT]
+        return self.cpe_dict[CPE2_3_BASE.KEY_PRODUCT]
 
     def getVersion(self):
         """
@@ -475,7 +476,7 @@ class CPE2_3_URI(CPE2_3):
         '10'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_VERSION]
+        return self.cpe_dict[CPE2_3_BASE.KEY_VERSION]
 
     def getUpdate(self):
         """
@@ -488,7 +489,7 @@ class CPE2_3_URI(CPE2_3):
         'sp2'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_UPDATE]
+        return self.cpe_dict[CPE2_3_BASE.KEY_UPDATE]
 
     def getEdition(self):
         """
@@ -501,7 +502,7 @@ class CPE2_3_URI(CPE2_3):
         'pro'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_EDITION]
+        return self.cpe_dict[CPE2_3_BASE.KEY_EDITION]
 
     def isEditionPacked(self):
         """
@@ -520,7 +521,7 @@ class CPE2_3_URI(CPE2_3):
         False
         """
 
-        return (self.getEdition().find(CPE2_3.PACKED_EDITION_SEPARATOR) > -1)
+        return (self.getEdition().find(CPE2_3_URI.PACKED_EDITION_SEPARATOR) > -1)
 
     def getEditionElements(self):
         """
@@ -529,7 +530,7 @@ class CPE2_3_URI(CPE2_3):
         it returns a list with a element.
         """
 
-        return self.getEdition().split(CPE2_3.PACKED_EDITION_SEPARATOR)
+        return self.getEdition().split(CPE2_3_URI.PACKED_EDITION_SEPARATOR)
 
     def getLanguage(self):
         """
@@ -542,7 +543,7 @@ class CPE2_3_URI(CPE2_3):
         'es-es'
         """
 
-        return self.cpe_dict[CPE2_3.KEY_LANGUAGE]
+        return self.cpe_dict[CPE2_3_BASE.KEY_LANGUAGE]
 
     def __unicode__(self):
         """
@@ -570,13 +571,13 @@ class CPE2_3_URI(CPE2_3):
         False
         """
 
-        eqPart = self.cpe_dict[CPE2_3.KEY_PART] == cpe.getType()
-        eqVendor = self.cpe_dict[CPE2_3.KEY_VENDOR] == cpe.getVendor()
-        eqProduct = self.cpe_dict[CPE2_3.KEY_PRODUCT] == cpe.getProduct()
-        eqVersion = self.cpe_dict[CPE2_3.KEY_VERSION] == cpe.getVersion()
-        eqUpdate = self.cpe_dict[CPE2_3.KEY_UPDATE] == cpe.getUpdate()
-        eqEdition = self.cpe_dict[CPE2_3.KEY_EDITION] == cpe.getEdition()
-        eqLanguage = self.cpe_dict[CPE2_3.KEY_LANGUAGE] == cpe.getLanguage()
+        eqPart = self.cpe_dict[CPE2_3_BASE.KEY_PART] == cpe.getType()
+        eqVendor = self.cpe_dict[CPE2_3_BASE.KEY_VENDOR] == cpe.getVendor()
+        eqProduct = self.cpe_dict[CPE2_3_BASE.KEY_PRODUCT] == cpe.getProduct()
+        eqVersion = self.cpe_dict[CPE2_3_BASE.KEY_VERSION] == cpe.getVersion()
+        eqUpdate = self.cpe_dict[CPE2_3_BASE.KEY_UPDATE] == cpe.getUpdate()
+        eqEdition = self.cpe_dict[CPE2_3_BASE.KEY_EDITION] == cpe.getEdition()
+        eqLanguage = self.cpe_dict[CPE2_3_BASE.KEY_LANGUAGE] == cpe.getLanguage()
 
         return (eqPart and eqVendor and eqProduct and eqVersion and
                 eqUpdate and eqEdition and eqLanguage)
