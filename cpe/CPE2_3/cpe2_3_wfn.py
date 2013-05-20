@@ -79,9 +79,15 @@ class CPE2_3_WFN(CPE2_3_BASE):
     ALPHA = "a-zA-Z"
     DIGIT = "\d"
 
-    VALUE_NULL = 0
-    VALUE_ANY = 1
-    VALUE_NA = 2
+    VALUE_ANY_VALUE = "ANY"
+    VALUE_NOT_APPLICABLE = "NA"
+
+    VALUE_INT_NULL = 0
+    VALUE_INT_ANY = 1
+    VALUE_INT_NA = 2
+
+    PCE_ASTERISK = "%02"
+    PCE_QUESTION = "%01"
 
     PCE_DICT = {
         '!': "%21",
@@ -113,6 +119,38 @@ class CPE2_3_WFN(CPE2_3_BASE):
         '|': "%7c",
         '}': "%7d",
         '~': "%7e"
+    }
+
+    DECODE_DICT = {
+        "%21": '\\!',
+        "%22": '\\\"',
+        "%23": '\\#',
+        "%24": '\\$',
+        "%25": '\\%',
+        "%26": '\\&',
+        "%27": '\\\'',
+        "%28": '\\(',
+        "%29": '\\)',
+        "%2a": '\\*',
+        "%2b": '\\+',
+        "%2c": '\\,',
+        "%2f": '\\/',
+        "%3a": '\\:',
+        "%3b": '\\;',
+        "%3c": '\\<',
+        "%3d": '\\=',
+        "%3e": '\\>',
+        "%3f": '\\?',
+        "%40": '\\@',
+        "%5b": '\\[',
+        "%5c": '\\\\',
+        "%5d": '\\]',
+        "%5e": '\\^',
+        "%60": '\\`',
+        "%7b": '\\{',
+        "%7c": '\\|',
+        "%7d": '\\}',
+        "%7e": '\\~'
     }
 
     wfn_part_keys = set(itertools.chain(CPE2_3_BASE.uri_part_keys,
@@ -280,14 +318,14 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
             if (value is None):
                 # Attribute not specified
-                value = CPE2_3_WFN. VALUE_NULL
+                value = CPE2_3_WFN. VALUE_INT_NULL
             else:
                 if value.count('"') == 0:
                     # Logical value
-                    if (value == "ANY"):
-                        value = CPE2_3_WFN.VALUE_ANY
-                    elif (value == "NA"):
-                        value = CPE2_3_WFN.VALUE_NA
+                    if (value == CPE2_3_WFN.VALUE_ANY_VALUE):
+                        value = CPE2_3_WFN.VALUE_INT_ANY
+                    elif (value == CPE2_3_WFN.VALUE_NOT_APPLICABLE):
+                        value = CPE2_3_WFN.VALUE_INT_NA
                     else:
                         msg = "Malformed CPE, logical value in %s is invalid" % pk
                         raise ValueError(msg)
@@ -339,7 +377,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
         count = 0
         for k, v in enumerate(self.cpe_dict):
             print "%s  %s" % (k, v)
-            if v != CPE2_3_WFN.VALUE_NULL:
+            if v != CPE2_3_WFN.VALUE_INT_NULL:
                 count += 1
 
         return count
@@ -354,7 +392,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
         if att in self.cpe_dict.keys():
             value = self.cpe_dict[att]
-            if value == CPE2_3_WFN.VALUE_NULL:
+            if value == CPE2_3_WFN.VALUE_INT_NULL:
                 # Attribute not specified in WFN
                 return CPE2_3_WFN.VALUE_ANY
             else:
@@ -390,7 +428,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
         if att in self.cpe_dict.keys():
             if value is None:
                 # Del attribute
-                self.cpe_dict[att] = CPE2_3_WFN.VALUE_NULL
+                self.cpe_dict[att] = CPE2_3_WFN.VALUE_INT_NULL
             else:
                 # Replace value
                 self.cpe_dict[att] = value
@@ -411,10 +449,10 @@ class CPE2_3_WFN(CPE2_3_BASE):
                 wfn += self.cpe_dict[k]
                 wfn += "="
 
-                if v == CPE2_3_WFN.VALUE_ANY:
-                    wfn += "ANY"
-                elif v == CPE2_3_WFN.VALUE_NA:
-                    wfn += "NA"
+                if v == CPE2_3_WFN.VALUE_INT_ANY:
+                    wfn += CPE2_3_WFN.VALUE_ANY
+                elif v == CPE2_3_WFN.VALUE_INT_NA:
+                    wfn += CPE2_3_WFN.VALUE_NA
                 else:
                     wfn += '"v", '
 
@@ -494,6 +532,87 @@ class CPE2_3_WFN(CPE2_3_BASE):
         return CPE2_3_WFN.PCE_DICT[c]
 
     @classmethod
+    def _decode(cls, s):
+        """
+        This function scans the string s and returns a copy
+        with all percent-encoded characters decoded. This
+        function is the inverse of pct_encode(s).
+        Only legal percent-encoded forms are decoded.
+        Others raise an error.
+        Decode a blank to logical ANY, and hyphen to logical NA.
+        """
+
+        if (s == ''):
+            return CPE2_3_WFN.VALUE_ANY
+
+        if (s == '-'):
+            return CPE2_3_WFN.VALUE_NA
+
+        # Start the scanning loop.
+        # Normalize: convert all uppercase letters to lowercase first.
+        s = s.lower()
+        result = ""
+        idx = 0
+        embedded = False
+
+        while (idx < len(s)):
+            # Get the idx'th character of s
+            c = s[idx, idx]
+
+            # Deal with dot, hyphen and tilde: decode with quoting
+            if ((c == '.') or (c == '-') or (c == '~')):
+                result = "%s\\%s" % (result, c)
+                idx = idx + 1
+                embedded = True  # a non-%01 encountered
+                continue
+
+            if (c != '%'):
+                result = "%s%s" % (result, c)
+                idx = idx + 1
+                embedded = True  # a non-%01 encountered
+                continue
+
+            # we get here if we have a substring starting w/ '%'.
+            form = s[idx, idx + 2]  # get the three-char sequence
+
+            if form == CPE2_3_WFN.PCE_ASTERISK:
+                # If %01 legal at beginning or end
+                # embedded is false, so must be preceded by %01
+                # embedded is true, so must be followed by %01
+                if (((idx == 0) or (idx == (len(s)-3))) or ((not embedded) and (s[idx - 3, idx - 1] == CPE2_3_WFN.PCE_ASTERISK)) or (embedded and (len(s) >= idx + 6) and (s[idx + 3, idx + 5] == CPE2_3_WFN.PCE_ASTERISK))):
+
+                    # A percent-encoded question mark is found
+                    # at the beginning or the end of the string,
+                    # or embedded in sequence as required.
+                    # Decode to unquoted form.
+                    result = "%s?" % result
+                    idx = idx + 3
+                    continue
+                else:
+                    msg = "error"
+                    raise ValueError(msg)
+            elif form == CPE2_3_WFN.PCE_QUESTION:
+                if ((idx == 0) or (idx == (len(s) - 3))):
+                    # Percent-encoded asterisk is at the beginning
+                    # or the end of the string, as required.
+                    # Decode to unquoted form.
+                    result = "%s*" % result
+                else:
+                    msg = "error"
+                    raise ValueError(msg)
+            elif form in CPE2_3_WFN.DECODE_DICT.keys():
+                value = CPE2_3_WFN.DECODE_DICT[form]
+                result = "%s%s" % (result, value)
+            else:
+                msg = "Error"
+                raise ValueError(msg)
+
+            idx = idx + 3
+            embedded = True  # a non-%01 encountered.
+
+        return result
+
+    @classmethod
     def _transform_for_uri(cls, s):
         """
         Scans an input string s and applies the following transformations:
@@ -528,11 +647,11 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
             # Bind the unquoted '?' special character to "%01"
             if (thischar == "?"):
-                result += "%01"
+                result += CPE2_3_WFN.PCE_ASTERISK
 
             # Bind the unquoted '*' special character to "%02"
             if (thischar == "*"):
-                result += "%02"
+                result += CPE2_3_WFN.PCE_QUESTION
 
             idx = idx + 1
 
@@ -557,19 +676,35 @@ class CPE2_3_WFN(CPE2_3_BASE):
         return CPE2_3_WFN._transform_for_uri(s)
 
     @classmethod
-    def _pack(cls, ed, sw_ed, t_sw, t_hw, oth):
+    def _pack(self):
         """
         “Pack” the values of the five arguments into the single edition
         component. If all the values are blank, just return a blank.
 
-        - TEST: empty input
-        >>> CPE2_3_WFN._pack('edval', '', '', '', '')
-        edval
-
         - TEST: full input
-        >>> CPE2_3_WFN._pack('ed', 'sw_ed', 't_sw', 't_hw', 'oth')
-        ~ed~sw_ed~t_sw~t_hw~oth
+        >>> wfn = 'wfn:[part="a",vendor="hp",product="insight_diagnostics", version="7\.4\.0\.1570",update=ANY,edition=ANY, sw_edition="online",target_sw="win2003",target_hw="x64", other=ANY,language=ANY]'
+        >>> cpe = CPE2_3_WFN(wfn)
+        >>> cpe._pack()
+        ~~online~win2003~x64~
+
+        - TEST: an only value
+        >>> wfn = 'wfn:[part="a",vendor="hp",product="openview_network_manager", version="7\.51",update=NA,edition=ANY,sw_edition=ANY, target_sw="linux",target_HW=ANY,other=ANY,language=ANY]'
+        >>> cpe = CPE2_3_WFN(wfn)
+        >>> cpe._pack()
+        ~~~linux~~
+
+        - TEST: without edition
+        >>> wfn = 'wfn:[part="a",vendor="hp",product="openview_network_manager"]'
+        >>> cpe = CPE2_3_WFN(wfn)
+        >>> cpe._pack()
+        ~~~~~
         """
+
+        ed = CPE2_3_BASE._bind_value_for_uri(self.getEdition())
+        sw_ed = CPE2_3_BASE._bind_value_for_uri(self.getSw_edition())
+        t_sw = CPE2_3_BASE._bind_value_for_uri(self.getTarget_sw())
+        t_hw = CPE2_3_BASE._bind_value_for_uri(self.getTarget_hw())
+        oth = CPE2_3_BASE._bind_value_for_uri(self.getOther())
 
         if (sw_ed == "") and (t_sw == "") and (t_hw == "") and (oth == ""):
             # All the extended attributes are blank,
@@ -580,6 +715,27 @@ class CPE2_3_WFN(CPE2_3_BASE):
         # Otherwise, pack the five values into a single string
         # prefixed and internally delimited with the tilde
         return "~%s~%s~%s~%s~%s" % (ed, sw_ed, t_sw, t_hw, oth)
+
+    @classmethod
+    def _unpack(self, s):
+        """
+        Unpack its elements and set the attributes in wfn accordingly.
+        Parse out the five elements.
+        """
+
+        components = s.split("~")
+
+        ed = components[0]
+        sw_ed = components[1]
+        t_sw = components[2]
+        t_hw = components[3]
+        oth = components[4]
+
+        self.set(CPE2_3_BASE.KEY_EDITION, CPE2_3_WFN._decode(ed))
+        self.set(CPE2_3_BASE.KEY_SW_EDITION, CPE2_3_WFN._decode(sw_ed))
+        self.set(CPE2_3_BASE.KEY_TARGET_SW, CPE2_3_WFN._decode(t_sw))
+        self.set(CPE2_3_BASE.KEY_TARGET_HW, CPE2_3_WFN._decode(t_hw))
+        self.set(CPE2_3_BASE.KEY_OTHER, CPE2_3_WFN._decode(oth))
 
     def bind_to_uri(self):
         """
@@ -624,13 +780,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
                 # Call the pack() helper function to compute the proper
                 # binding for the edition element
 
-                ed = CPE2_3_BASE._bind_value_for_uri(self.getEdition())
-                sw_ed = CPE2_3_BASE._bind_value_for_uri(self.getSw_edition())
-                t_sw = CPE2_3_BASE._bind_value_for_uri(self.getTarget_sw())
-                t_hw = CPE2_3_BASE._bind_value_for_uri(self.getTarget_hw())
-                oth = CPE2_3_BASE._bind_value_for_uri(self.getOther())
-
-                v = CPE2_3_BASE._pack(ed, sw_ed, t_sw, t_hw, oth)
+                v = CPE2_3_BASE._pack()
             else:
                 # Get the value for a in self, then bind to a string
                 # for inclusion in the URI.
@@ -642,6 +792,112 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
         # Return the URI string, with trailing colons trimmed
         return CPE2_3_WFN._trim(uri)
+
+    @classmethod
+    def unbind_uri(cls, cpe2_2):
+        """
+        Returns an object WFN associated to binding style URI of
+        input version 2.2 CPE object.
+
+        The procedure for unbinding a URI is straightforward:
+            1. Loop over the seven attributes corresponding to the seven
+            CPE v2.2 components, performing steps 2 through 7.
+
+            2. For URI components 1-5 and 7, decode the string and set the
+            corresponding WFN attribute value. Decoding entails: converting
+            sole "" to ANY, sole "-" to NA, adding quoting to embedded periods
+            and hyphens, and decoding percent-encoded forms.
+
+            3. The edition component is "unpacked" if a leading tilde indicates
+            it contains a packed collection of five attribute values.
+
+        - TEST: legacy edition and language attributes are unbound to the
+          logical value ANY.
+        >>> uri = 'cpe:/a:microsoft:internet_explorer:8.0.6001:beta'
+        >>> cpe2_2 = CPE2_3_URI(uri)
+        >>> wfn = CPE2_3_WFN.unbind_uri(cpe2_2)
+        >>> wfn.get_wfn_string()
+        wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.0\.6001",update="beta",edition=ANY, language=ANY]
+
+        - TEST: two percent-encoded characters are unbound with added quoting.
+          Although the percent-encoded characters are the same as the special
+          characters, the added quoting blocks their interpretation in the WFN.
+        >>> uri = 'cpe:/a:microsoft:internet_explorer:8.%2a:sp%3f'
+        >>> CPE2_2 = CPE2_3_URI(uri)
+        >>> wfn = CPE2_3_WFN.unbind_uri(cpe2_2)
+        >>> wfn.get_wfn_string()
+        wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.\*",update="sp\?",edition=ANY,language=ANY]
+
+        - TEST: two percent-encoded special characters are unbound without
+          quoting
+        >>> uri = 'cpe:/a:microsoft:internet_explorer:8.%02:sp%01'
+        >>> CPE2_2 = CPE2_3_URI(uri)
+        >>> wfn = CPE2_3_WFN.unbind_uri(cpe2_2)
+        >>> wfn.get_wfn_string()
+        wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.*",update="sp?",edition=ANY,language=ANY]
+        
+        - TEST: legacy edition attribute as well as the four extended attributes
+          are unpacked from the edition component of the URI
+        >>> uri = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
+        >>> CPE2_2 = CPE2_3_URI(uri)
+        >>> wfn = CPE2_3_WFN.unbind_uri(cpe2_2)
+        >>> wfn.get_wfn_string()
+        wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\.4\.0\.1570", update=ANY, edition=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY,language=ANY]
+
+        - TEST: the lone hyphen in the update component is unbound to the
+          logical value NA, and all the other blanks embedded in the packed
+          edition component unbind to ANY, with only the target_sw attribute
+          actually specified.
+        >>> uri = 'cpe:/a:hp:openview_network_manager:7.51:-:~~~linux~'
+        >>> CPE2_2 = CPE2_3_URI(uri)
+        >>> wfn = CPE2_3_WFN.unbind_uri(cpe2_2)
+        >>> wfn.get_wfn_string()
+        wfn:[part="a",vendor="hp",product="openview_network_manager", version="7\.51",update=NA,edition=ANY,sw_edition=ANY, target_sw="linux",target_HW=ANY,other=ANY,language=ANY]
+
+        - TEST: An error is raised when this URI is unbound, because it contains
+          an illegal percent-encoded form, "%07".
+        >>> uri = 'cpe:/a:foo%5cbar:big%24money_2010%07:::~~special~ipod_touch~80gb~'
+        >>> CPE2_2 = CPE2_3_URI(uri)
+        >>> wfn = CPE2_3_WFN.unbind_uri(cpe2_2)
+        error
+
+        - TEST: both the tildes (unencoded as well as percent-encoded) are
+          handled: both are quoted in the WFN. The original v2.2 URI syntax
+          allows tildes to appear without encoding, but the preferred URI syntax
+          is for tildes to be encoded like any other printable non-alphanumeric
+          character.
+        >>> uri = 'cpe:/a:foo~bar:big%7emoney_2010'
+        >>> CPE2_2 = CPE2_3_URI(uri)
+        >>> wfn = CPE2_3_WFN.unbind_uri(cpe2_2)
+        wfn:[part="a",vendor="foo\~bar",product="big\~money_2010", version=ANY,update=ANY,edition=ANY,language=ANY]
+
+        - TEST: An error is raised when this URI is unbound, because it contains
+          a special character ("%02") embedded within a value string.
+        >>> uri = 'cpe:/a:foo:bar:12.%02.1234'
+        >>> CPE2_2 = CPE2_3_URI(uri)
+        >>> wfn = CPE2_3_WFN.unbind_uri(cpe2_2)
+        error
+        """
+
+        # Initialize the empty WFN
+        wfn = CPE2_3_WFN()
+
+        for i in range(0, 7):
+            # Get the i'th component of uri
+            v = cpe2_2[i]
+            comp_key = CPE2_3_BASE.uri_order_parts_dict[i]
+
+            # Special handling for edition component
+            if comp_key == CPE2_3_BASE.KEY_EDITION:
+
+                # Unpack edition if needed
+                if (v != "" and v != "-" and v[0:0] == "~"):
+
+                    # We have five values packed together here
+                    CPE2_3_WFN._unpack(v, wfn)
+
+            #unbind the parsed string
+            wfn.set(comp_key, CPE2_3_WFN._decode(v))
 
     def isHardware(self):
         """
@@ -670,8 +926,8 @@ class CPE2_3_WFN(CPE2_3_BASE):
         type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
         isHW = type_value == CPE2_3_BASE.KEY_PART_HW
-        isEmpty = type_value == CPE2_3_WFN.VALUE_NULL
-        isAny = type_value == CPE2_3_WFN.VALUE_ANY
+        isEmpty = type_value == CPE2_3_WFN.VALUE_INT_NULL
+        isAny = type_value == CPE2_3_WFN.VALUE_INT_ANY
 
         return (isHW or isEmpty or isAny)
 
@@ -702,8 +958,8 @@ class CPE2_3_WFN(CPE2_3_BASE):
         type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
         isOS = type_value == CPE2_3_BASE.KEY_PART_OS
-        isEmpty = type_value == CPE2_3_WFN.VALUE_NULL
-        isAny = type_value == CPE2_3_WFN.VALUE_ANY
+        isEmpty = type_value == CPE2_3_WFN.VALUE_INT_NULL
+        isAny = type_value == CPE2_3_WFN.VALUE_INT_ANY
 
         return (isOS or isEmpty or isAny)
 
@@ -734,8 +990,8 @@ class CPE2_3_WFN(CPE2_3_BASE):
         type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
         isApp = type_value == CPE2_3_BASE.KEY_PART_APP
-        isEmpty = type_value == CPE2_3_WFN.VALUE_NULL
-        isAny = type_value == CPE2_3_WFN.VALUE_ANY
+        isEmpty = type_value == CPE2_3_WFN.VALUE_INT_NULL
+        isAny = type_value == CPE2_3_WFN.VALUE_INT_ANY
 
         return (isApp or isEmpty or isAny)
 
