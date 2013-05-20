@@ -17,9 +17,10 @@ Description: Implementation of CPE language matching algorithm
 
 
 from cpe1_1 import CPE1_1
-from cpe1_1 import CPESet1_1
+from cpeset1_1 import CPESet1_1
+
 from xml.dom import minidom
-import types
+import re
 
 
 class CPELanguage1_1(object):
@@ -35,12 +36,14 @@ class CPELanguage1_1(object):
         """
 
         self.expression = expression
-        if isinstance(self.expression, types.StringTypes):
+
+        xml_rxc = re.compile("^\<\?xml")
+        if xml_rxc.match(self.expression) is None:
             # Parse an XML file by name (filepath)
-            self.document = minidom.parseString(self.expression)
+            self.document = minidom.parse(self.expression)
         else:
             # Parse an XML stored in a string
-            self.document = minidom.parse(self.expression)
+            self.document = minidom.parseString(self.expression)
 
     def __repr__(self):
         return self.expression
@@ -62,13 +65,24 @@ class CPELanguage1_1(object):
               against cpeset, False otherwise.
         """
 
+        CPE_LIST_TAG = "cpe-list"
+        CPE_ITEM_TAG = "cpe-item"
+
         if cpel_dom is None:
             cpel_dom = self.document
-        if cpel_dom.nodeName == '#document' or cpel_dom.nodeName == 'cpe-list':
+
+        if cpel_dom.nodeName == '#document' or cpel_dom.nodeName == CPE_LIST_TAG:
             for node in cpel_dom.childNodes:
-                if node.nodeName == 'cpe-item':
-                    return self.language_match(cpeset, node)
-        elif cpel_dom.nodeName == 'cpe-item':
+                answer = False
+                if node.nodeName == CPE_LIST_TAG:
+                    answer = self.language_match(cpeset, node)
+                if node.nodeName == CPE_ITEM_TAG:
+                    answer = self.language_match(cpeset, node)
+                if answer:
+                    break
+            return answer
+
+        elif cpel_dom.nodeName == CPE_ITEM_TAG:
             cpename = cpel_dom.getAttribute('name')
             c = CPE1_1(cpename)
             return cpeset.name_match(c)
@@ -78,37 +92,36 @@ class CPELanguage1_1(object):
 if __name__ == "__main__":
 
     document = """\
-        <?xml version="1.0">
-        <cpe-list xmlns="http://cpe.mitre.org/XMLSchema/cpe/1.0"
-                  xmlns:cpe="http://cpe.mitre.org/XMLSchema/cpe/1.0">
-            <cpe-item name="cpe://redhat:enterprise_linux:3">
-                <title>Red Hat Enterprise Linux 3</title>
-            </cpe-item>
-            <cpe-item name="cpe://sun:sunos:5.8">
-                <title>Sun Microsystems SunOS 5.8</title>
-                <notes>
-                    <note>Also known as Solaris 8</note>
-                </notes>
-            </cpe-item>
-            <cpe-item name="cpe://microsoft:windows:2003">
-                <titleMicrosoft Windows Server 2003></title>
-                <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">oval:org.mitre.oval:def:128</check>
-            </cpe-item>
-            <cpe-item name="cpe:/intel:ia-64:itanium">
-                <title>Intel Itanium (IA-64)</title>
-            </cpe-item>
-        </cpe-list>
+<?xml version="1.0" encoding="UTF-8"?>
+<cpe-list xmlns="http://cpe.mitre.org/XMLSchema/cpe/1.0">
+    <cpe-item name="cpe://redhat:enterprise_linux:3">
+        <title>Red Hat Enterprise Linux 3</title>
+    </cpe-item>
+    <cpe-item name="cpe://sun:sunos:5.8">
+        <title>Sun Microsystems SunOS 5.8</title>
+        <notes>
+            <note>Also known as Solaris 8</note>
+        </notes>
+    </cpe-item>
+    <cpe-item name="cpe://microsoft:windows:2003">
+        <title>Microsoft Windows Server 2003></title>
+        <check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">oval:org.mitre.oval:def:128</check>
+    </cpe-item>
+    <cpe-item name="cpe:/intel:ia-64:itanium">
+        <title>Intel Itanium (IA-64)</title>
+    </cpe-item>
+</cpe-list>
     """
 
-    c1 = CPE1_1('cpe://microsoft:windows:2003')
-    c2 = CPE1_1('cpe:/intel:ia-64:itanium:xp')
+    c1 = CPE1_1('cpe://microsoft:windows:20033')
+    c2 = CPE1_1('cpe:/intel:ia-64:itaniumi')
 
     s = CPESet1_1()
     s.append(c1)
     s.append(c2)
 
     lang = CPELanguage1_1(document)
-    print lang.languag_matching(s)
+    print lang.language_match(s)
 
 #    import doctest
 #    doctest.testmod()

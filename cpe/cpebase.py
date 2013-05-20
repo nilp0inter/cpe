@@ -17,12 +17,13 @@ class CPEBASE(object):
     all CPE specification versions.
     """
 
-    def __init__(self):
+    def __init__(self, cpe_str):
         """
         Creates a dictionary to store CPE elements.
         """
 
         self.cpe_dict = {}
+        self.str = cpe_str
 
     def __str__(self):
         """
@@ -32,5 +33,5 @@ class CPEBASE(object):
         pp = pprint.PrettyPrinter(indent=4, width=80)
 
         return "CPE %s => %s\n\n%s\n" % (self.VERSION,
-                                         self.uri,
+                                         self.str,
                                          pp.pformat(self.cpe_dict))

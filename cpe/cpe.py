@@ -8,8 +8,16 @@ Date: 17-04-2013
 Description: TODO.
 '''
 
+from CPE1_1.cpe1_1 import CPE1_1
+from CPE2_2.cpe2_2 import CPE2_2
+from CPE2_3.cpe2_3 import CPE2_3
+
 
 class CPE(object):
+    """
+    TODO
+    """
+
     cpe_versions = {
         '1.1': CPE1_1,
         '2.2': CPE2_2,

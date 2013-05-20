@@ -130,19 +130,19 @@ class CPE2_2(CPEBASE):
         6: KEY_LANGUAGE
     }
 
-    def __init__(self, cpe_uri):
+    def __init__(self, cpe_str):
         """
         Checks that a CPE name defined with URI style is valid and,
         if so, stores the components in a dictionary.
         """
 
-        CPEBASE.__init__(self)
+        CPEBASE.__init__(self, cpe_str)
 
         # Store CPE identifier URI:
         #     CPE names are case-insensitive.
         #     To reduce potential for confusion,
         #     all CPE Names should be written in lowercase
-        self.uri = cpe_uri.lower()
+        self.uri = cpe_str.lower()
 
         self._validate_uri()
 
