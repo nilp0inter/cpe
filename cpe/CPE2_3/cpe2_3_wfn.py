@@ -76,15 +76,13 @@ class CPE2_3_WFN(CPE2_3_BASE):
     TypeError: Malformed CPE, vendor value is invalid
     """
 
-    ALPHA = "a-zA-Z"
-    DIGIT = "\d"
-
+    VALUE_NULL = ""
     VALUE_ANY_VALUE = "ANY"
     VALUE_NOT_APPLICABLE = "NA"
 
-    VALUE_INT_NULL = 0
-    VALUE_INT_ANY = 1
-    VALUE_INT_NA = 2
+    _VALUE_INT_NULL = 0
+    _VALUE_INT_ANY = 1
+    _VALUE_INT_NA = 2
 
     PCE_ASTERISK = "%02"
     PCE_QUESTION = "%01"
@@ -153,11 +151,11 @@ class CPE2_3_WFN(CPE2_3_BASE):
         "%7e": '\\~'
     }
 
-    wfn_part_keys = set(itertools.chain(CPE2_3_BASE.uri_part_keys,
-                                        CPE2_3_BASE.extend_part_keys))
+    _wfn_part_keys = set(itertools.chain(CPE2_3_BASE.uri_part_keys,
+                                         CPE2_3_BASE.extend_part_keys))
 
-    wfn_order_parts_dict = set(itertools.chain(CPE2_3_BASE.uri_order_parts_dict,
-                                               CPE2_3_BASE.extend_order_parts_dict))
+    _wfn_order_parts_dict = dict(CPE2_3_BASE.uri_order_parts_dict,
+                                 **CPE2_3_BASE.extend_order_parts_dict)
 
     def __init__(self, cpe_str="wfn:[]"):
         """
@@ -194,20 +192,18 @@ class CPE2_3_WFN(CPE2_3_BASE):
         #print "quoted1: %s" % quoted1
         quoted2 = "\\(\\|%s|%s)" % (special, punc_w_dash)
         #print "quoted2: %s" % quoted2
-        unreserved = "[%s%s_]" % (CPE2_3_WFN.ALPHA, CPE2_3_WFN.DIGIT)
+        unreserved = "[%s%s_]" % (CPE2_3_BASE.ALPHA, CPE2_3_BASE.DIGIT)
 
         body1 = "(%s|%s)" % (unreserved, quoted1)
         body2 = "(%s|%s)" % (unreserved, quoted2)
         body = "(%s%s*|%s{2})" % (body1, body2, body2)
-        print body
-        print
 
         spec_chrs = "\?+|\*"
 
         avstring = "(%s|(%s)%s*)(%s)?" % (body, spec_chrs, body2, spec_chrs)
 
-        print avstring
         value_string_pattern = "^%s$" % avstring
+        print value_string_pattern
 
         part_value_rxc = re.compile(value_string_pattern)
 
@@ -220,8 +216,8 @@ class CPE2_3_WFN(CPE2_3_BASE):
         """
 
         # Compilation of regular expression associated with value of CPE part
-        region = "([%s]{2}|[%s]{3})" % (CPE2_3_WFN.ALPHA, CPE2_3_WFN.DIGIT)
-        language = "[%s]{2,3}" % CPE2_3_WFN.ALPHA
+        region = "([%s]{2}|[%s]{3})" % (CPE2_3_BASE.ALPHA, CPE2_3_BASE.DIGIT)
+        language = "[%s]{2,3}" % CPE2_3_BASE.ALPHA
         LANGTAG = "%s(\-%s)?" % (language, region)
 
         value_lang_pattern = "^%s?$" % LANGTAG
@@ -270,7 +266,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
         # #####################
 
         # Compilation of regular expression associated with parts of CPE ID
-        typesys = "%s=(?P<%s>\"(h|o|a)\")?" % (CPE2_3_BASE.KEY_PART, CPE2_3_BASE.KEY_PART)
+        typesys = "(%s=(?P<%s>\"(h|o|a)\"))?" % (CPE2_3_BASE.KEY_PART, CPE2_3_BASE.KEY_PART)
 
         aux_pattern = "%s=(?P<%s>[^\,]+)?"
         vendor = aux_pattern % (CPE2_3_BASE.KEY_VENDOR, CPE2_3_BASE.KEY_VENDOR)
@@ -300,12 +296,9 @@ class CPE2_3_WFN(CPE2_3_BASE):
         parts_pattern += "\]$"
 
         parts_rxc = re.compile(parts_pattern, re.IGNORECASE)
-        print parts_pattern
-        print self.str
 
         # Partitioning of CPE ID
         parts_match = parts_rxc.match(self.str)
-        print parts_match
 
         # Validation of CPE ID parts
         if (parts_match is None):
@@ -313,19 +306,19 @@ class CPE2_3_WFN(CPE2_3_BASE):
             msg += "Error to split CPE ID parts"
             raise TypeError(msg)
 
-        for pk in CPE2_3_WFN.wfn_part_keys:
+        for pk in CPE2_3_WFN._wfn_part_keys:
             value = parts_match.group(pk)
 
             if (value is None):
                 # Attribute not specified
-                value = CPE2_3_WFN. VALUE_INT_NULL
+                value = CPE2_3_WFN._VALUE_INT_NULL
             else:
                 if value.count('"') == 0:
                     # Logical value
                     if (value == CPE2_3_WFN.VALUE_ANY_VALUE):
-                        value = CPE2_3_WFN.VALUE_INT_ANY
+                        value = CPE2_3_WFN._VALUE_INT_ANY
                     elif (value == CPE2_3_WFN.VALUE_NOT_APPLICABLE):
-                        value = CPE2_3_WFN.VALUE_INT_NA
+                        value = CPE2_3_WFN._VALUE_INT_NA
                     else:
                         msg = "Malformed CPE, logical value in %s is invalid" % pk
                         raise ValueError(msg)
@@ -376,8 +369,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
         count = 0
         for k, v in enumerate(self.cpe_dict):
-            print "%s  %s" % (k, v)
-            if v != CPE2_3_WFN.VALUE_INT_NULL:
+            if v != CPE2_3_WFN._VALUE_INT_NULL:
                 count += 1
 
         return count
@@ -392,9 +384,9 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
         if att in self.cpe_dict.keys():
             value = self.cpe_dict[att]
-            if value == CPE2_3_WFN.VALUE_INT_NULL:
+            if value == CPE2_3_WFN._VALUE_INT_NULL:
                 # Attribute not specified in WFN
-                return CPE2_3_WFN.VALUE_ANY
+                return CPE2_3_WFN.VALUE_ANY_VALUE
             else:
                 return value
         else:
@@ -415,12 +407,12 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
         # Check valid value
         if value is not None:
-            if att == CPE2_3_WFN. KEY_LANGUAGE:
+            if att == CPE2_3_WFN.KEY_LANGUAGE:
                 if not CPE2_3_WFN._is_valid_wfn_language(value):
                     msg = "Language value not valid"
                     raise ValueError(msg)
             else:
-                if not CPE2_3_WFN. _is_valid_wfn_value(value):
+                if not CPE2_3_WFN._is_valid_wfn_value(value):
                     msg = "WFN value not valid"
                     raise ValueError(msg)
 
@@ -428,7 +420,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
         if att in self.cpe_dict.keys():
             if value is None:
                 # Del attribute
-                self.cpe_dict[att] = CPE2_3_WFN.VALUE_INT_NULL
+                self.cpe_dict[att] = CPE2_3_WFN._VALUE_INT_NULL
             else:
                 # Replace value
                 self.cpe_dict[att] = value
@@ -438,24 +430,33 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
         return self.get_wfn_string()
 
+    @classmethod
+    def _convert_to_logical_value(cls, v):
+        """
+        Returns the textual logical value associated with the value v.
+        """
+
+        result = v
+
+        if (v == CPE2_3_WFN._VALUE_INT_ANY):
+            result = CPE2_3_WFN.VALUE_ANY_VALUE
+        elif (v == CPE2_3_WFN._VALUE_INT_NA):
+            result = CPE2_3_WFN.VALUE_NOT_APPLICABLE
+
+        return result
+
     def get_wfn_string(self):
         """
         TODO
         """
 
         wfn = "wfn:["
-        for i, k in enumerate(CPE2_3_WFN.wfn_order_parts_dict):
+        for i, k in enumerate(CPE2_3_WFN._wfn_order_parts_dict):
             if k in self.cpe_dict.keys():
                 wfn += k
                 wfn += "="
                 v = self.cpe_dict[k]
-
-                if v == CPE2_3_WFN.VALUE_INT_ANY:
-                    wfn += CPE2_3_WFN.VALUE_ANY
-                elif v == CPE2_3_WFN.VALUE_INT_NA:
-                    wfn += CPE2_3_WFN.VALUE_NA
-                else:
-                    wfn += '"%s", ' % v
+                wfn += '"%s", ' % CPE2_3_WFN._convert_to_logical_value(v)
 
         wfn = wfn[0:len(wfn)-2]
         wfn += "]"
@@ -515,7 +516,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
         False
         """
 
-        alphanum_pattern = "[%s%s-]" % (CPE2_3_WFN.ALPHA, CPE2_3_WFN.DIGIT)
+        alphanum_pattern = "[%s%s-]" % (CPE2_3_BASE.ALPHA, CPE2_3_BASE.DIGIT)
         alphanum_rxc = re.compile(alphanum_pattern)
 
         return alphanum_rxc.match(c) is not None
@@ -544,10 +545,10 @@ class CPE2_3_WFN(CPE2_3_BASE):
         """
 
         if (s == ''):
-            return CPE2_3_WFN.VALUE_ANY
+            return CPE2_3_WFN.VALUE_ANY_VALUE
 
         if (s == '-'):
-            return CPE2_3_WFN.VALUE_NA
+            return CPE2_3_WFN.VALUE_NOT_APPLICABLE
 
         # Start the scanning loop.
         # Normalize: convert all uppercase letters to lowercase first.
@@ -914,23 +915,23 @@ class CPE2_3_WFN(CPE2_3_BASE):
         idx = 0
         while (idx < len(s)):
             c = s[idx, idx]  # get the idx'th character of s
-        if c != "\\":
-            # unquoted characters pass thru unharmed
-            result = "%s%s" % (result, c)
-        else:
-            # Escaped characters are examined
-            nextchr = s[idx + 1, idx + 1]
-
-            if (nextchr == ".") or (nextchr == "-") or (nextchr == "_"):
-                # the period, hyphen and underscore pass unharmed
-                result = "%s%s" % (result, nextchr)
-                idx = idx + 1
+            if c != "\\":
+                # unquoted characters pass thru unharmed
+                result = "%s%s" % (result, c)
             else:
-                # all others retain escaping
-                result = "%s\\%s" % (result, nextchr)
-                idx = idx + 2
-                continue
-            idx = idx + 1
+                # Escaped characters are examined
+                nextchr = s[idx + 1, idx + 1]
+
+                if (nextchr == ".") or (nextchr == "-") or (nextchr == "_"):
+                    # the period, hyphen and underscore pass unharmed
+                    result = "%s%s" % (result, nextchr)
+                    idx = idx + 1
+                else:
+                    # all others retain escaping
+                    result = "%s\\%s" % (result, nextchr)
+                    idx = idx + 2
+                    continue
+                idx = idx + 1
 
         return result
 
@@ -940,9 +941,9 @@ class CPE2_3_WFN(CPE2_3_BASE):
         Convert the value v to its proper string representation for
         insertion into the formatted string.
         """
-        if v == CPE2_3_WFN.VALUE_ANY:
+        if v == CPE2_3_WFN.VALUE_ANY_VALUE:
             return "*"
-        elif v == CPE2_3_WFN.VALUE_NA:
+        elif v == CPE2_3_WFN.VALUE_NOT_APPLICABLE:
             return "-"
         else:
             return CPE2_3_WFN._process_quoted_chars(v)
@@ -1188,6 +1189,63 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
         return uri
 
+    def __getitem__(self, i):
+        """
+        Returns the i'th component name of CPE ID as a string.
+
+        - TEST: existing item
+        >>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+        >>> c = CPE2_3_WFN(wfn)
+        >>> c[0] == 'a'
+        True
+
+        - TEST: existing item
+        >>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+        >>> c = CPE2_3_WFN(wfn)
+        >>> c[6] == "x32"
+        True
+
+        - TEST: not existing valid item
+        >>> wfn = 'wfn:[part="h", vendor="hp", product=ANY, version=NA, target_hw="x32"]'
+        >>> c = CPE2_3_WFN(wfn)
+        >>> c[5]
+        'x32'
+
+        - TEST: not valid item
+        >>> wfn = 'wfn:[part="h", vendor="hp", product=ANY, version=NA, target_hw="x32"]'
+        >>> c = CPE2_3_WFN(wfn)
+        >>> c[10]
+        Traceback (most recent call last):
+          File "<stdin>", line 1, in <module>
+          File "cpe/CPE2_3/cpe2_3_fs.py", line 283, in __getitem__
+            raise KeyError(msg)
+        KeyError: 'index not exists. Possible values: 0-5'
+        """
+
+        total_elems = self.__len__()
+        if i >= total_elems:
+            max_index = len(keys) - 1
+            msg = "index not exists. Possible values: 0-%s" % max_index
+            raise KeyError(msg)
+
+        keys = CPE2_3_WFN._wfn_order_parts_dict.keys()
+        count = 0
+        value = CPE2_3_WFN.VALUE_NULL
+
+        for idx in range(0, len(keys)):
+            part_key = CPE2_3_WFN._wfn_order_parts_dict[idx]
+            value = self.cpe_dict[part_key]
+
+            if value != CPE2_3_WFN._VALUE_INT_NULL:
+                if count == i:
+                    # Found elem
+                    break
+                else:
+                    # Count not null element
+                    count += 1
+            
+        return CPE2_3_WFN._convert_to_logical_value(value)
+
     def isHardware(self):
         """
         Returns True if CPE ID corresponds to hardware elem.
@@ -1211,12 +1269,12 @@ class CPE2_3_WFN(CPE2_3_BASE):
         True
         """
 
-        # Value of part type of CPE ID
-        type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
+        # Value of part of CPE ID
+        part_value = self.getPart()
 
-        isHW = type_value == CPE2_3_BASE.KEY_PART_HW
-        isEmpty = type_value == CPE2_3_WFN.VALUE_INT_NULL
-        isAny = type_value == CPE2_3_WFN.VALUE_INT_ANY
+        isHW = part_value == CPE2_3_BASE.VALUE_PART_HW
+        isEmpty = part_value == CPE2_3_WFN.VALUE_NULL
+        isAny = part_value == CPE2_3_WFN.VALUE_ANY_VALUE
 
         return (isHW or isEmpty or isAny)
 
@@ -1244,11 +1302,11 @@ class CPE2_3_WFN(CPE2_3_BASE):
         """
 
         # Value of part type of CPE ID
-        type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
+        part_value = self.getPart()
 
-        isOS = type_value == CPE2_3_BASE.KEY_PART_OS
-        isEmpty = type_value == CPE2_3_WFN.VALUE_INT_NULL
-        isAny = type_value == CPE2_3_WFN.VALUE_INT_ANY
+        isOS = part_value == CPE2_3_BASE.VALUE_PART_OS
+        isEmpty = part_value == CPE2_3_WFN.VALUE_NULL
+        isAny = part_value == CPE2_3_WFN.VALUE_ANY_VALUE
 
         return (isOS or isEmpty or isAny)
 
@@ -1269,42 +1327,42 @@ class CPE2_3_WFN(CPE2_3_BASE):
         True
 
         - TEST: is application
-        >>> wfn = 'wfn:[part="a"]'
+        >>> wfn = 'wfn:[]'
         >>> c = CPE2_3_WFN(wfn)
-        >>> c.isApplication() == True
+        >>> c.isApplication()
         True
         """
 
         # Value of part type of CPE ID
-        type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
+        part_value = self.getPart()
 
-        isApp = type_value == CPE2_3_BASE.KEY_PART_APP
-        isEmpty = type_value == CPE2_3_WFN.VALUE_INT_NULL
-        isAny = type_value == CPE2_3_WFN.VALUE_INT_ANY
+        isApp = part_value == CPE2_3_BASE.VALUE_PART_APP
+        isEmpty = part_value == CPE2_3_WFN.VALUE_NULL
+        isAny = part_value == CPE2_3_WFN.VALUE_ANY_VALUE
 
         return (isApp or isEmpty or isAny)
 
-    def getType(self):
+    def getPart(self):
         """
         Returns the part type of CPE ID.
 
         - TEST: is application
         >>> wfn = 'wfn:[part="a"]'
         >>> c = CPE2_3_WFN(wfn)
-        >>> c.getType()
+        >>> c.getPart()
         'a'
 
         - TEST: is operating system
         >>> wfn = 'wfn:[part="o"]'
         >>> c = CPE2_3_WFN(wfn)
-        >>> c.getType()
+        >>> c.getPart()
         'o'
 
         - TEST: is hardware
-        >>> wfn = 'wfn:[part="h"]'
+        >>> wfn = 'wfn:[]'
         >>> c = CPE2_3_WFN(wfn)
-        >>> c.getType()
-        'h'
+        >>> c.getPart()
+        ''
         """
 
         return self.cpe_dict[CPE2_3_BASE.KEY_PART]
@@ -1476,17 +1534,17 @@ class CPE2_3_WFN(CPE2_3_BASE):
         False
         """
 
-        eqPart = self.cpe_dict[CPE2_3_BASE.KEY_PART] == cpe.getType()
-        eqVendor = self.cpe_dict[CPE2_3_BASE.KEY_VENDOR] == cpe.getVendor()
-        eqProduct = self.cpe_dict[CPE2_3_BASE.KEY_PRODUCT] == cpe.getProduct()
-        eqVersion = self.cpe_dict[CPE2_3_BASE.KEY_VERSION] == cpe.getVersion()
-        eqUpdate = self.cpe_dict[CPE2_3_BASE.KEY_UPDATE] == cpe.getUpdate()
-        eqEdition = self.cpe_dict[CPE2_3_BASE.KEY_EDITION] == cpe.getEdition()
-        eqLanguage = self.cpe_dict[CPE2_3_BASE.KEY_LANGUAGE] == cpe.getLanguage()
-        eqSw_edition = self.cpe_dict[CPE2_3_BASE.KEY_SW_EDITION] == cpe.getSw_edition()
-        eqTarget_sw = self.cpe_dict[CPE2_3_BASE.KEY_TARGET_SW] == cpe.getTarget_sw()
-        eqTarget_hw = self.cpe_dict[CPE2_3_BASE.KEY_TARGET_HW] == cpe.getTarget_hw()
-        eqOther = self.cpe_dict[CPE2_3_BASE.KEY_OTHER] == cpe.getOther()
+        eqPart = self.getPart() == cpe.getPart()
+        eqVendor = self.getVendor() == cpe.getVendor()
+        eqProduct = self.getProduct() == cpe.getProduct()
+        eqVersion = self.getVersion() == cpe.getVersion()
+        eqUpdate = self.getUpdate() == cpe.getUpdate()
+        eqEdition = self.getEdition() == cpe.getEdition()
+        eqLanguage = self.getLanguage() == cpe.getLanguage()
+        eqSw_edition = self.getSw_edition() == cpe.getSw_edition()
+        eqTarget_sw = self.getTarget_sw() == cpe.getTarget_sw()
+        eqTarget_hw = self.getTarget_hw() == cpe.getTarget_hw()
+        eqOther = self.getOther() == cpe.getOther()
 
         return (eqPart and eqVendor and eqProduct and eqVersion and
                 eqUpdate and eqEdition and eqLanguage and eqSw_edition and

@@ -93,9 +93,9 @@ class CPE2_3_URI(CPE2_3_BASE):
     >>> CPE2_3_URI(uri)
     Traceback (most recent call last):
       File "<stdin>", line 1, in <module>
-      File "cpe2_3_uri.py", line 121, in __init__
+      File "cpe2_3_uri.py", line 120, in __init__
         self._validate_uri()
-      File "cpe2_3_uri.py", line 241, in _validate_uri
+      File "cpe2_3_uri.py", line 240, in _validate_uri
         raise TypeError(msg)
     TypeError: Malformed CPE, vendor value is invalid
     """
@@ -347,7 +347,7 @@ class CPE2_3_URI(CPE2_3_BASE):
         # Value of part type of CPE ID
         type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
-        isHW = type_value == CPE2_3_BASE.KEY_PART_HW
+        isHW = type_value == CPE2_3_BASE.VALUE_PART_HW
         isEmpty = type_value == ""
 
         return (isHW or isEmpty)
@@ -378,7 +378,7 @@ class CPE2_3_URI(CPE2_3_BASE):
         # Value of part type of CPE ID
         type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
-        isOS = type_value == CPE2_3_BASE.KEY_PART_OS
+        isOS = type_value == CPE2_3_BASE.VALUE_PART_OS
         isEmpty = type_value == ""
 
         return (isOS or isEmpty)
@@ -409,7 +409,7 @@ class CPE2_3_URI(CPE2_3_BASE):
         # Value of part type of CPE ID
         type_value = self.cpe_dict[CPE2_3_BASE.KEY_PART]
 
-        isApp = type_value == CPE2_3_BASE.KEY_PART_APP
+        isApp = type_value == CPE2_3_BASE.VALUE_PART_APP
         isEmpty = (type_value == "") or (type_value is None)
 
         return (isApp or isEmpty)

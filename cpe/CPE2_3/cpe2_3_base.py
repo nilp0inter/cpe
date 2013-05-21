@@ -25,6 +25,10 @@ class CPE2_3_BASE(CPEBASE):
     STYLE_WFN = "WFN"
     STYLE_FS = "formatted string"
 
+    # Constants associated with regular expressions
+    ALPHA = "a-zA-Z"
+    DIGIT = "\d"
+
     # Constants associated with dictionary keys that
     # store CPE name elements
     KEY_PART = "part"
@@ -39,9 +43,9 @@ class CPE2_3_BASE(CPEBASE):
     KEY_TARGET_HW = "target_hw"
     KEY_OTHER = "other"
 
-    KEY_PART_HW = "h"
-    KEY_PART_OS = "o"
-    KEY_PART_APP = "a"
+    VALUE_PART_HW = "h"
+    VALUE_PART_OS = "o"
+    VALUE_PART_APP = "a"
 
     # List of part keys of binding style URI
     uri_part_keys = [KEY_PART,
