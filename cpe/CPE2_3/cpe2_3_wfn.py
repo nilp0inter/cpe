@@ -189,9 +189,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
         special = "\?\*"
         quoted1 = "\\(\\|%s|%s)" % (special, punc_no_dash)
-        #print "quoted1: %s" % quoted1
         quoted2 = "\\(\\|%s|%s)" % (special, punc_w_dash)
-        #print "quoted2: %s" % quoted2
         unreserved = "[%s%s_]" % (CPE2_3_BASE.ALPHA, CPE2_3_BASE.DIGIT)
 
         body1 = "(%s|%s)" % (unreserved, quoted1)
@@ -265,80 +263,90 @@ class CPE2_3_WFN(CPE2_3_BASE):
         #  CHECK CPE ID PARTS
         # #####################
 
-        # Compilation of regular expression associated with parts of CPE ID
-        typesys = "(%s=(?P<%s>\"(h|o|a)\"))?" % (CPE2_3_BASE.KEY_PART, CPE2_3_BASE.KEY_PART)
+        # Check prefix and initial bracket of WFN
+        if self.str[0:5] != "wfn:[":
+            msg = "Malformed CPE: WFN prefix not found"
+            raise ValueError(msg)
 
-        aux_pattern = "%s=(?P<%s>[^\,]+)?"
-        vendor = aux_pattern % (CPE2_3_BASE.KEY_VENDOR, CPE2_3_BASE.KEY_VENDOR)
-        product = aux_pattern % (CPE2_3_BASE.KEY_PRODUCT, CPE2_3_BASE.KEY_PRODUCT)
-        version = aux_pattern % (CPE2_3_BASE.KEY_VERSION, CPE2_3_BASE.KEY_VERSION)
-        update = aux_pattern % (CPE2_3_BASE.KEY_UPDATE, CPE2_3_BASE.KEY_UPDATE)
-        edition = aux_pattern % (CPE2_3_BASE.KEY_EDITION, CPE2_3_BASE.KEY_EDITION)
-        language = aux_pattern % (CPE2_3_BASE.KEY_LANGUAGE, CPE2_3_BASE.KEY_LANGUAGE)
-        sw_edition = aux_pattern % (CPE2_3_BASE.KEY_SW_EDITION, CPE2_3_BASE.KEY_SW_EDITION)
-        target_sw = aux_pattern % (CPE2_3_BASE.KEY_TARGET_SW, CPE2_3_BASE.KEY_TARGET_SW)
-        target_hw = aux_pattern % (CPE2_3_BASE.KEY_TARGET_HW, CPE2_3_BASE.KEY_TARGET_HW)
-        other = aux_pattern % (CPE2_3_BASE.KEY_OTHER, CPE2_3_BASE.KEY_OTHER)
+        # Check final backet
+        if self.str[-1:] != "]":
+            msg = "Malformed CPE: final bracket of WFN not found"
+            raise ValueError(msg)
 
-        parts_pattern = "^wfn:\[%s" % typesys
+        content = self.str[5:]
 
-        aux_parts_pattern = "(\, %s)?"
-        parts_pattern += aux_parts_pattern % vendor
-        parts_pattern += aux_parts_pattern % product
-        parts_pattern += aux_parts_pattern % version
-        parts_pattern += aux_parts_pattern % update
-        parts_pattern += aux_parts_pattern % edition
-        parts_pattern += aux_parts_pattern % language
-        parts_pattern += aux_parts_pattern % sw_edition
-        parts_pattern += aux_parts_pattern % target_sw
-        parts_pattern += aux_parts_pattern % target_hw
-        parts_pattern += aux_parts_pattern % other
-        parts_pattern += "\]$"
+        # Split WFN in components
+        list_component = content.split(", ")
 
-        parts_rxc = re.compile(parts_pattern, re.IGNORECASE)
+        for e in list_component:
+            # Whitespace not valid in component names and values
+            if e.find(" ") != -1:
+                msg = "Malformed CPE: WFN with too many whitespaces"
+                raise ValueError(msg)
 
-        # Partitioning of CPE ID
-        parts_match = parts_rxc.match(self.str)
+            # Split pair attribute-value
+            pair = e.split("=")
+            att_name = pair[0]
+            att_value = pair[1]
 
-        # Validation of CPE ID parts
-        if (parts_match is None):
-            msg = "Input identifier is not a valid CPE ID: "
-            msg += "Error to split CPE ID parts"
-            raise TypeError(msg)
+            # Check valid attribute name
+            if att_name not in CPE2_3_WFN._wfn_part_keys:
+                msg = "Malformed CPE: attribute name '%s' not valid" % att_name
+                raise ValueError(msg)
 
-        for pk in CPE2_3_WFN._wfn_part_keys:
-            value = parts_match.group(pk)
-
-            if (value is None):
-                # Attribute not specified
-                value = CPE2_3_WFN._VALUE_INT_NULL
-            else:
-                if value.count('"') == 0:
-                    # Logical value
-                    if (value == CPE2_3_WFN.VALUE_ANY_VALUE):
-                        value = CPE2_3_WFN._VALUE_INT_ANY
-                    elif (value == CPE2_3_WFN.VALUE_NOT_APPLICABLE):
-                        value = CPE2_3_WFN._VALUE_INT_NA
-                    else:
-                        msg = "Malformed CPE, logical value in %s is invalid" % pk
-                        raise ValueError(msg)
-
-                elif value.count('"') == 2:
-                    # String value
-                    if pk == CPE2_3_BASE.KEY_LANGUAGE:
-                        if not CPE2_3_WFN._is_valid_wfn_language(value):
-                            msg = "Malformed CPE, language value is invalid"
-                            raise TypeError(msg)
-                    else:
-                        if not CPE2_3_WFN._is_valid_wfn_value(value):
-                            msg = "Malformed CPE, %s value is invalid " % pk
-                            raise ValueError(msg)
+            # Check valid attribute value
+            # "e" is used instead of "att_value" to retain the difference between
+            # double quotes and logical values
+            if e.count('"') == 0:
+                # Logical value
+                if (att_value == CPE2_3_WFN.VALUE_ANY_VALUE):
+                    att_value = CPE2_3_WFN._VALUE_INT_ANY
+                elif (att_value == CPE2_3_WFN.VALUE_NOT_APPLICABLE):
+                    att_value = CPE2_3_WFN._VALUE_INT_NA
                 else:
-                    # Bad value
-                    msg = "Malformed CPE, %s value is invalid" % value
+                    msg = "Malformed CPE: logical value %s is invalid" % att_value
                     raise ValueError(msg)
 
-            self.cpe_dict[pk] = value
+            elif e.count('"') == 2:
+                # String value
+
+                # Del double quotes
+                att_value = att_value[1:-1]
+
+                if att_name == CPE2_3_BASE.KEY_PART:
+                    # Check part (system type) value
+                    part_pattern = "^[hao]$"
+                    part_rxc = re.compile(part_pattern)
+                    part_match = part_rxc.match(att_value)
+
+                    if part_match is None:
+                        msg = "Malformed CPE: part value '%s' is invalid" % att_value
+                        raise ValueError(msg)
+
+                # Check language value
+                if att_name == CPE2_3_BASE.KEY_LANGUAGE:
+                    if not CPE2_3_WFN._is_valid_wfn_language(att_value):
+                        msg = "Malformed CPE: language value is invalid"
+                        raise TypeError(msg)
+                else:
+                    if not CPE2_3_WFN._is_valid_wfn_value(att_value):
+                        msg = "Malformed CPE: %s value is invalid " % att_name
+                        raise ValueError(msg)
+            else:
+                # Bad value
+                msg = "Malformed CPE: %s value is invalid" % att_name
+                raise ValueError(msg)
+
+            if att_name in self.cpe_dict:
+                msg = "Malformed CPE: %s attribute repeated" % att_name
+                raise ValueError(msg)
+
+            self.cpe_dict[att_name] = att_value
+
+        # Sets attributes unfilled
+        for i, name in enumerate(CPE2_3_WFN._wfn_order_parts_dict):
+            if name not in self.cpe_dict:
+                self.cpe_dict[name] = CPE2_3_WFN._VALUE_INT_NULL
 
         return self.cpe_dict
 
@@ -1224,7 +1232,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
 
         total_elems = self.__len__()
         if i >= total_elems:
-            max_index = len(keys) - 1
+            max_index = len(total_elems) - 1
             msg = "index not exists. Possible values: 0-%s" % max_index
             raise KeyError(msg)
 
@@ -1243,7 +1251,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
                 else:
                     # Count not null element
                     count += 1
-            
+
         return CPE2_3_WFN._convert_to_logical_value(value)
 
     def isHardware(self):
