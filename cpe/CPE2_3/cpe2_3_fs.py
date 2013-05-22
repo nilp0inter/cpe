@@ -11,6 +11,7 @@ Description: Module for the treatment of identifiers in accordance with
 '''
 
 
+from cpe2_3 import CPE2_3
 from cpe2_3_base import CPE2_3_BASE
 
 import re
@@ -56,6 +57,42 @@ class CPE2_3_FS(CPE2_3_BASE):
     >>> fs = 'cpe:2.3:a:hp:insight_diagnostics:8\.*:es?:*:-:-:x32~:*:*'
     >>> CPE2_3_FS(fs) # doctest: +ELLIPSIS
     <__main__.CPE2_3_FS object at 0x...>
+
+    - TEST: An unquoted question mark MAY be used at the beginning
+    and/or the end of an attribute-value string
+    >>> fs = 'cpe:2.3:a:hp:insight_diagnostics:*8\.*:?es?:*:-:-:x32~:*:*'
+    >>> CPE2_3_FS(fs) # doctest: +ELLIPSIS
+    <__main__.CPE2_3_FS object at 0x...>
+
+    - TEST: A contiguous sequence of unquoted question marks MAY appear
+     at the beginning and/or the end of an attribute-value string
+    >>> fs = 'cpe:2.3:a:???hp**:insight_diagnostics:8\.*:es:*:-:-:x32~:*:*'
+    >>> CPE2_3_FS(fs) # doctest: +ELLIPSIS
+    <__main__.CPE2_3_FS object at 0x...>
+
+    - TEST: Unquoted question marks and asterisks MAY appear
+    in the same attribute-value string
+    >>> fs = 'cpe:2.3:a:hp:insight_?diagnostics:8\.*:es:*:-:-:x32~:*:*'
+    >>> CPE2_3_FS(fs) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "cpe2_3_uri.py", line 120, in __init__
+        self._validate_uri()
+      File "cpe2_3_uri.py", line 240, in _validate_uri
+        raise TypeError(msg)
+    TypeError: Malformed CPE, product value is invalid
+
+    - TEST: An unquoted question mark SHALL NOT be used
+    in any other place in an attribute-value string
+    >>> uri = 'cpe:/h:%01%02nvidia'
+    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "cpe2_3_uri.py", line 120, in __init__
+        self._validate_uri()
+      File "cpe2_3_uri.py", line 240, in _validate_uri
+        raise TypeError(msg)
+    TypeError: Malformed CPE, vendor value is invalid
     """
 
     # Var associated with regular expressions
@@ -77,6 +114,8 @@ class CPE2_3_FS(CPE2_3_BASE):
 
     _fs_order_parts_dict = dict(CPE2_3_BASE.uri_order_parts_dict,
                                 **CPE2_3_BASE.extend_order_parts_dict)
+
+    STYLE = CPE2_3.STYLE_FS
 
     def __init__(self, cpe_str="cpe:2.3:::::::::::"):
         """
@@ -620,7 +659,7 @@ class CPE2_3_FS(CPE2_3_BASE):
 if __name__ == "__main__":
 #    fs = 'cpe:2.3:*:*:*:*:*:*:*:*:*:*:*'
 #    fs = 'cpe:2.3:a:foo\\bar:big\$money_2010:*:*:*:es-es:ipod_touch:80gb:*:*'
-#    fs = 'cpe:2.3:a:hp:insight_diagnostics:7\.4\.0\.1570:-:online:-:windows_2003:x64:*:*'
+#    fs = 'cpe:2.3:a:hp:insight:7\.4\.0\.1570:-:online:-:windows_2003:x64:*:*'
 #
 #    ce = CPE2_3_FS(fs)
 #    print("")

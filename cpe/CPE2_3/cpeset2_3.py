@@ -82,9 +82,9 @@ class CPESet2_3(object):
         - TEST: set with three CPE elements and one repeated
         >>> wfn1 = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
         >>> wfn1 = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
-        >>> c1 = CPE2_3(wfn1)
-        >>> c2 = CPE2_3(wfn2)
-        >>> c3 = CPE2_3(wfn2)
+        >>> c1 = CPE2_3_WFN(wfn1)
+        >>> c2 = CPE2_3_WFN(wfn2)
+        >>> c3 = CPE2_3_WFN(wfn2)
         >>> s = CPESet2_3()
         >>> s.append(c1)
         >>> s.append(c2)
@@ -510,94 +510,84 @@ class CPESet2_3(object):
 #
 #        return result
 
-    def name_match(self, cpe):
-        pass
-        #"""
-        #Accepts a set of CPE Names K and a candidate CPE Name X. It returns
-        #'True' if X matches any member of K, and 'False' otherwise.
+    def name_match(self, wfn):
+        """
+        Accepts a set of CPE Names K and a candidate CPE Name X. It returns
+        'True' if X matches any member of K, and 'False' otherwise.
 
-        #Inputs:
-        #    - self: A list of m CPE Names K = {K1, K2, …, Km}.
-        #    - cpe: A candidate CPE Name X.
-        #Output:
-        #    - True if X matches K, False otherwise.
+        Inputs:
+            - self: A list of m CPE Names K = {K1, K2, …, Km}.
+            - cpe: A candidate CPE Name X.
+        Output:
+            - True if X matches K, False otherwise.
 
-        #- TEST: matching (identical cpe in set)
-        #>>> uri1 = 'cpe:/o:redhat:enterprise_linux:3'
-        #>>> uri2 = 'cpe:/o:sun:sunos:5.8'
-        #>>> uri3 = 'cpe:/o:microsoft:windows_2003'
-        #>>> c1 = CPE2_3(uri1)
-        #>>> c2 = CPE2_3(uri2)
-        #>>> m = CPE2_3(uri3)
-        #>>> s = CPESet2_3()
-        #>>> s.append(c1)
-        #>>> s.append(c2)
-        #>>> s.append(m)
-        #>>> s.name_match(m)
-        #True
+        - TEST: matching (identical cpe in set)
+        >>> wfn1 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\*", update="beta", edition=ANY]'
 
-        #- test: matching with any values (cpe in set)
-        #>>> uri1 = 'cpe:/o:redhat:enterprise_linux:3'
-        #>>> uri2 = 'cpe:/o:sun:sunos:5.8'
-        #>>> uri3 = 'cpe:/o:sun'
-        #>>> c1 = CPE2_3(uri1)
-        #>>> c2 = CPE2_3(uri2)
-        #>>> m = CPE2_3(uri3)
-        #>>> s = CPESet2_3()
-        #>>> s.append(c1)
-        #>>> s.append(c2)
-        #>>> s.name_match(m)
-        #True
+        >>> wfn2 = 'wfn:[part="o", vendor="microsoft", product="windows", version="8\.0*", update="sp2", edition=ANY]'
 
-        #- test: not matching
-        #>>> uri1 = 'cpe:/o:redhat:enterprise_linux:3'
-        #>>> uri2 = 'cpe:/o:sun:sunos:5.8'
-        #>>> uri3 = 'cpe:/a:microsoft:ie:9'
-        #>>> c1 = CPE2_3(uri1)
-        #>>> c2 = CPE2_3(uri2)
-        #>>> m = CPE2_3(uri3)
-        #>>> s = CPESet2_3()
-        #>>> s.append(c1)
-        #>>> s.append(c2)
-        #>>> s.name_match(m)
-        #False
-        #"""
+        >>> c1 = CPE2_3_WFN(wfn1)
+        >>> c2 = CPE2_3_WFN(wfn2)
+        >>> m = CPE2_3_WFN(wfn2)
+        >>> s = CPESet2_3()
+        >>> s.append(c1)
+        >>> s.append(c2)
+        >>> s.name_match(m)
+        True
 
-        #match = False
+        - test: matching with any values (cpe in set)
+        >>> wfn1 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\*", update="beta", edition=ANY]'
 
-        #for n in self.K:
-        #    if (len(n) >= len(cpe)):
-        #        for c in range(0, len(cpe)):
-        #            key = CPE2_3.order_parts_dict[c]
-        #            comp_cpe = cpe.cpe_dict[key]
-        #            comp_n = n.cpe_dict[key]
+        >>> wfn2 = 'wfn:[part="o", vendor="microsoft", product="windows", version="8\.0*", update="sp2", edition=ANY]'
+        >>> wfn3 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001"]'
+        >>> c1 = CPE2_3_WFN(wfn1)
+        >>> c2 = CPE2_3_WFN(wfn2)
+        >>> m = CPE2_3_WFN(wfn3)
+        >>> s = CPESet2_3()
+        >>> s.append(c1)
+        >>> s.append(c2)
+        >>> s.name_match(m)
+        True
 
-        #            match = ((comp_cpe == comp_n) or
-        #                     (comp_cpe == "") or
-        #                     (comp_cpe is None))
+        - test: not matching
+        >>> wfn1 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\*", update="beta", edition=ANY]'
 
-        #            if not match:
-        #                break
+        >>> wfn2 = 'wfn:[part="o", vendor="microsoft", product="windows", version="8\.0*", update="sp2", edition=ANY]'
+        >>> wfn3 = 'wfn:[part="h", vendor="hp", product="compact"]'
+        >>> c1 = CPE2_3_WFN(uri1)
+        >>> c2 = CPE2_3_WFN(uri2)
+        >>> m = CPE2_3_WFN(uri3)
+        >>> s = CPESet2_3()
+        >>> s.append(c1)
+        >>> s.append(c2)
+        >>> s.name_match(m)
+        False
+        """
 
-        #        if match:
-        #            break
-        #return match
+        for N in self.K:
+            if CPESet2_3.cpe_superset(wfn, N):
+                return True
+        return False
 
 if __name__ == "__main__":
 
-#    uri1 = 'cpe:/o:redhat:enterprise_linux:3'
-#    uri2 = 'cpe:/o:sun:sunos:5.8'
-#    c1 = CPE2_3(uri1)
-#    c2 = CPE2_3(uri2)
-#    s = CPESet2_3()
-#    s.append(c1)
-#    s.append(c2)
-#    uri3 = 'cpe:/a:microsoft:ie:9'
-#    c3 = CPE2_3(uri3)
-#
-#    print(s.__unicode__())
-#    print(c3)
-#    print(s.name_match(c3))
+    #wfn1 = 'wfn:[]'
+    wfn1 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\*", update="beta", edition=ANY]'
 
-    import doctest
-    doctest.testmod()
+    wfn2 = 'wfn:[part="o", vendor="microsoft", product="windows", version="8\.0*", update="sp2", edition=ANY]'
+
+    c1 = CPE2_3_WFN(wfn1)
+    c2 = CPE2_3_WFN(wfn2)
+    s = CPESet2_3()
+    s.append(c1)
+    s.append(c2)
+    wfn3 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001"]'
+
+    c3 = CPE2_3_WFN(wfn3)
+
+    print(s.__unicode__())
+    print(c3)
+    print(s.name_match(c3))
+
+#    import doctest
+#    doctest.testmod()

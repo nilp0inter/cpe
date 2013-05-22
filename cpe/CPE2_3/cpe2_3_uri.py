@@ -10,6 +10,7 @@ Description: Module for the treatment of identifiers in accordance with
              (Common Platform Enumeration).
 '''
 
+from cpe2_3 import CPE2_3
 from cpe2_3_base import CPE2_3_BASE
 
 import re
@@ -88,6 +89,54 @@ class CPE2_3_URI(CPE2_3_BASE):
     >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
     <__main__.CPE2_3_URI object at 0x...>
 
+    - TEST: An unquoted question mark MAY be used at the beginning of
+    an attribute-value string
+    >>> uri = 'cpe:/h:%01nvidia'
+    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
+    <__main__.CPE2_3_URI object at 0x...>
+
+    - TEST: An unquoted question mark MAY be used at the end of
+    an attribute-value string
+    >>> uri = 'cpe:/h:nvidia%01'
+    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
+    <__main__.CPE2_3_URI object at 0x...>
+
+    - TEST: An unquoted question mark MAY be used at the beginning
+    and/or the end of an attribute-value string
+    >>> uri = 'cpe:/h:%01nvidia%01'
+    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
+    <__main__.CPE2_3_URI object at 0x...>
+
+    - TEST: A contiguous sequence of unquoted question marks MAY appear
+     at the beginning and/or the end of an attribute-value string
+    >>> uri = 'cpe:/h:%01%01nvidia%01%01'
+    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
+    <__main__.CPE2_3_URI object at 0x...>
+
+    - TEST: Unquoted question marks and asterisks MAY appear
+    in the same attribute-value string
+    >>> uri = 'cpe:/h:nvi%01dia'
+    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "cpe2_3_uri.py", line 120, in __init__
+        self._validate_uri()
+      File "cpe2_3_uri.py", line 240, in _validate_uri
+        raise TypeError(msg)
+    TypeError: Malformed CPE, vendor value is invalid
+
+    - TEST: An unquoted question mark SHALL NOT be used
+    in any other place in an attribute-value string
+    >>> uri = 'cpe:/h:%01%02nvidia'
+    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "cpe2_3_uri.py", line 120, in __init__
+        self._validate_uri()
+      File "cpe2_3_uri.py", line 240, in _validate_uri
+        raise TypeError(msg)
+    TypeError: Malformed CPE, vendor value is invalid
+
     - TEST: an CPE with special characters
     >>> uri = 'cpe:/h:nvidia.buena_2~~pero_rara:11.0'
     >>> CPE2_3_URI(uri)
@@ -99,6 +148,8 @@ class CPE2_3_URI(CPE2_3_BASE):
         raise TypeError(msg)
     TypeError: Malformed CPE, vendor value is invalid
     """
+
+    STYLE = CPE2_3.STYLE_URI
 
     # Separator of edition part components in CPE uri
     PACKED_EDITION_SEPARATOR = "~"
@@ -521,7 +572,7 @@ class CPE2_3_URI(CPE2_3_BASE):
         False
         """
 
-        return (self.getEdition().find(CPE2_3_URI.PACKED_EDITION_SEPARATOR) > -1)
+        return self.getEdition().find(CPE2_3_URI.PACKED_EDITION_SEPARATOR) > -1
 
     def getEditionElements(self):
         """
@@ -571,13 +622,13 @@ class CPE2_3_URI(CPE2_3_BASE):
         False
         """
 
-        eqPart = self.cpe_dict[CPE2_3_BASE.KEY_PART] == cpe.getType()
-        eqVendor = self.cpe_dict[CPE2_3_BASE.KEY_VENDOR] == cpe.getVendor()
-        eqProduct = self.cpe_dict[CPE2_3_BASE.KEY_PRODUCT] == cpe.getProduct()
-        eqVersion = self.cpe_dict[CPE2_3_BASE.KEY_VERSION] == cpe.getVersion()
-        eqUpdate = self.cpe_dict[CPE2_3_BASE.KEY_UPDATE] == cpe.getUpdate()
-        eqEdition = self.cpe_dict[CPE2_3_BASE.KEY_EDITION] == cpe.getEdition()
-        eqLanguage = self.cpe_dict[CPE2_3_BASE.KEY_LANGUAGE] == cpe.getLanguage()
+        eqPart = self.getType() == cpe.getType()
+        eqVendor = self.getVendor() == cpe.getVendor()
+        eqProduct = self.getProduct() == cpe.getProduct()
+        eqVersion = self.getVersion() == cpe.getVersion()
+        eqUpdate = self.getUpdate() == cpe.getUpdate()
+        eqEdition = self.getEdition() == cpe.getEdition()
+        eqLanguage = self.getLanguage() == cpe.getLanguage()
 
         return (eqPart and eqVendor and eqProduct and eqVersion and
                 eqUpdate and eqEdition and eqLanguage)

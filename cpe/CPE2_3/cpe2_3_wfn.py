@@ -11,6 +11,7 @@ Description: Module for the treatment of identifiers in accordance with
 '''
 
 
+from cpe2_3 import CPE2_3
 from cpe2_3_base import CPE2_3_BASE
 
 import re
@@ -74,15 +75,52 @@ class CPE2_3_WFN(CPE2_3_BASE):
       File "cpe2_3_wfn.py", line 278, in _validate_wfn
         raise TypeError(msg)
     TypeError: Malformed CPE, vendor value is invalid
+
+    - TEST: An unquoted question mark MAY be used at the beginning
+    and/or the end of an attribute-value string
+    >>> wfn = 'wfn:[part="a", vendor="hp", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+    >>> CPE2_3_WFN(wfn) # doctest: +ELLIPSIS
+    <__main__.CPE2_3_WFN object at 0x...>
+
+    - TEST: A contiguous sequence of unquoted question marks MAY appear
+     at the beginning and/or the end of an attribute-value string
+    >>> wfn = 'wfn:[part="a", vendor="???hp???", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+    >>> CPE2_3_WFN(wfn) # doctest: +ELLIPSIS
+    <__main__.CPE2_3_WFN object at 0x...>
+
+    - TEST: Unquoted question marks and asterisks MAY appear
+    in the same attribute-value string
+    >>> wfn = 'wfn:[part="a", vendor="???hp**", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+    >>> CPE2_3_WFN(wfn) # doctest: +ELLIPSIS
+    <__main__.CPE2_3_WFN object at 0x...>
+
+    - TEST: An unquoted question mark SHALL NOT be used
+    in any other place in an attribute-value string
+    >>> wfn = 'wfn:[part="a", vendor="h??p", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+    >>> CPE2_3_WFN(wfn) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "cpe2_3_wfn.py", line 158, in __init__
+        self._validate_wfn()
+      File "cpe2_3_wfn.py", line 278, in _validate_wfn
+        raise TypeError(msg)
+    TypeError: Malformed CPE, vendor value is invalid
     """
+
+    _VALUE_INT_NULL = 0
+    _VALUE_INT_ANY = 1
+    _VALUE_INT_NA = 2
+
+    STYLE = CPE2_3.STYLE_WFS
 
     VALUE_NULL = ""
     VALUE_ANY_VALUE = "ANY"
     VALUE_NOT_APPLICABLE = "NA"
 
-    _VALUE_INT_NULL = 0
-    _VALUE_INT_ANY = 1
-    _VALUE_INT_NA = 2
+    # Constant associated with wildcard to indicate a sequence of characters
+    WILDCARD_MULTI = "*"
+    # Constant associated with wildcard to indicate a character
+    WILDCARD_ONE = "?"
 
     PCE_ASTERISK = "%02"
     PCE_QUESTION = "%01"
@@ -151,11 +189,11 @@ class CPE2_3_WFN(CPE2_3_BASE):
         "%7e": '\\~'
     }
 
-    _wfn_part_keys = set(itertools.chain(CPE2_3_BASE.uri_part_keys,
-                                         CPE2_3_BASE.extend_part_keys))
+    wfn_part_keys = set(itertools.chain(CPE2_3_BASE.uri_part_keys,
+                                        CPE2_3_BASE.extend_part_keys))
 
-    _wfn_order_parts_dict = dict(CPE2_3_BASE.uri_order_parts_dict,
-                                 **CPE2_3_BASE.extend_order_parts_dict)
+    wfn_order_parts_dict = dict(CPE2_3_BASE.uri_order_parts_dict,
+                                **CPE2_3_BASE.extend_order_parts_dict)
 
     def __init__(self, cpe_str="wfn:[]"):
         """
@@ -187,7 +225,8 @@ class CPE2_3_WFN(CPE2_3_BASE):
         punc_no_dash = "\!\;\#\$\%\&\'\(\)\+\,\./\:\<\=\>\@\[\]\^\`\{\|\}\~"
         punc_w_dash = "%s\-" % punc_no_dash
 
-        special = "\?\*"
+        special = "\%s\%s" % (CPE2_3_WFN.WILDCARD_ONE,
+                              CPE2_3_WFN.WILDCARD_MULTI)
         quoted1 = "\\(\\|%s|%s)" % (special, punc_no_dash)
         quoted2 = "\\(\\|%s|%s)" % (special, punc_w_dash)
         unreserved = "[%s%s_]" % (CPE2_3_BASE.ALPHA, CPE2_3_BASE.DIGIT)
@@ -196,7 +235,8 @@ class CPE2_3_WFN(CPE2_3_BASE):
         body2 = "(%s|%s)" % (unreserved, quoted2)
         body = "(%s%s*|%s{2})" % (body1, body2, body2)
 
-        spec_chrs = "\?+|\*"
+        spec_chrs = "\%s+|\%s" % (CPE2_3_WFN.WILDCARD_ONE,
+                                  CPE2_3_WFN.WILDCARD_MULTI)
 
         avstring = "(%s|(%s)%s*)(%s)?" % (body, spec_chrs, body2, spec_chrs)
 
@@ -290,7 +330,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
             att_value = pair[1]
 
             # Check valid attribute name
-            if att_name not in CPE2_3_WFN._wfn_part_keys:
+            if att_name not in CPE2_3_WFN.wfn_part_keys:
                 msg = "Malformed CPE: attribute name '%s' not valid" % att_name
                 raise ValueError(msg)
 
@@ -344,7 +384,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
             self.cpe_dict[att_name] = att_value
 
         # Sets attributes unfilled
-        for i, name in enumerate(CPE2_3_WFN._wfn_order_parts_dict):
+        for i, name in enumerate(CPE2_3_WFN.wfn_order_parts_dict):
             if name not in self.cpe_dict:
                 self.cpe_dict[name] = CPE2_3_WFN._VALUE_INT_NULL
 
@@ -459,7 +499,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
         """
 
         wfn = "wfn:["
-        for i, k in enumerate(CPE2_3_WFN._wfn_order_parts_dict):
+        for i, k in enumerate(CPE2_3_WFN.wfn_order_parts_dict):
             if k in self.cpe_dict.keys():
                 wfn += k
                 wfn += "="
@@ -595,7 +635,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
                     # at the beginning or the end of the string,
                     # or embedded in sequence as required.
                     # Decode to unquoted form.
-                    result = "%s?" % result
+                    result = "%s%s" % (result, CPE2_3_WFN.WILDCARD_ONE)
                     idx = idx + 3
                     continue
                 else:
@@ -606,7 +646,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
                     # Percent-encoded asterisk is at the beginning
                     # or the end of the string, as required.
                     # Decode to unquoted form.
-                    result = "%s*" % result
+                    result = "%s%s" % (result, CPE2_3_WFN.WILDCARD_MULTI)
                 else:
                     msg = "error"
                     raise ValueError(msg)
@@ -656,11 +696,11 @@ class CPE2_3_WFN(CPE2_3_BASE):
                 continue
 
             # Bind the unquoted '?' special character to "%01"
-            if (thischar == "?"):
+            if (thischar == CPE2_3_WFN.WILDCARD_ONE):
                 result += CPE2_3_WFN.PCE_ASTERISK
 
             # Bind the unquoted '*' special character to "%02"
-            if (thischar == "*"):
+            if (thischar == CPE2_3_WFN.WILDCARD_MULTI):
                 result += CPE2_3_WFN.PCE_QUESTION
 
             idx = idx + 1
@@ -1009,7 +1049,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
         # Initialize the output with the CPE v2.3 string prefix.
         fs = "cpe:2.3:"
 
-        for a in CPE2_3_WFN._wfn_part_keys:
+        for a in CPE2_3_WFN.wfn_part_keys:
             v = CPE2_3_WFN._bind_value_for_fs(self.get(a))
             fs = "%s%s" % (fs, v)
 
@@ -1129,7 +1169,7 @@ class CPE2_3_WFN(CPE2_3_BASE):
                 embedded = True
                 continue
 
-            if (c == "*"):
+            if (c == CPE2_3_WFN.WILDCARD_MULTI):
                 # An unquoted asterisk must appear at the beginning or
                 # end of the string.
                 if (idx == 0) or (idx == (len(s)-1)):
@@ -1141,13 +1181,13 @@ class CPE2_3_WFN(CPE2_3_BASE):
                 msg = "error"
                 raise ValueError(msg)
 
-            if (c == "?"):
+            if (c == CPE2_3_WFN.WILDCARD_ONE):
                 # An unquoted question mark must appear at the beginning or
                 # end of the string, or in a leading or trailing sequence:
                 # - ? legal at beginning or end
                 # - embedded is false, so must be preceded by ?
                 # - embedded is true, so must be followed by ?
-                if (((idx == 0) or (idx == (len(s) - 1))) or ((not embedded) and (s[idx - 1, idx - 1] == "?")) or (embedded and (s[idx + 1, idx + 1] == "?"))):
+                if (((idx == 0) or (idx == (len(s) - 1))) or ((not embedded) and (s[idx - 1, idx - 1] == CPE2_3_WFN.WILDCARD_ONE)) or (embedded and (s[idx + 1, idx + 1] == CPE2_3_WFN.WILDCARD_ONE))):
                     result = "%s%s" % (result, c)
                     idx = idx + 1
                     embedded = False
@@ -1236,12 +1276,12 @@ class CPE2_3_WFN(CPE2_3_BASE):
             msg = "index not exists. Possible values: 0-%s" % max_index
             raise KeyError(msg)
 
-        keys = CPE2_3_WFN._wfn_order_parts_dict.keys()
+        keys = CPE2_3_WFN.wfn_order_parts_dict.keys()
         count = 0
         value = CPE2_3_WFN.VALUE_NULL
 
         for idx in range(0, len(keys)):
-            part_key = CPE2_3_WFN._wfn_order_parts_dict[idx]
+            part_key = CPE2_3_WFN.wfn_order_parts_dict[idx]
             value = self.cpe_dict[part_key]
 
             if value != CPE2_3_WFN._VALUE_INT_NULL:

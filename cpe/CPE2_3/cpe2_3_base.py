@@ -17,14 +17,6 @@ class CPE2_3_BASE(CPEBASE):
     Implementation of CPE 2.3 specification.
     """
 
-    # CPE version
-    VERSION = '2.3'
-
-    # Constants of valid CPE name styles of 2.3 version
-    STYLE_URI = "URI"
-    STYLE_WFN = "WFN"
-    STYLE_FS = "formatted string"
-
     # Constants associated with regular expressions
     ALPHA = "a-zA-Z"
     DIGIT = "\d"
