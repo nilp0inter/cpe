@@ -14,6 +14,7 @@ from cpe import CPE
 
 import itertools
 
+
 class CPE2_3(CPE):
     """
     Represents a generic CPE name compatible with
@@ -31,9 +32,9 @@ class CPE2_3(CPE):
     # Constants of valid CPE name styles of 2.3 version
     STYLE_URI = "URI"
     STYLE_WFN = "WFN"
-    STYLE_FS = "formatted string"
+    STYLE_FS = "FS"
 
-    # Dictionary keys associated with components of some styles of 
+    # Dictionary keys associated with components of some styles of
     # version 2.3 of CPE name
     KEY_SW_EDITION = "sw_edition"
     KEY_TARGET_SW = "target_sw"
@@ -43,7 +44,7 @@ class CPE2_3(CPE):
     ###############
     #  VARIABLES  #
     ###############
-    
+
     # List of new part keys in binding style WFN
     ext_part_keys = [KEY_SW_EDITION,
                      KEY_TARGET_SW,
@@ -70,6 +71,6 @@ class CPE2_3(CPE):
         """
         Initializes the CPE name object.
         """
-        
+
         CPE.__init__(self, cpe_str)
         CPE.version = CPE.VERSION_2_3

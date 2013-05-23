@@ -20,7 +20,6 @@ from cpe2_2 import CPE2_2
 from cpeset2_2 import CPESet2_2
 
 from xml.dom import minidom
-import re
 
 
 class CPELanguage2_2(object):
@@ -37,17 +36,17 @@ class CPELanguage2_2(object):
         Create an object that contains the input expression in
         the CPE Language (a set of CPE Names) and
         the DOM tree asociated with expression.
-        
+
         Input:
             - expression: XML content in string or a path to XML file
-            - isFile: indicates whether expression is a XML file or 
+            - isFile: indicates whether expression is a XML file or
                       XML content string
         """
 
         if isFile:
             self.expression = ""
             self.path = expression
-            
+
             # Parse an XML file by name (filepath)
             self.document = minidom.parse(self.expression)
         else:
@@ -209,4 +208,4 @@ class CPELanguage2_2(object):
 if __name__ == "__main__":
 
     import doctest
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)

@@ -671,8 +671,11 @@ class CPE2_3_WFN(CPE2_3):
     @classmethod
     def unbind_uri(cls, cpe_uri):
         """
-        Returns an object WFN associated to binding style URI of
-        input version 2.2 CPE object.
+        Unbinds a URI binding uri to a WFN. Returns an object WFN
+        associated to binding style URI of input version 2.2 CPE object.
+
+        Input is URI binding.
+        Output is WFN.
 
         The procedure for unbinding a URI is straightforward:
             1. Loop over the seven attributes corresponding to the seven
@@ -747,14 +750,13 @@ class CPE2_3_WFN(CPE2_3):
         for i in range(0, 7):
             # Get the i'th component of uri
             v = cpe_uri[i]
+            comp_key = CPE2_3.wfn_ordered_part_dict[i]
 
             if v is None:
                 # Attribute without value
                 wfn.set_value(comp_key, CPE2_3_WFN.VALUE_ANY_VALUE)
             else:
                 # Attribute with value
-                comp_key = CPE2_3.wfn_ordered_part_dict[i]
-                
                 # Special handling for edition component
                 if comp_key == CPE2_3.KEY_EDITION:
 
@@ -770,8 +772,13 @@ class CPE2_3_WFN(CPE2_3):
         return wfn
 
     @classmethod
-    def unbind_fs(cls, fs):
+    def unbind_fs(cls, cpe_fs):
         """
+        Unbinds a formatted string fs to a WFN.
+
+        Input is formatted string.
+        Output is WFN.
+
         The algorithm parses the eleven fields of the formatted string, then
         unbinds each string result. If a field contains only an asterisk, it is
         unbound to the logical value ANY. If a field contains only a hyphen, it
@@ -818,7 +825,7 @@ class CPE2_3_WFN(CPE2_3):
         # The cpe scheme is the 0th component, the cpe version is the
         # 1st. So we start parsing at the 2nd component.
         for a in range(0, 11):
-            v = fs[a]  # get the a'th field string
+            v = cpe_fs[a]  # get the a'th field string
             v = CPE2_3_WFN._unbind_value_fs(v)  # unbind the string
 
             # set the value of the corresponding attribute
@@ -1055,7 +1062,7 @@ class CPE2_3_WFN(CPE2_3):
 
                     # Del double quotes
                     att_value = att_value[1:-1]
-                            
+
                     if att_name == CPE2_3.KEY_PART:
                         # Check part (system type) value
                         part_pattern = "^(h|o|a)$"
@@ -1224,7 +1231,7 @@ class CPE2_3_WFN(CPE2_3):
 
         wfn = wfn[0:len(wfn)-2]
         wfn += "]"
-        
+
         return wfn
 
     def bind_to_uri(self):

@@ -20,7 +20,6 @@ from cpe1_1 import CPE1_1
 from cpeset1_1 import CPESet1_1
 
 from xml.dom import minidom
-import re
 
 
 class CPELanguage1_1(object):
@@ -37,17 +36,17 @@ class CPELanguage1_1(object):
         Create an object that contains the input expression in
         the CPE Language (a set of CPE Names) and
         the DOM tree asociated with expression.
-        
+
         Input:
             - expression: XML content in string or a path to XML file
-            - isFile: indicates whether expression is a XML file or 
+            - isFile: indicates whether expression is a XML file or
                       XML content string
         """
 
         if isFile:
             self.expression = ""
             self.path = expression
-            
+
             # Parse an XML file by name (filepath)
             self.document = minidom.parse(self.expression)
         else:
@@ -79,7 +78,7 @@ class CPELanguage1_1(object):
         Output:
             - True if self expression can be satisfied by language matching
               against cpeset, False otherwise.
-              
+
         - TEST:
         >>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe-list xmlns="http://cpe.mitre.org/XMLSchema/cpe/1.0"><cpe-item name="cpe://redhat:enterprise_linux:3"><title>Red Hat Enterprise Linux 3</title></cpe-item><cpe-item name="cpe://sun:sunos:5.8"><title>Sun Microsystems SunOS 5.8</title><notes><note>Also known as Solaris 8</note></notes></cpe-item><cpe-item name="cpe://microsoft:windows:2003"><title>Microsoft Windows Server 2003></title><check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">oval:org.mitre.oval:def:128</check></cpe-item><cpe-item name="cpe:/intel:ia-64:itanium"><title>Intel Itanium (IA-64)</title></cpe-item></cpe-list>'''
 
@@ -101,8 +100,8 @@ class CPELanguage1_1(object):
         if cpel_dom is None:
             cpel_dom = self.document
 
-        if (cpel_dom.nodeName == '#document' or
-            cpel_dom.nodeName == CPE_LIST_TAG):
+        if ((cpel_dom.nodeName == '#document') or
+           (cpel_dom.nodeName == CPE_LIST_TAG)):
 
             for node in cpel_dom.childNodes:
                 answer = False
@@ -124,4 +123,4 @@ class CPELanguage1_1(object):
 if __name__ == "__main__":
 
     import doctest
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)

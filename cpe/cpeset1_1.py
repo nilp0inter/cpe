@@ -34,7 +34,7 @@ class CPESet1_1(object):
 
         In next example, a and b are components with a subcomponent.
         c1, c2 and c3 are subcomponents of last component.
-        
+
         cpe:/a:b:c1!c2!c3
 
         Each subcomponent has two fields:
@@ -121,7 +121,7 @@ class CPESet1_1(object):
         name_y = y[CPE1_1.KEY_COMP_STR]
 
         if ((op_x == CPE1_1.VALUE_COMP_OP_ANY) or
-            (op_y == CPE1_1.VALUE_COMP_OP_ANY)):
+           (op_y == CPE1_1.VALUE_COMP_OP_ANY)):
             match = True
         elif (op_x == CPE1_1.VALUE_COMP_OP_NONE):
             if (op_y == CPE1_1.VALUE_COMP_OP_NOT):
@@ -185,7 +185,7 @@ class CPESet1_1(object):
         >>> s.append(c2)
         >>> len(s)
         2
-        
+
         - TEST: set with three CPE elements and one repeated
         >>> uri1 = 'cpe://microsoft:windows:xp!vista'
         >>> uri2 = 'cpe:/cisco::3825;cisco:2:44'
@@ -356,7 +356,7 @@ class CPESet1_1(object):
                                 comp_k = ek[i]
 
                                 if ((len(comp_cpe) == len(comp_k)) and
-                                    (len(comp_cpe) == 1)):
+                                   (len(comp_cpe) == 1)):
 
                                     # Components have a only subcomponent
                                     subcomp_cpe = comp_cpe[0]
@@ -405,4 +405,4 @@ class CPESet1_1(object):
 if __name__ == "__main__":
 
     import doctest
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)

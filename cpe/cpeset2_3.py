@@ -583,4 +583,4 @@ if __name__ == "__main__":
 #    print(s.name_match(c3))
 
     import doctest
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)

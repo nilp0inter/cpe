@@ -176,10 +176,10 @@ class CPE2_3_FS(CPE2_3):
         quoted = r"\\(\\" + "|%s|%s)" % (special, punc)
         avstring = "%s|%s" % (unreserved, quoted)
         value_string_pattern = "^((%s+|%s*(%s)+|%s(%s)+)(%s)?|%s)$" % (quest,
-                                                                        quest, avstring,
-                                                                        asterisk, avstring,
-                                                                        spec_chrs,
-                                                                        CPE2_3_FS._LOGICAL)
+                                                                       quest, avstring,
+                                                                       asterisk, avstring,
+                                                                       spec_chrs,
+                                                                       CPE2_3_FS._LOGICAL)
 
         part_value_rxc = re.compile(value_string_pattern)
         return part_value_rxc.match(str_value) is not None
@@ -244,7 +244,7 @@ class CPE2_3_FS(CPE2_3):
         CPE2_3.__init__(self, cpe_str)
         CPE2_3_FS.style = CPE2_3.STYLE_FS
         self._validate()
-    
+
     def __len__(self):
         """
         Returns the number of parts of CPE name.
@@ -683,5 +683,6 @@ class CPE2_3_FS(CPE2_3):
 
 
 if __name__ == "__main__":
-   import doctest
-   doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
+
+    import doctest
+    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)

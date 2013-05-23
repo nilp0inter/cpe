@@ -186,4 +186,4 @@ class CPESet2_2(object):
 if __name__ == "__main__":
 
     import doctest
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)

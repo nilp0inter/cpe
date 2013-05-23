@@ -309,7 +309,7 @@ class CPE2_3_URI(CPE2_3):
 
         value_edition_pattern = "^(%s|%s)$" % (string, packed)
         value_lang_pattern = "^%s?$" % LANGTAG
-        
+
         part_value_rxc = re.compile(value_string_pattern)
         edition_value_rxc = re.compile(value_edition_pattern)
         lang_value_rxc = re.compile(value_lang_pattern)
