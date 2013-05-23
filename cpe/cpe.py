@@ -80,7 +80,6 @@ class CPE(object):
 
         # The original CPE string
         self.cpe_str = cpe_str
-        print cpe_str
 
         # Store CPE name with URI style:
         #     CPE names are case-insensitive.

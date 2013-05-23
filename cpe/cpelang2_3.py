@@ -137,6 +137,7 @@ class CPELanguage2_3(object):
         return self.expression
 
     def language_match(self, cpeset, cpel_dom=None):
+        r
         """
         Accepts a set of known CPE Names and an expression in the CPE language,
         and delivers the answer 'true' if the expression matches with the set.

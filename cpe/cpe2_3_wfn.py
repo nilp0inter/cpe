@@ -250,7 +250,7 @@ class CPE2_3_WFN(CPE2_3):
         quest = "\%s" % CPE2_3_FS.WILDCARD_ONE
         asterisk = "\%s" % CPE2_3_FS.WILDCARD_MULTI
         unreserved = "\w"
-        special = "\%s|%s" % (quest, asterisk)
+        special = "%s|%s" % (quest, asterisk)
         spec_chrs = "%s+|%s" % (quest, asterisk)
         punc = "\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\.|\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~|\-"
         quoted = r"\\(\\" + "|%s|%s)" % (special, punc)
@@ -670,7 +670,7 @@ class CPE2_3_WFN(CPE2_3):
 
     @classmethod
     def unbind_uri(cls, cpe_uri):
-        """
+        r"""
         Unbinds a URI binding uri to a WFN. Returns an object WFN
         associated to binding style URI of input version 2.2 CPE object.
 
@@ -695,7 +695,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.0\.6001",update="beta",edition=ANY, language=ANY]
+        'wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.0\.6001",update="beta",edition=ANY, language=ANY]'
 
         - TEST: two percent-encoded characters are unbound with added quoting.
           Although the percent-encoded characters are the same as the special
@@ -704,7 +704,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.\*",update="sp\?",edition=ANY,language=ANY]
+        'wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.\*",update="sp\?",edition=ANY,language=ANY]'
 
         - TEST: two percent-encoded special characters are unbound without
           quoting
@@ -712,7 +712,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.*",update="sp?",edition=ANY,language=ANY]
+        'wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.*",update="sp?",edition=ANY,language=ANY]'
 
         - TEST: legacy edition attribute as well as the four extended attributes
           are unpacked from the edition component of the URI
@@ -720,7 +720,8 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\.4\.0\.1570", update=ANY, edition=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY,language=ANY]
+        'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\.4\.0\.1570", update=ANY, edition=ANY, sw_edition="online", target_sw="win2003", target_hw="x64",
+                other=ANY,language=ANY]'
 
         - TEST: the lone hyphen in the update component is unbound to the
           logical value NA, and all the other blanks embedded in the packed
@@ -730,7 +731,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        wfn:[part="a",vendor="hp",product="openview_network_manager", version="7\.51",update=NA,edition=ANY,sw_edition=ANY, target_sw="linux",target_HW=ANY,other=ANY,language=ANY]
+        'wfn:[part="a",vendor="hp",product="openview_network_manager", version="7\.51",update=NA,edition=ANY,sw_edition=ANY, target_sw="linux",target_HW=ANY,other=ANY,language=ANY]'
 
         - TEST: both the tildes (unencoded as well as percent-encoded) are
           handled: both are quoted in the WFN. The original v2.2 URI syntax
@@ -741,7 +742,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        wfn:[part="a",vendor="foo\~bar",product="big\~money_2010", version=ANY,update=ANY,edition=ANY,language=ANY]
+        'wfn:[part="a",vendor="foo\~bar",product="big\~money_2010", version=ANY,update=ANY,edition=ANY,language=ANY]'
         """
 
         # Initialize the empty WFN
@@ -773,7 +774,7 @@ class CPE2_3_WFN(CPE2_3):
 
     @classmethod
     def unbind_fs(cls, cpe_fs):
-        """
+        r"""
         Unbinds a formatted string fs to a WFN.
 
         Input is formatted string.
@@ -790,14 +791,14 @@ class CPE2_3_WFN(CPE2_3):
 
         - TEST: the periods in the version string are quoted in the WFN, and all
           the asterisks are unbound to the logical value ANY
-        >>> uri = r'cpe:2.3:a:microsoft:internet_explorer:8.0.6003:beta:*:*:*:*:*:*'
+        >>> uri = 'cpe:2.3:a:microsoft:internet_explorer:8.0.6003:beta:*:*:*:*:*:*'
         >>> fs = CPE2_3_FS(uri)
         >>> wfn = CPE2_3_WFN.unbind_fs(fs)
         >>> wfn.get_wfn_string()
         'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6003", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
 
         - TEST: the embedded special characters are unbound untouched in the WFN
-        >>> uri = r'cpe:2.3:a:microsoft:internet_explorer:8.*:sp?:*:*:*:*:*:*'
+        >>> uri = 'cpe:2.3:a:microsoft:internet_explorer:8.*:sp?:*:*:*:*:*:*'
         >>> fs = CPE2_3_FS(uri)
         >>> wfn = CPE2_3_WFN.unbind_fs(fs)
         >>> wfn.get_wfn_string()
@@ -805,7 +806,7 @@ class CPE2_3_WFN(CPE2_3):
 
         - TEST: the lone hyphen in the update field unbinds to the logical value
           NA, and the lone asterisks unbind to the logical value ANY
-        >>> uri = r'cpe:2.3:a:hp:insight_diagnostics:7.4.0.1570:-:*:*:online:win2003:x64:*'
+        >>> uri = 'cpe:2.3:a:hp:insight_diagnostics:7.4.0.1570:-:*:*:online:win2003:x64:*'
         >>> fs = CPE2_3_FS(uri)
         >>> wfn = CPE2_3_WFN.unbind_fs(fs)
         >>> wfn.get_wfn_string()
@@ -1221,13 +1222,14 @@ class CPE2_3_WFN(CPE2_3):
         wfn = "wfn:["
         for i, k in CPE2_3.wfn_ordered_part_dict.iteritems():
             if k in self._cpe_dict.keys():
-                wfn += k
-                wfn += "="
                 v = self._cpe_dict[k]
-                if v in CPE2_3_WFN._int_to_string_logical_dict:
-                    wfn += '%s, ' % CPE2_3_WFN._get_str_value_dict(v)
-                else:
-                    wfn += '"%s", ' % v
+                if v != CPE2_3_WFN._VALUE_INT_NULL:
+                    wfn += k
+                    wfn += "="
+                    if v in CPE2_3_WFN._int_to_string_logical_dict:
+                        wfn += '%s, ' % CPE2_3_WFN._get_str_value_dict(v)
+                    else:
+                        wfn += '"%s", ' % v
 
         wfn = wfn[0:len(wfn)-2]
         wfn += "]"
