@@ -48,15 +48,15 @@ class FactoryCPE(object):
 
         - TEST: good CPE name with 2.3 version and WFN style
         >>> FactoryCPE.get_cpe() # doctest: +ELLIPSIS
-        <__main__.CPE2_3_WFN at 0x...>
+        <cpe2_3_wfn.CPE2_3_WFN object at 0x...>
 
         - TEST: good CPE name with 1.1 version
         >>> FactoryCPE.get_cpe("1.1", "", "cpe:///") # doctest: +ELLIPSIS
-        <__main__.CPE1_1 at 0x...>
+        <cpe1_1.CPE1_1 object at 0x...>
 
         - TEST: good CPE name with 2.2 version
         >>> FactoryCPE.get_cpe("2.2", "", "cpe:/h:hp") # doctest: +ELLIPSIS
-        <__main__.CPE2_2 at 0x...>
+        <cpe2_2.CPE2_2 object at 0x...>
 
         - TEST: bad CPE name
         >>> FactoryCPE.get_cpe("5.0", "", "cpe:/h:hp")

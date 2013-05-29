@@ -19,7 +19,7 @@ import re
 
 
 class CPE2_3_WFN(CPE2_3):
-    """
+    r"""
     Implementation of WFN of version 2.3 of CPE specification.
 
     A CPE Name is a percent-encoded WFN with each name
@@ -207,7 +207,7 @@ class CPE2_3_WFN(CPE2_3):
     ###############
 
     _int_to_string_logical_dict = {
-        _VALUE_INT_NULL: VALUE_NULL,
+        _VALUE_INT_NULL: VALUE_ANY_VALUE,
         _VALUE_INT_ANY: VALUE_ANY_VALUE,
         _VALUE_INT_NA: VALUE_NOT_APPLICABLE
     }
@@ -233,11 +233,18 @@ class CPE2_3_WFN(CPE2_3):
         >>> CPE2_3_WFN._is_valid_wfn_value(val)
         False
 
+        - TEST: valid valua
         >>> val = '8\.*'
         >>> CPE2_3_WFN._is_valid_wfn_value(val)
         True
 
+        - TEST: valid value
         >>> val = '?es?'
+        >>> CPE2_3_WFN._is_valid_wfn_value(val)
+        True
+
+        - TEST: special values
+        >>> val = '\?\*'
         >>> CPE2_3_WFN._is_valid_wfn_value(val)
         True
         """
@@ -255,10 +262,10 @@ class CPE2_3_WFN(CPE2_3):
         punc = "\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\.|\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~|\-"
         quoted = r"\\(\\" + "|%s|%s)" % (special, punc)
         avstring = "%s|%s" % (unreserved, quoted)
-        value_string_pattern = r"^(%s+|%s*(%s)+|%s(%s)+)(%s)?$" % (quest,
-                                                                   quest, avstring,
-                                                                   asterisk, avstring,
-                                                                   spec_chrs)
+        value_string_pattern = "^(%s+|%s*(%s)+|%s(%s)+)(%s)?$" % (quest,
+                                                                  quest, avstring,
+                                                                  asterisk, avstring,
+                                                                  spec_chrs)
 
         part_value_rxc = re.compile(value_string_pattern)
         return part_value_rxc.match(str_value) is not None
@@ -268,6 +275,21 @@ class CPE2_3_WFN(CPE2_3):
         """
         Return True if the input value of WFN attribute "language" is valid,
         and otherwise False.
+
+        - TEST
+        >>> val = 'es-ES'
+        >>> CPE2_3_WFN._is_valid_wfn_language(val)
+        True
+
+        - TEST
+        >>> val = 'es-noesES'
+        >>> CPE2_3_WFN._is_valid_wfn_language(val)
+        False
+
+        - TEST
+        >>> val = 'esES'
+        >>> CPE2_3_WFN._is_valid_wfn_language(val)
+        False
         """
 
         # Compilation of regular expression associated with value of CPE part
@@ -275,7 +297,7 @@ class CPE2_3_WFN(CPE2_3):
         language = "[%s]{2,3}" % CPE2_3._ALPHA
         LANGTAG = "%s(\-%s)?" % (language, region)
 
-        value_lang_pattern = r"^%s?$" % LANGTAG
+        value_lang_pattern = "^%s$" % LANGTAG
 
         lang_value_rxc = re.compile(value_lang_pattern)
 
@@ -425,7 +447,7 @@ class CPE2_3_WFN(CPE2_3):
             # we get here if we have a substring starting w/ '%'.
             form = s[idx: idx + 3]  # get the three-char sequence
 
-            if form == CPE2_3_WFN.PCE_ASTERISK:
+            if form == CPE2_3_WFN.PCE_QUESTION:
                 # If %01 legal at beginning or end
                 # embedded is false, so must be preceded by %01
                 # embedded is true, so must be followed by %01
@@ -441,7 +463,7 @@ class CPE2_3_WFN(CPE2_3):
                 else:
                     msg = "error"
                     raise ValueError(msg)
-            elif form == CPE2_3_WFN.PCE_QUESTION:
+            elif form == CPE2_3_WFN.PCE_ASTERISK:
                 if ((idx == 0) or (idx == (len(s) - 3))):
                     # Percent-encoded asterisk is at the beginning
                     # or the end of the string, as required.
@@ -542,10 +564,20 @@ class CPE2_3_WFN(CPE2_3):
 
     @classmethod
     def _process_quoted_chars(cls, s):
-        """
+        r"""
         Inspect each character in string s. Certain nonalpha
         characters pass thru without escaping into the result,
         but most retain escaping.
+
+        - TEST:
+        >>> s = "ho\\la"
+        >>> CPE2_3_WFN._process_quoted_chars(s)
+        'ho\\la'
+
+        - TEST:
+        >>> s = "\."
+        >>> CPE2_3_WFN._process_quoted_chars(s)
+        '.'
         """
 
         result = ""
@@ -566,7 +598,7 @@ class CPE2_3_WFN(CPE2_3):
                     idx += 1
                 else:
                     # all others retain escaping
-                    result = "%s\%s" % (result, nextchr)
+                    result = "%s\\%s" % (result, nextchr)
                     idx += 2
                     continue
             idx += 1
@@ -629,7 +661,7 @@ class CPE2_3_WFN(CPE2_3):
             if c == "\\":
                 # Anything quoted in the bound string stays quoted
                 # in the unbound string.
-                result = r"%s%s" % (result, s[idx: idx + 2])
+                result = "%s%s" % (result, s[idx: idx + 2])
                 idx += 2
                 embedded = True
                 continue
@@ -695,7 +727,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.0\.6001",update="beta",edition=ANY, language=ANY]'
+        'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\\.0\\.6001", update="beta", edition=ANY, language=ANY]'
 
         - TEST: two percent-encoded characters are unbound with added quoting.
           Although the percent-encoded characters are the same as the special
@@ -704,7 +736,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.\*",update="sp\?",edition=ANY,language=ANY]'
+        'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\\.\\*", update="sp\\?", edition=ANY, language=ANY]'
 
         - TEST: two percent-encoded special characters are unbound without
           quoting
@@ -712,7 +744,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a",vendor="microsoft",product="internet_explorer", version="8\.*",update="sp?",edition=ANY,language=ANY]'
+        'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\\.*", update="sp?", edition=ANY, language=ANY]'
 
         - TEST: legacy edition attribute as well as the four extended attributes
           are unpacked from the edition component of the URI
@@ -720,8 +752,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\.4\.0\.1570", update=ANY, edition=ANY, sw_edition="online", target_sw="win2003", target_hw="x64",
-                other=ANY,language=ANY]'
+        'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\\.4\\.01\\.1570", update=ANY, edition=ANY, language=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY]'
 
         - TEST: the lone hyphen in the update component is unbound to the
           logical value NA, and all the other blanks embedded in the packed
@@ -731,7 +762,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a",vendor="hp",product="openview_network_manager", version="7\.51",update=NA,edition=ANY,sw_edition=ANY, target_sw="linux",target_HW=ANY,other=ANY,language=ANY]'
+        'wfn:[part="a", vendor="hp", product="openview_network_manager", version="7\\.51", update=NA, edition="\\{\\{\\{linux\\{", language=ANY]'
 
         - TEST: both the tildes (unencoded as well as percent-encoded) are
           handled: both are quoted in the WFN. The original v2.2 URI syntax
@@ -742,7 +773,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> cpe2 = CPE2_3_URI(uri)
         >>> wfn = CPE2_3_WFN.unbind_uri(cpe2)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a",vendor="foo\~bar",product="big\~money_2010", version=ANY,update=ANY,edition=ANY,language=ANY]'
+        'wfn:[part="a", vendor="foo\\~bar", product="big\\~money_2010", version=ANY, update=ANY, edition=ANY, language=ANY]'
         """
 
         # Initialize the empty WFN
@@ -760,15 +791,16 @@ class CPE2_3_WFN(CPE2_3):
                 # Attribute with value
                 # Special handling for edition component
                 if comp_key == CPE2_3.KEY_EDITION:
-
                     # Unpack edition if needed
-                    if (v != "" and v != "-" and v[0] == "~"):
-
+                    if (v == "" or v == "-" or v[0] != "~"):
+                        #unbind the parsed string
+                        wfn.set_value(comp_key, CPE2_3_WFN._decode(v))
+                    else:
                         # We have five values packed together here
                         wfn._unpack(v)
-
-                #unbind the parsed string
-                wfn.set_value(comp_key, CPE2_3_WFN._decode(v))
+                else:
+                    #unbind the parsed string
+                    wfn.set_value(comp_key, CPE2_3_WFN._decode(v))
 
         return wfn
 
@@ -795,14 +827,14 @@ class CPE2_3_WFN(CPE2_3):
         >>> fs = CPE2_3_FS(uri)
         >>> wfn = CPE2_3_WFN.unbind_fs(fs)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6003", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
+        'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\\.0\\.6003", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
 
         - TEST: the embedded special characters are unbound untouched in the WFN
         >>> uri = 'cpe:2.3:a:microsoft:internet_explorer:8.*:sp?:*:*:*:*:*:*'
         >>> fs = CPE2_3_FS(uri)
         >>> wfn = CPE2_3_WFN.unbind_fs(fs)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.*", update="sp?", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
+        'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\\.*", update="sp?", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
 
         - TEST: the lone hyphen in the update field unbinds to the logical value
           NA, and the lone asterisks unbind to the logical value ANY
@@ -810,14 +842,14 @@ class CPE2_3_WFN(CPE2_3):
         >>> fs = CPE2_3_FS(uri)
         >>> wfn = CPE2_3_WFN.unbind_fs(fs)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\.4\.0\.1570", update=NA, edition=ANY, language=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY]'
+        'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\\.4\\.0\\.1570", update=NA, edition=ANY, language=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY]'
 
         - TEST: the quoted special characters retain their quoting in the WFN
         >>> uri = r"cpe:2.3:a:foo\\bar:big\$money:2010:*:*:*:special:ipod_touch:80gb:*"
         >>> fs = CPE2_3_FS(uri)
         >>> wfn = CPE2_3_WFN.unbind_fs(fs)
         >>> wfn.get_wfn_string()
-        'wfn:[part="a", vendor="foo\\bar", product="big\$money", version="2010", update=ANY, edition=ANY, language=ANY, sw_edition="special", target_sw="ipod_touch", target_hw="80gb", other=ANY]'
+        'wfn:[part="a", vendor="foo\\\\bar", product="big\\$money", version="2010", update=ANY, edition=ANY, language=ANY, sw_edition="special", target_sw="ipod_touch", target_hw="80gb", other=ANY]'
         """
 
         # Initialize the empty WFN
@@ -1146,15 +1178,16 @@ class CPE2_3_WFN(CPE2_3):
         """
         Unpack its elements and set the attributes in wfn accordingly.
         Parse out the five elements.
+        ~ edition ~ software edition ~ target sw ~ target hw ~ other
         """
 
         components = s.split("~")
 
-        ed = components[0]
-        sw_ed = components[1]
-        t_sw = components[2]
-        t_hw = components[3]
-        oth = components[4]
+        ed = components[1]
+        sw_ed = components[2]
+        t_sw = components[3]
+        t_hw = components[4]
+        oth = components[5]
 
         self.set_value(CPE2_3.KEY_EDITION, CPE2_3_WFN._decode(ed))
         self.set_value(CPE2_3.KEY_SW_EDITION, CPE2_3_WFN._decode(sw_ed))

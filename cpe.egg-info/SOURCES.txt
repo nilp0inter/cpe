@@ -2,12 +2,8 @@ setup.cfg
 setup.py
 cpe/__init__.py
 cpe/cpe.py
-cpe/cpe1_1.py
-cpe/cpe2_2.py
-cpe/cpe2_3.py
-cpe/cpebase.py
-cpe/platform.py
-cpe/test_cpe.py
+cpe/factorycpe.py
+cpe/factorycpe2_3.py
 cpe.egg-info/PKG-INFO
 cpe.egg-info/SOURCES.txt
 cpe.egg-info/dependency_links.txt

@@ -1,11 +1,13 @@
 Metadata-Version: 1.0
 Name: cpe
 Version: 0.1dev
-Summary: Contains classes for treatment of CPE identifiers
+Summary: Contains classes for treatment of CPE names of 1.1, 2.2 and 2.3 versions of CPE (Common Platform Enumeration) specification
 Home-page: UNKNOWN
 Author: Alejandro Galindo
-Author-email: alejandro.galindo.contractor@bbva.com
+Author-email: alejandro.galindo@innovation4security.com
 License: UNKNOWN
-Description: This package validates CPE identifiers and platforms (set of CPE ids) and comparisons between them.
-Keywords: CPE platform standard
+Description: This package implement the validation of both CPE names and platforms (set of
+        CPE names), and the comparisons between them.The versions of CPE implemented are: 1.1, 2.2 and 2.3.The functionality offered of each version is associated
+        with CPE naming, CPE name matching and CPE language matching
+Keywords: CPE naming matching language platform standard specification
 Platform: UNKNOWN

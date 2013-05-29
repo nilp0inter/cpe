@@ -24,15 +24,15 @@ class FactoryCPE2_3(object):
 
     - TEST: good CPE name with 2.3 version and WFN style
     >>> FactoryCPE2_3.get_cpe() # doctest: +ELLIPSIS
-    <__main__.CPE2_3_WFN at 0x...>
+    <cpe2_3_wfn.CPE2_3_WFN object at 0x...>
 
     - TEST: good CPE name with 2.3 version and URI style:
-    >>> FactoryCPE2_3.get_cpe("uri", "cpe:/a:acme:product:1.0:pro:en-us") # doctest: +ELLIPSIS
-    <__main__.CPE1_1 at 0x...>
+    >>> FactoryCPE2_3.get_cpe("URI", "cpe:/a:acme:product:1.0:pro:en-us") # doctest: +ELLIPSIS
+    <cpe2_3_uri.CPE2_3_URI object at 0x...>
 
     - TEST: good CPE name with 2.3 version and formatted string style
-    >>> FactoryCPE2_3.get_cpe("fs", "cpe:/o:linux:suse:*:*:*:*:*:*:*:*") # doctest: +ELLIPSIS
-    <__main__.CPE2_2 at 0x...>
+    >>> FactoryCPE2_3.get_cpe("FS", "cpe:2.3:o:linux:suse:*:*:*:*:*:*:*:*") # doctest: +ELLIPSIS
+    <cpe2_3_fs.CPE2_3_FS object at 0x...>
 
     - TEST: bad CPE name
     >>> FactoryCPE2_3.get_cpe("bad style", "cpe:/h:hp")

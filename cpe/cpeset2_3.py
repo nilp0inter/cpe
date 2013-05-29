@@ -59,11 +59,13 @@ class CPESet2_3(object):
             is DISJOINT, otherwise False.
         """
 
-        result_list = CPESet2_3.compare_wfns(source, target)
+        result_dict = CPESet2_3.compare_wfns(source, target)
 
         # If any pairwise comparison returned DISJOINT  then
         # the overall name relationship is DISJOINT
-        for result in result_list:
+        for att in CPE2_3_WFN.wfn_part_keys:
+            result = result_dict[att]
+
             isDisjoint = result == CPESet2_3.LOGICAL_VALUE_DISJOINT
             if isDisjoint:
                 return True
@@ -82,11 +84,13 @@ class CPESet2_3(object):
             is EQUAL, otherwise False.
         """
 
-        result_list = CPESet2_3.compare_wfns(source, target)
+        result_dict = CPESet2_3.compare_wfns(source, target)
 
         # If any pairwise comparison returned EQUAL then
         # the overall name relationship is EQUAL
-        for result in result_list:
+        for att in CPE2_3_WFN.wfn_part_keys:
+            result = result_dict[att]
+
             isEqual = result == CPESet2_3.LOGICAL_VALUE_EQUAL
             if not isEqual:
                 return False
@@ -105,11 +109,13 @@ class CPESet2_3(object):
             is SUBSET, otherwise False.
         """
 
-        result_list = CPESet2_3.compare_wfns(source, target)
+        result_dict = CPESet2_3.compare_wfns(source, target)
 
         # If any pairwise comparison returned something other than SUBSET
         # or EQUAL, then SUBSET is False.
-        for result in result_list:
+        for att in CPE2_3_WFN.wfn_part_keys:
+            result = result_dict[att]
+
             isSubset = result == CPESet2_3.LOGICAL_VALUE_SUBSET
             isEqual = result == CPESet2_3.LOGICAL_VALUE_EQUAL
             if (not isSubset) and (not isEqual):
@@ -129,15 +135,18 @@ class CPESet2_3(object):
             is SUPERSET, otherwise False.
         """
 
-        result_list = CPESet2_3.compare_wfns(source, target)
+        result_dict = CPESet2_3.compare_wfns(source, target)
 
         # If any pairwise comparison returned something other than SUPERSET
         # or EQUAL, then SUPERSET is False.
-        for result in result_list:
+        for att in CPE2_3_WFN.wfn_part_keys:
+            result = result_dict[att]
+
             isSuperset = result == CPESet2_3.LOGICAL_VALUE_SUPERSET
             isEqual = result == CPESet2_3.LOGICAL_VALUE_EQUAL
             if (not isSuperset) and (not isEqual):
                 return False
+
         return True
 
     @classmethod
@@ -199,6 +208,10 @@ class CPESet2_3(object):
         - TEST:
         >>> CPESet2_3.compare("PalmOS", "NA")
         4
+
+        - TEST:
+        >>> CPESet2_3.compare("8\.\*", "8\.\*")
+        3
         """
 
         if (CPESet2_3.is_string(source)):
@@ -208,9 +221,9 @@ class CPESet2_3(object):
 
         # In this specification, unquoted wildcard characters in the target
         # yield an undefined result
+
         if (CPESet2_3.is_string(target) and
            CPESet2_3.contains_wildcards(target)):
-
             return CPESet2_3.LOGICAL_VALUE_UNDEFINED
 
         # If source and target attribute values are equal,
@@ -219,11 +232,13 @@ class CPESet2_3(object):
             return CPESet2_3.LOGICAL_VALUE_EQUAL
 
         # If source attribute value is ANY, then the result is SUPERSET
-        if (source == CPE2_3_WFN.VALUE_ANY_VALUE):
+        if ((source == CPE2_3_WFN.VALUE_ANY_VALUE) or
+           (source == CPE2_3_WFN.VALUE_NULL)):
             return CPESet2_3.LOGICAL_VALUE_SUPERSET
 
         # If target attribute value is ANY, then the result is SUBSET
-        if (target == CPE2_3_WFN.VALUE_ANY_VALUE):
+        if ((target == CPE2_3_WFN.VALUE_ANY_VALUE) or
+           (target == CPE2_3_WFN.VALUE_NULL)):
             return CPESet2_3.LOGICAL_VALUE_SUBSET
 
         # If either source or target attribute value is NA
@@ -345,11 +360,12 @@ class CPESet2_3(object):
 
         isAny = arg == CPE2_3_WFN.VALUE_ANY_VALUE
         isNa = arg == CPE2_3_WFN.VALUE_NOT_APPLICABLE
+        isNull = arg == CPE2_3_WFN.VALUE_NULL
 
-        return not (isAny or isNa)
+        return not (isAny or isNa or isNull)
 
     @classmethod
-    def contains_wildcards(cls, string):
+    def contains_wildcards(cls, s):
         """
         Return True if the string contains any unquoted special characters
         (question-mark or asterisk), otherwise False.
@@ -367,27 +383,49 @@ class CPESet2_3(object):
         False
 
         - TEST:
-        >>> CPESet2_3.contains_wildcards("foo\?")
+        >>> CPESet2_3.contains_wildcards("foo\\\?")
         False
 
         - TEST:
-        >>> CPESet2_3.contains_wildcards("foo?")
+        >>> CPESet2_3.contains_wildcards("foo*")
         True
 
         - TEST:
-        >>> CPESet2_3.contains_wildcards("\*bar")
+        >>> CPESet2_3.contains_wildcards("\\\*bar")
         False
 
         - TEST:
-        >>> CPESet2_3.contains_wildcards("*bar")
+        >>> CPESet2_3.contains_wildcards("?bar")
         True
+
+        - TEST:
+        >>> CPESet2_3.contains_wildcards("8\.\*")
+        False
         """
 
-        wildcard_pattern = "(\\\*|\\\?)"
-        wildcard_rxc = re.compile(wildcard_pattern)
-        wildcard_match = wildcard_rxc.search(string)
+        idx = s.find("*")
+        if idx != -1:
+            if idx == 0:
+                return True
+            else:
+                if s[idx - 1] != "\\":
+                    return True
 
-        return wildcard_match is not None
+        idx = s.find("?")
+        if idx != -1:
+            if idx == 0:
+                return True
+            else:
+                if s[idx - 1] != "\\":
+                    return True
+
+        return False
+
+        # wildcard_pattern = "[^\\\](\*|\?)"
+        #wildcard_rxc = re.compile(wildcard_pattern)
+        #wildcard_match = wildcard_rxc.search(s)
+
+        #return wildcard_match is not None
 
     @classmethod
     def isEvenWildcards(cls, str, idx):
@@ -517,7 +555,7 @@ class CPESet2_3(object):
         - TEST: matching (identical cpe in set)
         >>> wfn1 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\*", update="beta", edition=ANY]'
 
-        >>> wfn2 = 'wfn:[part="o", vendor="microsoft", product="windows", version="8\.0*", update="sp2", edition=ANY]'
+        >>> wfn2 = 'wfn:[part="o", vendor="microsoft", product="windows", version="8\.0\*", update="sp2", edition=ANY]'
 
         >>> c1 = CPE2_3_WFN(wfn1)
         >>> c2 = CPE2_3_WFN(wfn2)
@@ -529,10 +567,10 @@ class CPESet2_3(object):
         True
 
         - test: matching with any values (cpe in set)
-        >>> wfn1 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\*", update="beta", edition=ANY]'
+        >>> wfn1 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6", update="beta", edition=ANY]'
 
-        >>> wfn2 = 'wfn:[part="o", vendor="microsoft", product="windows", version="8\.0*", update="sp2", edition=ANY]'
-        >>> wfn3 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001"]'
+        >>> wfn2 = 'wfn:[part="o", vendor="microsoft", product="windows", version="8\.0\*", update="sp2", edition=ANY]'
+        >>> wfn3 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0*"]'
         >>> c1 = CPE2_3_WFN(wfn1)
         >>> c2 = CPE2_3_WFN(wfn2)
         >>> m = CPE2_3_WFN(wfn3)
@@ -563,24 +601,6 @@ class CPESet2_3(object):
         return False
 
 if __name__ == "__main__":
-
-#    #wfn1 = 'wfn:[]'
-#    wfn1 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.*", update="beta", edition=ANY]'
-
-#    wfn2 = 'wfn:[part="o", vendor="microsoft", product="windows", version="8\.0*", update="sp2", edition=ANY]'
-
-#    c1 = CPE2_3_WFN(wfn1)
-#    c2 = CPE2_3_WFN(wfn2)
-#    s = CPESet2_3()
-#    s.append(c1)
-#    s.append(c2)
-#    wfn3 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001"]'
-
-#    c3 = CPE2_3_WFN(wfn3)
-
-#    print(s.__unicode__())
-#    print(c3)
-#    print(s.name_match(c3))
 
     import doctest
     doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
