@@ -46,7 +46,7 @@ class CPELanguage2_3(object):
 
         for n in cpeset:
             # Need to convert each n from bound form to WFN
-            if (CPESet2_3.cpe_superset(wfn, CPELanguage2_3._unbind(n))):
+            if (CPESet2_3.cpe_superset(wfn, CPELanguage2_3._unbind(n.cpe_str))):
                 return True
 
         return False
@@ -63,15 +63,15 @@ class CPELanguage2_3(object):
             # Perform an OVAL check.
             # First attribute is the URI of an OVAL definitions file.
             # Second attribute is an OVAL definition ID.
-            return ovalcheck(cpel_dom.getAttribute(CHECK_LOCATION),
-                             cpel_dom.getAttribute(CHECK_ID))
+            return CPELanguage2_3.ovalcheck(cpel_dom.getAttribute(CHECK_LOCATION),
+                                            cpel_dom.getAttribute(CHECK_ID))
 
         if (checksystemID == "http://scap.nist.gov/schema/ocil/2"):
             # Perform an OCIL check.
             # First attribute is the URI of an OCIL questionnaire file.
             # Second attribute is OCIL questionnaire ID.
-            return ocilcheck(cpel_dom.getAttribute(CHECK_LOCATION),
-                             cpel_dom.getAttribute(CHECK_ID))
+            return CPELanguage2_3.ocilcheck(cpel_dom.getAttribute(CHECK_LOCATION),
+                                            cpel_dom.getAttribute(CHECK_ID))
 
         # Can add additional check systems here, with each returning a
         # True, False, or Error value
@@ -137,8 +137,7 @@ class CPELanguage2_3(object):
         return self.expression
 
     def language_match(self, cpeset, cpel_dom=None):
-        r
-        """
+        r"""
         Accepts a set of known CPE Names and an expression in the CPE language,
         and delivers the answer 'true' if the expression matches with the set.
         Otherwise, it returns 'false'.
@@ -153,11 +152,25 @@ class CPELanguage2_3(object):
             - True if self expression can be satisfied by language matching
               against cpeset, False otherwise.
 
-        - TEST: matching
+        - TEST: not matching (there are undefined values)
         >>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform id="123"><cpe:title>Sun Solaris 5.8 or 5.9 with BEA Weblogic 8.1 installed</cpe:title><cpe:logical-test operator="AND" negate="FALSE"><cpe:logical-test operator="OR" negate="FALSE"><cpe:fact-ref name="cpe:2.3:o:sun:solaris:5.8:*:*:*:*:*:*:*" /><cpe:fact-ref name="cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*" /></cpe:logical-test><cpe:fact-ref name="cpe:2.3:a:bea:weblogic:8.1:*:*:*:*:*:*:*" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
 
         >>> c1 = CPE2_3_FS('cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*')
         >>> c2 = CPE2_3_FS('cpe:2.3:a:bea:weblogic:8.*:*:*:*:*:*:*:*')
+
+        >>> s = CPESet2_3()
+        >>> s.append(CPE2_3_WFN.unbind_fs(c1))
+        >>> s.append(CPE2_3_WFN.unbind_fs(c2))
+
+        >>> l = CPELanguage2_3(document)
+        >>> l.language_match(s)
+        False
+
+        - TEST: matching
+        >>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform id="123"><cpe:title>Sun Solaris 5.8</cpe:title><cpe:logical-test operator="AND" negate="FALSE"><cpe:fact-ref name="cpe:2.3:a:bea:weblogic:8.*:*:*:*:*:*:*:*" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
+
+        >>> c1 = CPE2_3_FS('cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*')
+        >>> c2 = CPE2_3_FS('cpe:2.3:a:bea:weblogic:8.1:*:*:*:*:*:*:*')
 
         >>> s = CPESet2_3()
         >>> s.append(CPE2_3_WFN.unbind_fs(c1))
@@ -208,8 +221,8 @@ class CPELanguage2_3(object):
             # fact-ref's name attribute is a bound name,
             # so we unbind it to a WFN before passing it
             cpename = cpel_dom.getAttribute('name')
-            return CPELanguage2_3._fact_ref_eval(cpeset,
-                                                 CPELanguage2_3._unbind(cpename))
+            wfn = CPELanguage2_3._unbind(cpename)
+            return CPELanguage2_3._fact_ref_eval(cpeset, wfn)
 
         # Identify a check of CPE names (OVAL, OCIL...)
         elif cpel_dom.nodeName == CHECK_CPE_TAG:
@@ -249,7 +262,12 @@ class CPELanguage2_3(object):
         else:
             return False
 
-if __name__ == "__main__":
+    def ovalcheck(location, oval_id):
+        pass
 
+    def ocilcheck(location, ocil_id):
+        pass
+
+if __name__ == "__main__":
     import doctest
     doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)

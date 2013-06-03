@@ -955,14 +955,14 @@ class CPE2_3_WFN(CPE2_3):
         - TEST: existing item
         >>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
         >>> c = CPE2_3_WFN(wfn)
-        >>> c[0] == 'a'
-        True
+        >>> c[0]
+        'a'
 
         - TEST: existing item
         >>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
         >>> c = CPE2_3_WFN(wfn)
-        >>> c[6] == "x32"
-        True
+        >>> c[6]
+        'x32'
 
         - TEST: not existing valid item
         >>> wfn = 'wfn:[part="h", vendor="hp", product=ANY, version=NA, target_hw="x32"]'
@@ -989,9 +989,9 @@ class CPE2_3_WFN(CPE2_3):
 
         for idx in range(0, len(keys)):
             part_key = CPE2_3.wfn_ordered_part_dict[idx]
-            value = CPE2_3_WFN._get_str_value_dict(self._cpe_dict[part_key])
+            value = self._cpe_dict[part_key]
 
-            if value != CPE2_3_WFN.VALUE_NULL:
+            if value != CPE2_3_WFN._VALUE_INT_NULL:
                 if count == i:
                     # Found elem
                     break
@@ -999,7 +999,7 @@ class CPE2_3_WFN(CPE2_3):
                     # Count not null element
                     count += 1
 
-        return value
+        return CPE2_3_WFN._get_str_value_dict(value)
 
     def __eq__(self, cpe):
         """
@@ -1245,7 +1245,9 @@ class CPE2_3_WFN(CPE2_3):
             msg = "Attribute '%s' not valid" % att
             raise ValueError(msg)
 
-        return self.get_wfn_string()
+        self.cpe_str = self.get_wfn_string()
+        self.str = self.cpe_str
+        return self.cpe_str
 
     def get_wfn_string(self):
         """
@@ -1505,7 +1507,7 @@ class CPE2_3_WFN(CPE2_3):
         >>> wfn = 'wfn:[]'
         >>> c = CPE2_3_WFN(wfn)
         >>> c.getPart()
-        ''
+        'ANY'
         """
 
         return CPE2_3_WFN._get_str_value_dict(self._cpe_dict[CPE2_3.KEY_PART])
