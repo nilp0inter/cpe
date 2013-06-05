@@ -1,25 +1,197 @@
-CPE library
+CPE PACKAGE
 ===========
 
-This package implements the validation of both CPE names and platforms
-(set of CPE names), and the comparisons between them.
+This file intended to be a small tutorial about cpe package. It contains a brief introduction about Common Platform Enumeration (CPE) specification, the CPE version list implemented in this package and some use examples.
 
-The versions of CPE implemented are: 1.1, 2.2 and 2.3.
+<h2 id="index">Index</h2>
 
-The functionality offered of each version is associated with
-CPE naming, CPE name matching and CPE language matching.
+1.   [Introduction](#intro)
+2.   [CPE version list implemented](#versions)
+3.   [References](#references)
+4.   [Installation](#install)
+5.   [Use](#use)
+    * [Naming](#naming)
+    * [Name matching](#matching)
+    * [Language matching](#language)
+    
+<h2 id="intro">1. Introduction</h2>
 
-Installation
-------------
-Install the package using pip::
+Common Platform Enumeration (CPE) is a standardized method of describing and identifying classes of applications, operating systems, and hardware devices present among an enterprise's computing assets. CPE does not identify unique instantiations of products on systems, such as the installation of XYZ Visualizer Enterprise Suite 4.2.3 with serial number Q472B987P113. Rather, CPE identifies abstract classes of products, such as XYZ Visualizer Enterprise Suite 4.2.3, XYZ Visualizer Enterprise Suite (all versions), or XYZ Visualizer (all variations).
+
+IT management tools can collect information about installed products, identifying these products using their CPE names, and then use this standardized information to help make fully or partially automated decisions regarding the assets. For example, identifying the presence of XYZ Visualizer Enterprise Suite could trigger a vulnerability management tool to check the system for known vulnerabilities in the software, and also trigger a configuration management tool to verify that the software is configured securely in accordance with the organization's policies. This example illustrates how CPE names can be used as a standardized source of information for enforcing and verifying IT management policies across tools [[1]][cpe].
+
+CPE provides [[2]][about_cpe]:
+
+*   A standard machine-readable format for encoding names of IT products and platforms (naming).
+*   A set of procedures for comparing names (name matching).
+*   A language for constructing "applicability statements" that combine CPE names with simple logical operators (language matching).
+*   A standard notion of a CPE Dictionary.
+
+For more information, please visit the official website of CPE, maintained by MITRE: http://cpe.mitre.org/
+
+[--- Return to index ---](#index)
+
+<h2 id="versions">2. CPE version list implemented</h2>
+
+This package implements the validation of both CPE names and platforms set of CPE names), and the comparisons between them, corresponding to some versions of CPE specification [[3]][cpe_archive].
+
+Below is the functionality implemented in this package, associated with versions 1.1, 2.2 and 2.3 of CPE specification:
+
+*   Version 1.1 [[4]][cpe11]:
+    *   CPE naming
+    *   CPE name matching
+    *   CPE language matching (not official)
+*   Version 2.2 [[5]][cpe22]:
+    *   CPE naming
+    *   CPE name matching
+    *   CPE language matching
+*   Version 2.3:
+    *   CPE naming [[6]][cpe23_naming]
+    *   CPE name matching [[7]][cpe23_matching]
+    *   CPE language matching [[8]][cpe23_language]
+
+[--- Return to index ---](#index)
+
+<h2 id="references">3. References</h2>
+
+[1] CPE: [http://scap.nist.gov/specifications/cpe/] [cpe]
+[2] About CPE: [http://cpe.mitre.org/about/] [about_cpe]
+[3] CPE Archive: [http://cpe.mitre.org/cpe/archive/] [cpe_archive]
+[4] CPE 1.1: [http://cpe.mitre.org/specification/1.1/cpe-specification_1.1.pdf] [cpe11]
+[5] CPE 2.2: [http://cpe.mitre.org/specification/2.2/cpe-specification_2.2.pdf] [cpe22]
+[6] CPE 2.3 - Naming Specification: [http://csrc.nist.gov/publications/nistir/ir7695/NISTIR-7695-CPE-Naming.pdf] [cpe23_naming]
+[7] CPE 2.3 - Name Matching Specification: [http://csrc.nist.gov/publications/nistir/ir7696/NISTIR-7696-CPE-Matching.pdf] [cpe23_matching]
+[8] CPE 2.3 - Applicability Language Specification: [http://csrc.nist.gov/publications/nistir/ir7698/NISTIR-7698-CPE-Language.pdf] [cpe23_language]
+
+[cpe]: http://scap.nist.gov/specifications/cpe/
+[about_cpe]: http://cpe.mitre.org/about/
+[cpe_archive]: http://cpe.mitre.org/cpe/archive/
+[cpe11]: http://cpe.mitre.org/specification/1.1/cpe-specification_1.1.pdf
+[cpe22]: http://cpe.mitre.org/specification/2.2/cpe-specification_2.2.pdf
+[cpe23_naming]: http://csrc.nist.gov/publications/nistir/ir7695/NISTIR-7695-CPE-Naming.pdf
+[cpe23_matching]: http://csrc.nist.gov/publications/nistir/ir7696/NISTIR-7696-CPE-Matching.pdf
+[cpe23_language]: http://csrc.nist.gov/publications/nistir/ir7698/NISTIR-7698-CPE-Language.pdf
+
+[--- Return to index ---](#index)
+
+<h2 id="install">4. Installation</h2>
+Install the package using pip:
 
     pip install cpe
 
-Use
----
+[--- Return to index ---](#index)
 
-NAMING: To create a new CPE name::
+<h2 id="use">5. Use</h2>
 
-NAME MATCHING: To create a new set of CPE names::
+This section explains with several examples how to use this package to create a CPE name in a particular version of CPE specification.
 
-LANGUAGE MATCHING:::
+[--- Return to index ---](#index)
+
+<h3 id="naming">Naming</h3>
+
+To create a new CPE name the package provides a generator class of CPE objects called FactoryCPE. It implements the factory pattern and receive three parameters: version of CPE specification, binding style (only for version 2.3 of CPE), and URI associated with CPE name.
+
+In the following example, they are created some CPE names of version 1.1:
+
+*   A CPE name with both operating system and application parts: cpe://redhat:enterprise_linux:3:as/apache:httpd:2.0.52
+*   A CPE name with a operating system part and two elements in application part: cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0
+*   A CPE name with operators in operating system part: cpe://microsoft:windows:xp!vista
+ 
+Some commands of package in Python console are shown below:
+
+    >>> from cpe.factorycpe import FactoryCPE
+    >>> from cpe import CPE
+    >>> uri1v11 = 'cpe://redhat:enterprise_linux:3:as/apache:httpd:2.0.52'
+    >>> cpe1v11= FactoryCPE.get_cpe(version=CPE.VERSION_1_1, style='', cpe_str=uri1v11)
+    
+    >>> cpe1v11.version
+    '1.1'
+    >>> cpe1v11.getAppVendorList()
+    ['apache']
+    >>> cpe1v11.getAppProductList()
+    ['httpd']
+    >>> cpe1v11.getOsVersionList()
+    ['3']
+
+    >>> uri2v11 = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+    >>> cpe2v11= FactoryCPE.get_cpe(version=CPE.VERSION_1_1, style='', cpe_str=uri2v11)
+    >>> cpe2v11.getAppVendorList()
+    ['bea', 'mysql']
+
+    >>> uri3v11 = 'cpe://microsoft:windows:xp!vista'
+    >>> cpe3v11= FactoryCPE.get_cpe(version=CPE.VERSION_1_1, style='', cpe_str=uri3v11)
+    >>> cpe3v11.getOsVersionList()
+    ['xp', 'vista']
+
+In the following example, they are created some CPE names of version 2.3:
+
+*   A CPE name in WFN style with application part: wfn:[part="o", vendor="acme", product="producto", version="1\.0", update="update2", edition="pro", language="en-us"]
+*   A CPE name in URI style with edition element packed: cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~
+
+Some commands of package in Python console are shown below:
+
+    >>> from cpe.cpe2_3 import CPE2_3
+    >>> wfn1v23 = 'wfn:[part="o", vendor="acme", product="producto", version="1\.0", update="update2", edition="pro", language="en-us"]'
+    >>> cpe1v23= FactoryCPE.get_cpe(version=CPE.VERSION_2_3, style=CPE2_3.STYLE_WFN, cpe_str=wfn1v23)
+    
+    >>> cpe1v23.version
+    '2.3'
+    >>> cpe1v23.style
+    'WFN'
+    >>> cpe1v23.getVendor()
+    'acme'
+    >>> cpe1v23.getEdition()
+    'pro'
+    >>> cpe1v23.getEditionElements()
+    ['', '', 'online', 'win2003', 'x64', '']
+
+    >>> uri2v23 = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
+    >>> cpe2v23= FactoryCPE.get_cpe(version=CPE.VERSION_2_3, style=CPE2_3.STYLE_URI, cpe_str=uri2v23)
+    
+    >>> cpe2v23.version
+    '2.3'
+    >>> cpe2v23.getVendor()
+    'hp'
+    >>> cpe2v23.getEdition()
+    '~~online~win2003~x64~'
+    >>> cpe2v23.getEditionElements()
+    ['', '', 'online', 'win2003', 'x64', '']
+
+[--- Return to index ---](#index)
+
+<h3 id="matching">Name matching</h3>
+
+To create a set of CPE name the package provides the CPESetX_Y class, where X_Y is the version of CPE specification used. The name_match function of set allows do the name matching of CPE specification.
+
+In the following example, it is created a set of CPE names of version 1.1 and do two name matching:
+
+    >>> from cpe.cpeset1_1 import CPESet1_1
+    >>> set1v11 = CPESet1_1()
+    >>> set1v11.append(cpe1v11)
+    >>> set1v11.append(cpe2v11)
+    >>> set1v11.append(cpe3v11)
+
+    >>> set1v11.name_match(cpe11)
+    True
+
+    >>> cpe_uri_4 = 'cpe:/h:noexists'
+    >>> cpe4v11= FactoryCPE.get_cpe(version=CPE.VERSION_1_1, style='', cpe_str=cpe_uri_4)
+    >>> set1v11.name_match(cpe4v11)
+    >>> False
+
+[--- Return to index ---](#index)
+
+<h3 id="language">Language matching</h3>
+
+To create an expression of CPE Language the package provides the CPELanguageX_Y class, where X_Y is the version of CPE specification used. The language_match function of class allows do the language matching of CPE specification.
+
+In the following example, it is created an expression of CPE language of version 1.1 (functionality not official) and do language matching:
+
+    >>> from cpe.cpelang1_1 import CPELanguage1_1
+
+    >>> doc1v11 = '''<?xml version="1.0" encoding="UTF-8"?><cpe-list xmlns="http://cpe.mitre.org/XMLSchema/cpe/1.0"><cpe-item name="cpe://redhat:enterprise_linux:3"><title>Red Hat Enterprise Linux 3</title></cpe-item><cpe-item name="cpe://sun:sunos:5.8"><title>Sun Microsystems SunOS 5.8</title><notes><note>Also known as Solaris 8</note></notes></cpe-item><cpe-item name="cpe://microsoft:windows:2003"><title>Microsoft Windows Server 2003></title><check system="http://oval.mitre.org/XMLSchema/oval-definitions-5">oval:org.mitre.oval:def:128</check></cpe-item><cpe-item name="cpe:/intel:ia-64:itanium"><title>Intel Itanium (IA-64)</title></cpe-item></cpe-list>'''
+    >>> lang11 = CPELanguage1_1(doc1v11)
+    >>> lang11.language_match(set1v11)
+    True
+
+[--- Return to index ---](#index)
