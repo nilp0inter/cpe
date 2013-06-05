@@ -1,13 +1,45 @@
-Metadata-Version: 1.0
+Metadata-Version: 1.1
 Name: cpe
-Version: 0.1dev
-Summary: Contains classes for treatment of CPE names of 1.1, 2.2 and 2.3 versions of CPE (Common Platform Enumeration) specification
-Home-page: UNKNOWN
+Version: 1.0dev
+Summary:               Classes to create and operate with CPE names of 1.1, 2.2 and 2.3
+              versions of CPE (Common Platform Enumeration) specification
+Home-page: http://packages.python.org/cpe
 Author: Alejandro Galindo
 Author-email: alejandro.galindo@innovation4security.com
-License: UNKNOWN
-Description: This package implement the validation of both CPE names and platforms (set of
-        CPE names), and the comparisons between them.The versions of CPE implemented are: 1.1, 2.2 and 2.3.The functionality offered of each version is associated
-        with CPE naming, CPE name matching and CPE language matching
-Keywords: CPE naming matching language platform standard specification
+License: GPLv3
+Description: CPE library
+        ===========
+        
+        This package implements the validation of both CPE names and platforms
+        (set of CPE names), and the comparisons between them.
+        
+        The versions of CPE implemented are: 1.1, 2.2 and 2.3.
+        
+        The functionality offered of each version is associated with
+        CPE naming, CPE name matching and CPE language matching.
+        
+        Installation
+        ------------
+        Install the package using pip::
+        
+            pip install cpe
+        
+        Use
+        ---
+        
+        NAMING: To create a new CPE name::
+        
+        NAME MATCHING: To create a new set of CPE names::
+        
+        LANGUAGE MATCHING:::
+        
+Keywords: cpe naming matching language platform standard specification
 Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Console
+Classifier: Intended Audience :: Information Technology
+Classifier: Intended Audience :: System Administrators
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 2.7

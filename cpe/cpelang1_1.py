@@ -1,20 +1,38 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-File: cpelang1_1.py
-Author: Alejandro Galindo
-Date: 06-05-2013
-Description: Implementation of CPE language matching algorithm
-             in accordance with version 1.1 of specification CPE
-             (Common Platform Enumeration).
 
-             This class allows:
-             - match a CPE element against an expression in the CPE Language,
-             that is, a XML document format for binding descriptive prose and
-             diagnostic test to a CPE Name (CPE Description Format).
-"""
+'''
+This file is part of cpe package.
 
+This module is a not official implementation of CPE language matching
+algorithm of version 1.1 of CPE (Common Platform
+Enumeration) specification, based on CPE language matching
+algorith of version 2.2 of CPE specification. This algorithm operates
+with XML documents in accordance with the CPE Description Format Schema
+of version 1.1 of CPE.
+
+The CPE language matching algorithm of version 1.1 of CPE specification
+is not defined.
+
+Copyright (C) 2013  Roberto A. Martínez, Alejandro Galindo
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+For any problems using the cpe package, or general questions and
+feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+'''
 
 from cpe1_1 import CPE1_1
 from cpeset1_1 import CPESet1_1
@@ -25,6 +43,11 @@ from xml.dom import minidom
 class CPELanguage1_1(object):
     """
     Represents an expression in the CPE Language.
+
+    This class allows match a CPE element against an expression
+    in the CPE Language, that is, a XML document format for
+    binding descriptive prose and diagnostic test to a CPE name
+    (CPE Description Format).
     """
 
     ####################
@@ -33,8 +56,8 @@ class CPELanguage1_1(object):
 
     def __init__(self, expression, isFile=False):
         """
-        Create an object that contains the input expression in
-        the CPE Language (a set of CPE Names) and
+        Creates an object that contains the input expression in
+        the CPE Language (a set of CPE names) and
         the DOM tree asociated with expression.
 
         Input:
@@ -58,16 +81,16 @@ class CPELanguage1_1(object):
 
     def __unicode__(self):
         """
-        Print CPE name as string.
+        Prints CPE name as string.
         """
 
         return self.expression
 
     def language_match(self, cpeset, cpel_dom=None):
         """
-        Accepts a set of known CPE Names and an expression in the CPE language,
-        and delivers the answer 'true' if the expression matches with the set.
-        Otherwise, it returns 'false'.
+        Accepts a set of known CPE names and an expression in the CPE language,
+        and returns True if the expression matches with the set.
+        Otherwise, it returns False.
 
         Inputs:
             - self: An expression in the CPE Language, represented as
@@ -123,4 +146,4 @@ class CPELanguage1_1(object):
 if __name__ == "__main__":
 
     import doctest
-    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
+    doctest.testmod()

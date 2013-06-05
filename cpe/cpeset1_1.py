@@ -1,26 +1,45 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-File: cpeset1_1.py
-Author: Alejandro Galindo
-Date: 18-04-2013
-Description: Implementation of matching algorithm
-             in accordance with version 1.1 of specification CPE
-             (Common Platform Enumeration).
 
-             This class allows:
-             - create set of CPE elements
-             - match a CPE element against a set of CPE elements
-"""
+'''
+This file is part of cpe package.
+
+This module is an implementation of name matching
+algorithm in accordance with version 1.1 of CPE (Common Platform
+Enumeration) specification.
+
+Copyright (C) 2013  Roberto A. Martínez, Alejandro Galindo
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+For any problems using the cpe package, or general questions and
+feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+'''
 
 
+from cpe import CPE
 from cpe1_1 import CPE1_1
 
 
 class CPESet1_1(object):
     """
-    Represents a set of CPEs.
+    Represents a set of CPE names.
+
+    This class allows:
+        - create set of CPE elements.
+        - match a CPE element against a set of CPE elements.
     """
 
     ###################
@@ -30,7 +49,7 @@ class CPESet1_1(object):
     @classmethod
     def _compare_subcomp(cls, x, y):
         """
-        Compares two subcomponents of CPE name.
+        Compares two subcomponents of a CPE name.
 
         In next example, a and b are components with a subcomponent.
         c1, c2 and c3 are subcomponents of last component.
@@ -150,7 +169,7 @@ class CPESet1_1(object):
 
     def __init__(self):
         """
-        Create an empty set of CPEs.
+        Creates an empty set of CPE names.
         """
         self.K = []
 
@@ -204,7 +223,7 @@ class CPESet1_1(object):
 
     def __unicode__(self):
         """
-        Returns CPE set as string.
+        Returns a CPE set as string.
 
         - TEST: empty set
         >>> s = CPESet1_1()
@@ -238,6 +257,10 @@ class CPESet1_1(object):
         Adds a CPE element to the set if not already.
         """
 
+        if cpe.version != CPE.VERSION_1_1:
+            msg = "CPE name version %s not valid, version 1.1 expected" % cpe.version
+            raise ValueError(msg)
+
         for k in self.K:
             if cpe.str == k.str:
                 return None
@@ -246,14 +269,14 @@ class CPESet1_1(object):
 
     def name_match(self, cpe):
         """
-        Accepts a set of known instance CPE Names and a candidate CPE Name,
-        and delivers the answer 'True' if the candidate can be shown to be
+        Accepts a set of known instances of CPE names and a candidate CPE name,
+        and returns 'True' if the candidate can be shown to be
         an instance based on the content of the known instances.
         Otherwise, it returns 'False'.
 
         Inputs:
-            - self: A set of m known CPE Names K = {K1, K2, …, Km}.
-            - cpe: A candidate CPE Name X.
+            - self: A set of m known CPE names K = {K1, K2, …, Km}.
+            - cpe: A candidate CPE name X.
         Output:
             - True if X matches K, otherwise False.
 
@@ -280,6 +303,32 @@ class CPESet1_1(object):
         >>> c3 = CPE1_1(uri3)
         >>> s.name_match(c3)
         True
+
+        - TEST: matching with empty CPE name
+        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
+        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+        >>> c1 = CPE1_1(uri1)
+        >>> c2 = CPE1_1(uri2)
+        >>> s = CPESet1_1()
+        >>> s.append(c1)
+        >>> s.append(c2)
+        >>> uri3 = 'cpe:/'
+        >>> c3 = CPE1_1(uri3)
+        >>> s.name_match(c3)
+        True
+
+        - TEST: not matching with CPE name
+        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
+        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+        >>> c1 = CPE1_1(uri1)
+        >>> c2 = CPE1_1(uri2)
+        >>> s = CPESet1_1()
+        >>> s.append(c1)
+        >>> s.append(c2)
+        >>> uri3 = 'cpe://noexists'
+        >>> c3 = CPE1_1(uri3)
+        >>> s.name_match(c3)
+        False
 
         - TEST: matching with ANY values explicit
         >>> uri1 = 'cpe://microsoft:windows:xp!vista'
@@ -330,6 +379,8 @@ class CPESet1_1(object):
 
         # There are not a CPE name string in set equal to
         # input CPE name string
+        match = False
+
         for p in CPE1_1.cpe_part_keys:
             elems_cpe = cpe._cpe_dict[p]
             for ec in elems_cpe:
@@ -346,8 +397,6 @@ class CPESet1_1(object):
                         for ek in elems_k:
 
                             # Matching
-
-                            match = False
 
                             # Each component in element ec is compared with
                             # each component in element ek
@@ -405,4 +454,4 @@ class CPESet1_1(object):
 if __name__ == "__main__":
 
     import doctest
-    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
+    doctest.testmod()

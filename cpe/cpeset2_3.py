@@ -1,29 +1,45 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-File: cpeset2_3.py
-Author: Alejandro Galindo
-Date: 22-05-2013
-Description: Implementation of matching algorithm
-             in accordance with version 2.3 of specification CPE
-             (Common Platform Enumeration).
 
-             This class allows:
-             - create set of CPE elements
-             - match a CPE element against a set of CPE elements
-"""
+'''
+This file is part of cpe package.
 
+This module is an implementation of name matching
+algorithm in accordance with version 2.3 of CPE (Common Platform
+Enumeration) specification.
 
+Copyright (C) 2013  Alejandro Galindo
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+For any problems using the cpe package, or general questions and
+feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+'''
+
+from cpe import CPE
 from cpe2_3 import CPE2_3
 from cpe2_3_wfn import CPE2_3_WFN
-
-import re
 
 
 class CPESet2_3(object):
     """
     Represents a set of CPEs.
+
+    This class allows:
+    - create set of CPE elements.
+    - match a CPE element against a set of CPE elements.
     """
 
     ###############
@@ -421,12 +437,6 @@ class CPESet2_3(object):
 
         return False
 
-        # wildcard_pattern = "[^\\\](\*|\?)"
-        #wildcard_rxc = re.compile(wildcard_pattern)
-        #wildcard_match = wildcard_rxc.search(s)
-
-        #return wildcard_match is not None
-
     @classmethod
     def isEvenWildcards(cls, str, idx):
         """
@@ -530,6 +540,10 @@ class CPESet2_3(object):
         Adds a CPE element to the set if not already.
         Only WFN CPE names are valid.
         """
+
+        if cpe.version != CPE.VERSION_2_3:
+            msg = "CPE name version %s not valid, version 2.3 expected" % cpe.version
+            raise ValueError(msg)
 
         if cpe.style != CPE2_3.STYLE_WFN:
             msg = "Only WFN CPE names are valid"

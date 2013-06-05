@@ -1,14 +1,31 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-File: factorycpe.py
-Author: Alejandro Galindo
-Date: 23-04-2013
-Description: Factory of CPE objects for creating various types of CPE name,
-             associated with the different versions of specification
-             Common Platform Enumeration (CPE).
-"""
+
+'''
+This file is part of cpe package.
+
+This module is an implementation of factory
+of CPE objects for creating various types of CPE names,
+
+Copyright (C) 2013  Alejandro Galindo
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+For any problems using the cpe package, or general questions and
+feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+'''
 
 from cpe import CPE
 from cpe1_1 import CPE1_1
@@ -19,7 +36,9 @@ from factorycpe2_3 import FactoryCPE2_3
 
 class FactoryCPE(object):
     """
-    This class implements the factory pattern that makes a class centralizes
+    Generator of CPE objects.
+
+    This class implements the factory pattern, that is, this class centralizes
     the creation of objects of a particular common subtype,
     hiding the user the requested object instance.
     """
@@ -40,7 +59,8 @@ class FactoryCPE(object):
     ###################
 
     @staticmethod
-    def get_cpe(version=CPE.VERSION_2_3, style=CPE2_3.STYLE_WFN, cpe_str="wfn:[]"):
+    def get_cpe(version=CPE.VERSION_2_3,
+                style=CPE2_3.STYLE_WFN, cpe_str="wfn:[]"):
         """
         Create a CPE name object associated with cpe_str string,
         accordance to a version of CPE specification. If version is 2.3 then
@@ -59,7 +79,7 @@ class FactoryCPE(object):
         <cpe2_2.CPE2_2 object at 0x...>
 
         - TEST: bad CPE name
-        >>> FactoryCPE.get_cpe("5.0", "", "cpe:/h:hp")
+        >>> FactoryCPE.get_cpe("5.0", "", "cpe:/h:hp") # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
         NotImplementedError: Version of CPE name not implemented
         """
@@ -75,4 +95,4 @@ class FactoryCPE(object):
 if __name__ == "__main__":
 
     import doctest
-    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
+    doctest.testmod()

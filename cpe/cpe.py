@@ -2,12 +2,30 @@
 # -*- coding: utf-8 -*-
 
 '''
-File: cpe.py
-Author: Alejandro Galindo
-Date: 23-05-2013
-Description: Contains the common characteristics of any type of CPE name,
-             associated with a version of Common Platform Enumeration (CPE)
-             specification.
+This file is part of cpe package.
+
+This module contains the common characteristics of
+any type of CPE name, associated with a version of Common Platform
+Enumeration (CPE) specification. The function is mainly related with
+initialization and printing of CPE names.
+
+Copyright (C) 2013  Alejandro Galindo, Roberto A. Martínez
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+For any problems using the cpe package, or general questions and
+feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
 import pprint
@@ -82,9 +100,9 @@ class CPE(object):
         self.cpe_str = cpe_str
 
         # Store CPE name with URI style:
-        #     CPE names are case-insensitive.
-        #     To reduce potential for confusion,
-        #     all CPE Names should be written in lowercase
+        # CPE names are case-insensitive.
+        # To reduce potential for confusion,
+        # all CPE Names should be written in lowercase.
         self.str = cpe_str.lower()
 
         # Dictionary to save CPE name data
@@ -100,7 +118,6 @@ class CPE(object):
     def __str__(self):
         """
         Returns a readable representation of CPE name.
-        Useful for users.
         """
 
         return self.__unicode__().encode('utf-8')
@@ -108,7 +125,6 @@ class CPE(object):
     def print_pretty_cpe(self):
         """
         Returns an unambiguous representation of CPE name.
-        Useful for programmers and debuggers.
         """
 
         pp = pprint.PrettyPrinter(indent=4, width=80)

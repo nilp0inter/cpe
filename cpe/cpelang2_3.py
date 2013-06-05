@@ -1,20 +1,32 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-File: cpelang2_3.py
-Author: Alejandro Galindo
-Date: 27-05-2013
-Description: Implementation of CPE Applicability Language matching algorithm
-             in accordance with version 2.3 of specification CPE
-             (Common Platform Enumeration).
 
-             This class allows:
-             - match a CPE element against an expression in the CPE Language,
-             that is, a XML document format for binding descriptive prose and
-             diagnostic test to a CPE Name (CPE Description Format).
-"""
+'''
+This file is part of cpe package.
 
+This module is an implementation of CPE language matching
+algorithm in accordance with version 2.3 of CPE (Common Platform
+Enumeration) specification.
+
+Copyright (C) 2013  Alejandro Galindo
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+For any problems using the cpe package, or general questions and
+feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+'''
 
 from cpe2_3 import CPE2_3
 from cpeset2_3 import CPESet2_3
@@ -28,6 +40,11 @@ from xml.dom import minidom
 class CPELanguage2_3(object):
     """
     Represents an expression in the CPE Language.
+
+    This class allows match a CPE element against an expression
+    in the CPE Language, that is, a XML document format for binding
+    descriptive prose and diagnostic test to a CPE name
+    (CPE Description Format).
     """
 
     ###################

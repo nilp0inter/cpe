@@ -1,16 +1,32 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-File: cpe2_2.py
-Author: Alejandro Galindo
-Date: 23-04-2013
-Description: Module for the treatment of identifiers of IT platforms
-             (hardware, operating systems or applications of system)
-             in accordance with version 2.2 of CPE
-             (Common Platform Enumeration) specification.
-"""
+'''
+This file is part of cpe package.
 
+This module is used to the treatment of identifiers
+of IT platforms (hardware, operating systems or applications of system)
+in accordance with version 2.2 of CPE (Common Platform Enumeration)
+specification.
+
+Copyright (C) 2013  Roberto A. Martínez, Alejandro Galindo
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+For any problems using the cpe package, or general questions and
+feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+'''
 
 from cpe import CPE
 
@@ -21,11 +37,11 @@ class CPE2_2(CPE):
     """
     Implementation of version 2.2 of CPE specification.
 
-    A CPE Name is a percent-encoded URI with each name
+    A CPE name is a percent-encoded URI with each name
     starting with the prefix (the URI scheme name) 'cpe:'.
 
     Each platform can be broken down into many distinct parts.
-    A CPE Name specifies a single part and is used to identify
+    A CPE name specifies a single part and is used to identify
     any platform that matches the description of that part.
     The distinct parts are:
 
