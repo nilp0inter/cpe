@@ -85,6 +85,8 @@ Install the package using pip:
 
 This section explains with several examples how to use this package to create a CPE name in a particular version of CPE specification.
 
+[--- Return to index ---](#index)
+
 <h3 id="naming">Naming</h3>
 
 To create a new CPE name the package provides a generator class of CPE objects called FactoryCPE. It implements the factory pattern and receive three parameters: version of CPE specification, binding style (only for version 2.3 of CPE), and URI associated with CPE name.
@@ -176,6 +178,8 @@ In the following example, it is created a set of CPE names of version 1.1 and do
     >>> cpe4v11= FactoryCPE.get_cpe(version=CPE.VERSION_1_1, style='', cpe_str=cpe_uri_4)
     >>> set1v11.name_match(cpe4v11)
     >>> False
+
+[--- Return to index ---](#index)
 
 <h3 id="language">Language matching</h3>
 
