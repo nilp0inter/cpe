@@ -1,0 +1,6 @@
+*.pyc
+*.swp
+*.txt
+*.bak*
+*.py.*
+*.oxps

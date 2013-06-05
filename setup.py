@@ -1,26 +1,40 @@
-from setuptools import setup, find_packages
-import sys, os
+#!/usr/bin/env python
+
+from setuptools import setup
+from setuptools import find_packages
+import sys
+import os
+
+
+# Utility function to read the README file.
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 version = '0.1'
 
 setup(name='cpe',
       version=version,
-      description="Contains classes for treatment of CPE identifiers",
-      long_description="""\
-This package validates CPE identifiers and platforms (set of CPE ids) and comparisons between them.""",
-      classifiers=[], # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-      keywords='CPE platform standard',
+      summary='Implementation of Common Platform Enumeration (CPE) specification'
+      description="""\
+              Package to create and operate with CPE names of 1.1, 2.2 and 2.3
+              versions of CPE (Common Platform Enumeration) specification""",
+      long_description=read('README'),
+      classifiers=[
+          "Development Status :: 5 - Production/Stable",
+          "Environment :: Console",
+          "Intended Audience :: Information Technology",
+          "Intended Audience :: System Administrators",
+          "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+          "Natural Language :: English",
+          "Operating System :: OS Independent",
+          "Programming Language :: Python :: 2.7"],
+      keywords='cpe identification naming matching standard specification',
       author='Alejandro Galindo',
-      author_email='alejandro.galindo.contractor@bbva.com',
-      url='',
-      license='',
+      author_email='galindo.garcia.alejandro@gmail.com',
+      maintainer='Alejandro Galindo',
+      maintainer_email='galindo.garcia.alejandro@gmail.com',
+      license='GPLv3',
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=False,
-      install_requires=[
-          # -*- Extra requirements: -*-
-      ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
       )
