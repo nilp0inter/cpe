@@ -45,6 +45,18 @@ class CPESet(object):
     #  OBJECT METHODS  #
     ####################
 
+    def __getitem__(self, i):
+        """
+        Returns the i'th CPE element of set.
+
+        INPUT:
+            - i: index of CPE element of set to return
+        OUTPUT:
+            - i'th CPE element of set found
+        """
+
+        return self.K[i]
+
     def __init__(self):
         """
         Creates an empty set of CPE names.
@@ -101,18 +113,6 @@ class CPESet(object):
 
         return len(self.K)
 
-    def __getitem__(self, i):
-        """
-        Returns the i'th CPE element of set.
-
-        INPUT:
-            - i: index of CPE element of set to return
-        OUTPUT:
-            - i'th CPE element of set found
-        """
-
-        return self.K[i]
-
     def __str__(self):
         """
         Returns a CPE set as string.
@@ -154,10 +154,10 @@ class CPESet(object):
         an instance based on the content of the known instances.
         Otherwise, it returns 'False'.
 
-        Inputs:
+        INPUT:
             - self: A set of m known CPE names K = {K1, K2, …, Km}.
             - cpe: A candidate CPE name X.
-        Output:
+        OUTPUT:
             - True if X matches K, otherwise False.
 
         - TEST: matching (identical cpe in set)
