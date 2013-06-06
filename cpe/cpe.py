@@ -29,6 +29,7 @@ feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
 from emptycpecomp import EmptyCPEComponent
+from undefinedcpecomp import UndefinedCPEComponent
 
 
 class CPE(dict):
@@ -122,10 +123,6 @@ class CPE(dict):
     STYLE_FS = "FS"
 
     VERSION = VERSION_UNDEFINED
-
-    ###############
-    #  VARIABLES  #
-    ###############
 
     ###################
     #  CLASS METHODS  #
@@ -245,52 +242,33 @@ class CPE(dict):
         >>> c = CPE(str)
         >>> len(c)
         4
+
+        - TEST: a CPE name of version 2.2 with a application part
+        >>> str = "cpe:/a:adobe:acrobat:6.0:pro"
+        >>> c = CPE(str)
+        >>> len(c)
+        5
         """
 
         count = 0
-        nullcomp = EmptyCPEComponent()
+        nullcomp = UndefinedCPEComponent()
 
         for part in CPE.CPE_PART_KEYS:
-            for elem in part:
+            elements = self.get(part)
+            for elem in elements:
                 for ck in CPE.CPE_COMP_KEYS:
-                    comp = elem[ck]
-
+                    comp = elem.get(ck)
                     if comp != nullcomp:
                         count += 1
 
         return count
 
-    def __unicode__(self):
-        """
-        Print CPE name as string.
-        """
-
-        return "CPE %s: %s" % (CPE.VERSION, self.cpe_str)
-
     def __str__(self):
         """
-        Returns a readable representation of CPE name.
+        Returns a human-readable representation of CPE name.
         """
 
-        return self.__unicode__().encode('utf-8')
-
-    def print_cpe(self):
-        """
-        Returns an unambiguous representation of CPE name.
-        """
-
-        txt = ""
-        for pk in CPE.CPE_PART_KEYS:
-            txt += "%s\n" % pk
-            elements = self.get(pk)
-            for i in range(0, len(elements)):
-                txt += "  elem %s\n" % i
-                for ck in CPE.CPE_COMP_KEYS:
-                    txt += "    %s\n" % ck
-                    comp = elements[i].get(ck)
-                    txt += "        %s\n" % comp
-
-        return txt
+        return "CPE v%s: %s" % (CPE.VERSION, self.cpe_str)
 
     def __getitem__(self, i):
         """
@@ -342,6 +320,68 @@ class CPE(dict):
                             raise IndexError(errmsg)
                     else:
                         count += 1
+
+    def _getPartCompNameList(self, part, index):
+        """
+        Returns the i'th component name of elements of input part.
+
+        INPUT:
+            - self: CPE name with data
+            - part: Type of part of system (hardware, os, application)
+            - index: position of component inside part
+        OUTPUT:
+            - list of subcomponents of i'th component
+        EXCEPTIONS:
+            - KeyError: incorrect part
+
+        - TEST: CPE name version 1.1 empty part and index not exists
+        >>> str = 'cpe://microsoft:windows:2000!2007'
+        >>> c = CPE(str)
+        >>> c._getPartCompNameList(CPE.KEY_HW, 2)
+        []
+
+        - TEST: CPE name version 1.1 not empty result
+        >>> str = 'cpe://microsoft:windows:2000!2007'
+        >>> c = CPE(str)
+        >>> c._getPartCompNameList(CPE.KEY_OS, 1)
+        ['windows']
+
+        - TEST: CPE name version 1.1 two elements in part
+        >>> str = 'cpe://microsoft:windows:2000!2007;linux:suse'
+        >>> c = CPE(str)
+        >>> c._getPartCompNameList(CPE.KEY_OS, 1)
+        ['windows', 'suse']
+        """
+
+        lc = []
+        if (part not in CPE.CPE_PART_KEYS):
+            errmsg = "Key '%s' is not exist" % part
+            raise KeyError(errmsg)
+
+        elements = self.get(part)
+        for elem in elements:
+            if len(elem) > index:
+                comp = elem[index]
+                lc.append(comp.__str__())
+        return lc
+
+    def print_cpe(self):
+        """
+        Returns an unambiguous representation of CPE name.
+        """
+
+        txt = ""
+        for pk in CPE.CPE_PART_KEYS:
+            txt += "%s\n" % pk
+            elements = self.get(pk)
+            for i in range(0, len(elements)):
+                txt += "  elem %s\n" % i
+                for ck in CPE.CPE_COMP_KEYS:
+                    txt += "    %s\n" % ck
+                    comp = elements[i].get(ck)
+                    txt += "      %s\n" % comp.__str__()
+
+        return txt
 
     def as_dict(self):
         """
@@ -427,50 +467,6 @@ class CPE(dict):
 
         elements = self.get(CPE.KEY_APP)
         return len(elements) > 0
-
-    def _getPartCompNameList(self, part, index):
-        """
-        Returns the i'th component name of elements of input part.
-
-        INPUT:
-            - self: CPE name with data
-            - part: Type of part of system (hardware, os, application)
-            - index: position of component inside part
-        OUTPUT:
-            - list of subcomponents of i'th component
-        EXCEPTIONS:
-            - KeyError: incorrect part
-
-        - TEST: CPE name version 1.1 empty part and index not exists
-        >>> str = 'cpe://microsoft:windows:2000!2007'
-        >>> c = CPE(str)
-        >>> c._getPartCompNameList(CPE.KEY_HW, 2)
-        []
-
-        - TEST: CPE name version 1.1 not empty result
-        >>> str = 'cpe://microsoft:windows:2000!2007'
-        >>> c = CPE(str)
-        >>> c._getPartCompNameList(CPE.KEY_OS, 1)
-        ['windows']
-
-        - TEST: CPE name version 1.1 two elements in part
-        >>> str = 'cpe://microsoft:windows:2000!2007;linux:suse'
-        >>> c = CPE(str)
-        >>> c._getPartCompNameList(CPE.KEY_OS, 1)
-        ['windows', 'suse']
-        """
-
-        lc = []
-        if (part not in CPE.CPE_PART_KEYS):
-            errmsg = "Key '%s' is not exist" % part
-            raise KeyError(errmsg)
-
-        elements = self.get(part)
-        for elem in elements:
-            if len(elem) > index:
-                comp = elem[index]
-                lc.append(comp.__str__())
-        return lc
 
     def getPart(self):
         """

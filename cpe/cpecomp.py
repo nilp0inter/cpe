@@ -37,11 +37,26 @@ class CPEComponent(object):
     #  CONSTANTS  #
     ###############
 
-    # Value that represents the logical value ANY in CPE specification.
-    ANY_VALUE = None
+    # Value of an empty component. For example, product in the CPE name
+    # cpe:/cisco::2345 of version 1.1 of CPE specification
+    EMPTY_VALUE = ""
 
-    # Value of a empty component
-    EMPTY_COMP_VALUE = ""
+    # Value of an undefined component. For example, edition in the CPE name
+    # cpe:/cisco::2345 of version 1.1 of CPE specification
+    UNDEFINED_VALUE = None
+
+    ###################
+    #  CLASS METHODS  #
+    ###################
+
+    @classmethod
+    def _isAnyValue(cls, value):
+        """
+        Returns True if value is an empty or undefined value.
+        """
+
+        return ((value == CPEComponent.EMPTY_VALUE) or
+               (value is CPEComponent.UNDEFINED_VALUE))
 
     ####################
     #  OBJECT METHODS  #
@@ -57,7 +72,11 @@ class CPEComponent(object):
             - None
         """
 
-        self._data = comp_str
+        if comp_str == CPEComponent.UNDEFINED_VALUE:
+            self._data = None
+        else:
+            self._data = [comp_str]
+
         self._is_negated = False
 
     def __eq__(self, other):
@@ -65,20 +84,81 @@ class CPEComponent(object):
         Returns True if self and other are equal components.
         """
 
-        if (self._data is CPEComponent.ANY_VALUE or
-           other._data is CPEComponent.ANY_VALUE):
+        return ((self._data == other._data) and
+               (self._is_negated == other._is_negated))
 
+    def __ne__(self, other):
+        """
+        Returns True if self and other are equal components.
+        """
+
+        return not (self == other)
+
+    def __contains__(self, item):
+        """
+        Returns True if item is included in set of values of self.
+
+        INPUT:
+            - self: set of elements
+            - item: elem to find in self
+        OUTPUT:
+            - True if item is included in set of self
+
+        TEST: a empty value with a single value
+        >>> comp1 = CPEComponent('xp')
+        >>> comp2 = CPEComponent('')
+        >>> comp1 in comp2
+        True
+
+        TEST: a empty value with a single value
+        >>> comp1 = CPEComponent('')
+        >>> comp2 = CPEComponent('xp')
+        >>> comp1 in comp2
+        False
+
+        TEST: two single equal values
+        >>> comp1 = CPEComponent('xp')
+        >>> comp2 = CPEComponent('xp')
+        >>> comp1 in comp2
+        True
+
+        TEST: two single different values
+        >>> comp1 = CPEComponent('vista')
+        >>> comp2 = CPEComponent('xp')
+        >>> comp1 in comp2
+        False
+
+        TEST: two single different values
+        >>> comp1 = CPEComponent('xp!vista')
+        >>> comp2 = CPEComponent('xp')
+        >>> comp1 in comp2
+        False
+        """
+
+        if ((self == item) or (self._data is CPEComponent.UNDEFINED_VALUE)):
             return True
 
-        return ((self._data == other._data) and
-                (self._is_negated == other._is_negated))
+        if len(self._data) == 1:
+            if self._data[0] == CPEComponent.EMPTY_VALUE:
+                return True
+
+        return False
 
     def __str__(self):
         """
-        Returns a readable representation of CPE component.
+        Returns a human-readable representation of CPE component.
         """
 
-        txt = "Negated: %s    " % self._is_negated
-        txt += "Data: %s" % self._data
+        if CPEComponent._isAnyValue(self._data):
+            txt = "<ANY>"
+        else:
+            txt = self._data
+
+        if self._is_negated:
+            txt = "NOT(%s)" % txt
 
         return txt
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

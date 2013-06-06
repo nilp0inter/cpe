@@ -31,6 +31,7 @@ feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 from cpe import CPE
 from cpecomp1_1 import CPEComponent1_1
 from emptycpecomp import EmptyCPEComponent
+from undefinedcpecomp import UndefinedCPEComponent
 
 import re
 
@@ -51,7 +52,7 @@ class CPE1_1(CPE):
     """
 
     ###############
-    #  VARIABLES  #
+    #  CONSTANTS  #
     ###############
 
     VERSION = CPE.VERSION_1_1
@@ -59,6 +60,38 @@ class CPE1_1(CPE):
     ####################
     #  OBJECT METHODS  #
     ####################
+
+    def __len__(self):
+        """
+        Returns the number of components of CPE name.
+
+        - TEST: a CPE name of version 1.1 with empty parts
+        >>> str = "cpe:///"
+        >>> c = CPE1_1(str)
+        >>> len(c)
+        0
+
+        - TEST: a CPE name of version 1.1 with two parts (hw and os) and
+        some elements empty and with values
+        >>> str = "cpe:/cisco::3825/cisco:ios:12.3:enterprise"
+        >>> c = CPE1_1(str)
+        >>> len(c)
+        7
+
+        - TEST: a CPE name of version 1.1 with a application part and
+        a component with two subcomponents
+        >>> str = "cpe:///adobe:acrobat:6.0:std!pro"
+        >>> c = CPE1_1(str)
+        >>> len(c)
+        4
+        """
+
+        count = 0
+        for part in CPE.CPE_PART_KEYS:
+            if len(self.get(part)) > 0:
+                count += 1
+
+        return super(CPE1_1, self).__len__() - count
 
     def __new__(cls, cpe_str, *args, **kwargs):
         """
@@ -138,6 +171,13 @@ class CPE1_1(CPE):
         super(CPE1_1, self).__init__(cpe_str)
         self._parse()
 
+    def __str__(self):
+        """
+        Returns a human-readable representation of CPE name.
+        """
+
+        return "CPE v%s: %s" % (CPE1_1.VERSION, self.cpe_str)
+
     def _parse(self):
         """
         Checks if the CPE name is valid.
@@ -180,12 +220,7 @@ class CPE1_1(CPE):
             part = parts_match.group(pk)
             elements = []
 
-            if (part is None):
-                # Part of CPE name not defined.
-                # Create a element and fill its components with empty values
-                elem_parts = dict()
-                elements.append(CPE._init_part(elem_parts))
-            else:
+            if (part is not None):
                 # Part of CPE name defined
 
                 # ###############################
@@ -194,7 +229,7 @@ class CPE1_1(CPE):
 
                 # semicolon (;) is used to separate the part elements
                 for part_elem in part.split(';'):
-                    j = 0
+                    j = 1
 
                     # ####################################
                     #  Validation of element components  #
@@ -217,10 +252,23 @@ class CPE1_1(CPE):
                                 raise ValueError(errmsg)
 
                         # Identification of component name
-                        key = CPE.ORDERED_COMP_PARTS[j+1]
+                        key = CPE.ORDERED_COMP_PARTS[j]
                         components[key] = comp
 
                         j += 1
+
+                    # Adds the undefined components
+                    for idx in range(j, len(CPE.CPE_COMP_KEYS)):
+                        key = CPE.ORDERED_COMP_PARTS[idx]
+                        components[key] = UndefinedCPEComponent()
+
+                    # Set the type of system associated with CPE name
+                    if (pk == CPE.KEY_HW):
+                        components[CPE.KEY_PART] = CPEComponent1_1(CPE.VALUE_PART_HW)
+                    elif (pk == CPE.KEY_OS):
+                        components[CPE.KEY_PART] = CPEComponent1_1(CPE.VALUE_PART_OS)
+                    elif (pk == CPE.KEY_APP):
+                        components[CPE.KEY_PART] = CPEComponent1_1(CPE.VALUE_PART_APP)
 
                     # Store the element identified
                     elements.append(components)
@@ -235,6 +283,5 @@ class CPE1_1(CPE):
         return self.cpe_str
 
 if __name__ == "__main__":
-
     import doctest
     doctest.testmod()

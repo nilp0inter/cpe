@@ -4,8 +4,7 @@
 '''
 This file is part of cpe package.
 
-This module allows to create an empty component of CPE name, that is,
-a defined component without value.
+This module allows to create an undefined component of CPE name.
 
 Copyright (C) 2013  Alejandro Galindo
 
@@ -29,20 +28,20 @@ feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 from cpecomp import CPEComponent
 
 
-class EmptyCPEComponent(CPEComponent):
+class UndefinedCPEComponent(CPEComponent):
     """
-    Represents an empty component of CPE name compatible with
+    Represents an undefined component of CPE name compatible with
     the components of all versions of CPE specification.
 
-    For example, in version 1.1 of CPE specification, an empty component
-    is product in CPE name cpe:/microsft::xp.
+    For example, in version 1.1 of CPE specification, an undefined component
+    is edition in CPE name cpe:/microsft:windows:xp.
     """
 
     ####################
     #  OBJECT METHODS  #
     ####################
 
-    def __init__(self, comp_str=CPEComponent.EMPTY_VALUE):
+    def __init__(self, comp_str=CPEComponent.UNDEFINED_VALUE):
         """
         Store the empty value of component.
 
@@ -52,4 +51,4 @@ class EmptyCPEComponent(CPEComponent):
             - None
         """
 
-        super(EmptyCPEComponent, self).__init__(comp_str)
+        super(UndefinedCPEComponent, self).__init__(comp_str)
