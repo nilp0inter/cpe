@@ -184,9 +184,15 @@ class CPEComponent1_1(CPEComponent):
         >>> comp1 in comp2
         True
 
-        TEST: an empty value and single value
+        TEST: a negate value and single value
         >>> comp1 = CPEComponent1_1('~xp')
         >>> comp2 = CPEComponent1_1('vista')
+        >>> comp1 in comp2
+        False
+
+        TEST: a negate value and single value
+        >>> comp1 = CPEComponent1_1('xp')
+        >>> comp2 = CPEComponent1_1('~vista')
         >>> comp1 in comp2
         True
         """
@@ -202,8 +208,8 @@ class CPEComponent1_1(CPEComponent):
         if len(dataset) == 1:
             valset = dataset[0]
             if ((valset == CPEComponent.EMPTY_VALUE) or
-               (valset != dataitem and
-               self._is_negated != item._is_negated)):
+               (valset != dataitem) and
+               self._is_negated and (not item._is_negated)):
                 return True
             else:
                 return False

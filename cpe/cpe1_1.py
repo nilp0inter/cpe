@@ -216,8 +216,8 @@ class CPE1_1(CPE):
 
         count = 0
         for part in CPE.CPE_PART_KEYS:
-            if len(self.get(part)) > 0:
-                count += 1
+            lenpart = len(self.get(part))
+            count += lenpart
 
         return super(CPE1_1, self).__len__() - count
 

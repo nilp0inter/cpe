@@ -28,11 +28,11 @@ For any problems using the cpe package, or general questions and
 feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
-
 from cpe import CPE
+from cpeset import CPESet
 
 
-class CPESet1_1(object):
+class CPESet1_1(CPESet):
     """
     Represents a set of CPE names.
 
@@ -45,92 +45,6 @@ class CPESet1_1(object):
     #  OBJECT METHODS  #
     ####################
 
-    def __init__(self):
-        """
-        Creates an empty set of CPE names.
-        """
-        self.K = []
-
-    def __len__(self):
-        """
-        Returns the count of CPE elements of set.
-
-        - TEST: empty set
-        >>> from cpe1_1 import CPE1_1
-        >>> s = CPESet1_1()
-        >>> len(s)
-        0
-
-        - TEST: set with two CPE elements
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> len(s)
-        2
-
-        - TEST: set with three CPE elements and one repeated
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.append(c2)
-        >>> len(s)
-        2
-
-        - TEST: set with three CPE elements and one repeated
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> c3 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.append(c3)
-        >>> len(s)
-        2
-        """
-
-        return len(self.K)
-
-    def __str__(self):
-        """
-        Returns a CPE set as string.
-        """
-
-        len = self.__len__()
-
-        str = "Set contains %s elements" % len
-        if len > 0:
-            str += ":\n"
-
-            for i in range(0, len):
-                str += "    %s" % self.K[i].__str__()
-
-                if i+1 < len:
-                    str += "\n"
-
-        return str
-
-    def __getitem__(self, i):
-        """
-        Returns the i'th CPE element of set.
-
-        INPUT:
-            - i: index of CPE element of set to return
-        OUTPUT:
-            - i'th CPE element of set found
-        """
-
-        return self.K[i]
-
     def append(self, cpe):
         """
         Adds a CPE element to the set if not already.
@@ -141,6 +55,15 @@ class CPESet1_1(object):
             - None
         EXCEPTIONS:
             - ValueError: Invalid version of CPE name
+
+        - TEST: set with invalid CPE name
+        >>> from cpe2_2 import CPE2_2
+        >>> uri = 'cpe:/o:sun:solaris:5.8'
+        >>> c = CPE2_2(uri)
+        >>> s = CPESet1_1()
+        >>> s.append(c)  #doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValueError: CPE name version 2.2 not valid, version 1.1 expected
         """
 
         if cpe.VERSION != CPE.VERSION_1_1:
@@ -169,6 +92,7 @@ class CPESet1_1(object):
 
         - TEST: matching with identical CPE in set
         >>> from cpe1_1 import CPE1_1
+        >>> from cpeset1_1 import CPESet1_1
         >>> uri1 = 'cpe://microsoft:windows:xp!vista'
         >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
         >>> c1 = CPE1_1(uri1)
@@ -237,6 +161,16 @@ class CPESet1_1(object):
         >>> s = CPESet1_1()
         >>> s.append(c1)
         >>> uri2 = 'cpe://microsoft:windows:vista'
+        >>> c2 = CPE1_1(uri2)
+        >>> s.name_match(c2)
+        False
+
+        - TEST: matching with NOT
+        >>> uri1 = 'cpe://microsoft:windows:xp'
+        >>> c1 = CPE1_1(uri1)
+        >>> s = CPESet1_1()
+        >>> s.append(c1)
+        >>> uri2 = 'cpe://microsoft:windows:~vista'
         >>> c2 = CPE1_1(uri2)
         >>> s.name_match(c2)
         True
