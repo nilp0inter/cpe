@@ -14,7 +14,9 @@ version = '0.1'
 
 setup(name='cpe',
       version=version,
-      summary='Implementation of Common Platform Enumeration (CPE) specification'
+      summary="""\
+              Implementation of Common Platform Enumeration (CPE)
+              specification""",
       description="""\
               Package to create and operate with CPE names of 1.1, 2.2 and 2.3
               versions of CPE (Common Platform Enumeration) specification""",

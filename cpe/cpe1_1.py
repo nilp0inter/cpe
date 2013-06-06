@@ -29,6 +29,8 @@ feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
 from cpe import CPE
+from cpecomp1_1 import CPEComponent1_1
+from emptycpecomp import EmptyCPEComponent
 
 import re
 
@@ -46,214 +48,117 @@ class CPE1_1(CPE):
 
     CPE name syntax:
     - cpe:/ {hardware-part} [ / {OS-part} [ / {application-part} ] ]
-
-    - TEST: an empty hardware part, and no OS or application part.
-    >>> str = 'cpe:/'
-    >>> CPE1_1(str) # doctest: +ELLIPSIS
-    <__main__.CPE1_1 object at 0x...>
-
-    - TEST: an application part
-    >>> str = 'cpe://microsoft:windows:2000'
-    >>> CPE1_1(str) # doctest: +ELLIPSIS
-    <__main__.CPE1_1 object at 0x...>
-
-    - TEST: an OS part with an application part
-    >>> str = 'cpe://redhat:enterprise_linux:3:as/apache:httpd:2.0.52'
-    >>> CPE1_1(str) # doctest: +ELLIPSIS
-    <__main__.CPE1_1 object at 0x...>
-
-    - TEST: an hardware part with OS part
-    >>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
-    >>> CPE1_1(str) # doctest: +ELLIPSIS
-    <__main__.CPE1_1 object at 0x...>
-
-    - TEST: an application part
-    >>> str = 'cpe:///microsoft:ie:6.0'
-    >>> CPE1_1(str) # doctest: +ELLIPSIS
-    <__main__.CPE1_1 object at 0x...>
-
-    - TEST: OS part with operator OR (two subcomponents)
-    >>> str = 'cpe://microsoft:windows:xp!vista'
-    >>> CPE1_1(str) # doctest: +ELLIPSIS
-    <__main__.CPE1_1 object at 0x...>
-
-    - TEST: OS part with operator NOT (a subcomponent)
-    >>> str = 'cpe://microsoft:windows:~xp'
-    >>> CPE1_1(str) # doctest: +ELLIPSIS
-    <__main__.CPE1_1 object at 0x...>
-
-    - TEST: OS part with two elements in application part
-    >>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
-    >>> CPE1_1(str) # doctest: +ELLIPSIS
-    <__main__.CPE1_1 object at 0x...>
-
-    - TEST: CPE with special characters
-    >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
-    >>> CPE1_1(str) # doctest: +ELLIPSIS
-    <__main__.CPE1_1 object at 0x...>
-
-    - TEST: bad URI syntax
-    >>> str = 'baduri'
-    >>> c = CPE1_1(str)
-    Traceback (most recent call last):
-    ValueError: Malformed CPE name: validation of parts failed
-
-    - TEST: URI with whitespaces
-    >>> str = 'cpe:/con espacios'
-    >>> c = CPE1_1(str)
-    Traceback (most recent call last):
-    ValueError: Malformed CPE name: it must not have whitespaces
-
-    - TEST: two operators in a subcomponent
-    >>> str = 'cpe://microsoft:windows:~2000!2007'
-    >>> c = CPE1_1(str)
-    Traceback (most recent call last):
-    ValueError: Malformed CPE name: operators '~' and '!' \
-    cannot be together in the same component
     """
-
-    ###############
-    #  CONSTANTS  #
-    ###############
-
-    # Dictionary keys associated with parts of CPE name
-    KEY_HW = "hw"
-    KEY_OS = "os"
-    KEY_APP = "app"
-
-    # Dictionary keys associated with component data of CPE name
-    KEY_COMP_OP = "op"
-    KEY_COMP_STR = "str"
-
-    # Possible values of operators in components of CPE name
-    VALUE_COMP_OP_OR = "!"
-    VALUE_COMP_OP_NOT = "~"
-    VALUE_COMP_OP_NONE = "None"
-    VALUE_COMP_OP_ANY = "ANY"
 
     ###############
     #  VARIABLES  #
     ###############
 
-    cpe_part_keys = [KEY_HW, KEY_OS, KEY_APP]
-
-    ###################
-    #  CLASS METHODS  #
-    ###################
-
-    @classmethod
-    def _create_comp(cls, str, op):
-        """
-        Returns a dictionary with component data: value str and operator op.
-        """
-
-        comp = dict()
-        comp[CPE1_1.KEY_COMP_OP] = op
-        comp[CPE1_1.KEY_COMP_STR] = str
-
-        return comp
+    VERSION = CPE.VERSION_1_1
 
     ####################
     #  OBJECT METHODS  #
     ####################
 
-    def __init__(self, cpe_str='cpe:/'):
+    def __new__(cls, cpe_str, *args, **kwargs):
         """
-        Checks if input CPE name defined with URI style is valid and,
+        Create a new CPE name of version 1.1.
+        """
+
+        return dict.__new__(cls)
+
+    def __init__(self, cpe_str, *args, **kwargs):
+        """
+        Checks if input CPE name is valid and,
         if so, stores its parts, elements and components.
-        """
 
-        CPE.__init__(self, cpe_str)
-        CPE.version = CPE.VERSION_1_1
-        self._validate()
+        INPUT:
+            - self: CPE name object
+            - cpe_str: CPE name string
+        OUTPUT:
+            - None
+        EXCEPTIONS:
+            - ValueError: CPE name bad-formed
 
-    def __len__(self):
-        """
-        Returns the number of components of CPE name.
-        "a!b" is a component, not two components.
+        - TEST: an empty hardware part, and no OS or application part.
+        >>> str = 'cpe:/'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
 
-        - TEST: a CPE name without components
-        >>> str = "cpe:///"
-        >>> c = CPE1_1(str)
-        >>> len(c)
-        0
+        - TEST: an application part
+        >>> str = 'cpe://microsoft:windows:2000'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
 
-        - TEST: a CPE name with some elements
-        >>> str = "cpe:/cisco::3825/cisco:ios:12.3:enterprise"
-        >>> c = CPE1_1(str)
-        >>> len(c)
-        7
+        - TEST: an OS part with an application part
+        >>> str = 'cpe://redhat:enterprise_linux:3:as/apache:httpd:2.0.52'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
 
-        - TEST: a component with two subcomponents
-        >>> str = "cpe:///adobe:acrobat:6.0:std!pro"
-        >>> c = CPE1_1(str)
-        >>> len(c)
-        4
-        """
+        - TEST: an hardware part with OS part
+        >>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
 
-        count = 0
+        - TEST: an application part
+        >>> str = 'cpe:///microsoft:ie:6.0'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
 
-        for pk in CPE1_1.cpe_part_keys:
-            elements = self._cpe_dict[pk]
-            for elem in elements:
-                for component in elem:
-                    count += 1
+        - TEST: OS part with operator OR (two subcomponents)
+        >>> str = 'cpe://microsoft:windows:xp!vista'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
 
-        return count
+        - TEST: OS part with operator NOT (a subcomponent)
+        >>> str = 'cpe://microsoft:windows:~xp'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
 
-    def __getitem__(self, i):
-        """
-        Returns the i'th component name of CPE name as a string.
+        - TEST: OS part with two elements in application part
+        >>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
 
-        - TEST
+        - TEST: CPE with special characters
         >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
-        >>> c = CPE1_1(str)
-        >>> c[1]
-        [{'str': 'sun@os', 'op': 'None'}]
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
 
-        - TEST
-        >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
-        >>> c = CPE1_1(str)
-        >>> c[6]
+        - TEST: bad URI syntax
+        >>> str = 'baduri'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
-        IndexError: Component index of CPE name out of range
+        ValueError: Malformed CPE name: validation of parts failed
 
-        - TEST
-        >>> str = 'cpe://'
-        >>> c = CPE1_1(str)
-        >>> c[6]
+        - TEST: URI with whitespaces
+        >>> str = 'cpe:/con espacios'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +IGNORE_EXCEPTION_DETAIL
         Traceback (most recent call last):
-        IndexError: Component index of CPE name out of range
+        ValueError: Malformed CPE name: it must not have whitespaces
+
+        - TEST: two operators in a subcomponent
+        >>> str = 'cpe://microsoft:windows:~2000!2007'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValueError: not correct value '~2000!2007'
         """
 
-        count = 0
+        super(CPE1_1, self).__init__(cpe_str)
+        self._parse()
 
-        for pk in CPE1_1.cpe_part_keys:
-            elements = self._cpe_dict[pk]
-            for elem in elements:
-                for comp in elem:
-                    if (count == i):
-                        return comp
-                    else:
-                        count += 1
-
-        msg = "Component index of CPE name out of range"
-        raise IndexError(msg)
-
-    def _validate(self):
+    def _parse(self):
         """
-        Checks if CPE name with URI style is valid.
+        Checks if the CPE name is valid.
+
+        INPUT:
+            - self: CPE name object with CPE name string
+        OUTPUT:
+            - None
+        EXCEPTIONS:
+            - ValueError: CPE name bad-formed
         """
 
         # CPE name must not have whitespaces
         if (self.cpe_str.find(" ") != -1):
-            msg = "Malformed CPE name: it must not have whitespaces"
-            raise ValueError(msg)
+            errmsg = "Malformed CPE name: it must not have whitespaces"
+            raise ValueError(errmsg)
 
         # Compilation of regular expression associated with parts of CPE name
-        hw = "?P<%s>[^/]+" % CPE1_1.KEY_HW
-        os = "?P<%s>[^/]+" % CPE1_1.KEY_OS
-        app = "?P<%s>[^/]+" % CPE1_1.KEY_APP
+        hw = "?P<%s>[^/]+" % CPE.KEY_HW
+        os = "?P<%s>[^/]+" % CPE.KEY_OS
+        app = "?P<%s>[^/]+" % CPE.KEY_APP
 
         parts_pattern = "^cpe:/(%s)?(/(%s)?(/(%s)?)?)?$" % (hw, os, app)
         parts_rxc = re.compile(parts_pattern)
@@ -266,24 +171,22 @@ class CPE1_1(CPE):
         # ################################
 
         if (parts_match is None):
-            msg = "Malformed CPE name: validation of parts failed"
-            raise ValueError(msg)
+            errmsg = "Malformed CPE name: not correct definition "
+            errmsg += "of CPE name parts"
+            raise ValueError(errmsg)
 
-        # Compilation of regular expression associated with
-        # string of components
-        str_pattern = "[\w\.\-,\(\)@\#]+"
-        str_rxc = re.compile(str_pattern)
-
-        for pk in CPE1_1.cpe_part_keys:
-            self._cpe_dict[pk] = []
-
+        for pk in CPE.CPE_PART_KEYS:
             # Get part content
             part = parts_match.group(pk)
+            elements = []
 
-            if (part is not None):
-
-                # Part content is not empty
-                i = 0
+            if (part is None):
+                # Part of CPE name not defined.
+                # Create a element and fill its components with empty values
+                elem_parts = dict()
+                elements.append(CPE._init_part(elem_parts))
+            else:
+                # Part of CPE name defined
 
                 # ###############################
                 #  Validation of part elements  #
@@ -291,200 +194,47 @@ class CPE1_1(CPE):
 
                 # semicolon (;) is used to separate the part elements
                 for part_elem in part.split(';'):
-                    self._cpe_dict[pk].append([])
-                    self._cpe_dict[pk][i] = []
                     j = 0
 
                     # ####################################
                     #  Validation of element components  #
                     # ####################################
 
+                    components = dict()
+
                     # colon (:) is used to separate the element components
                     for elem_comp in part_elem.split(":"):
-                        self._cpe_dict[pk][i].append([])
-                        self._cpe_dict[pk][i][j] = []
+                        if elem_comp == "":
+                            # Empty value: any value is possible
+                            comp = EmptyCPEComponent()
+                        else:
+                            try:
+                                comp = CPEComponent1_1(elem_comp)
+                            except ValueError:
+                                errmsg = "Malformed CPE name: "
+                                errmsg += "not correct value '%s'" % elem_comp
 
-                        # Compilation of regular expression associated with
-                        # components
-                        forbidden = "[^~!:;/%]+"
-                        cpe_comp_pattern = "^(~?%s)(!%s)*$" % (forbidden,
-                                                               forbidden)
-                        cpe_comp_rxc = re.compile(cpe_comp_pattern)
+                                raise ValueError(errmsg)
 
-                        # Partitioning of components
-                        comp_match = cpe_comp_rxc.match(elem_comp)
+                        # Identification of component name
+                        key = CPE.ORDERED_COMP_PARTS[j+1]
+                        components[key] = comp
 
-                        # Validation of compoments
-                        if (comp_match is not None):
-                            if (len(elem_comp) == 0):
-                                # Any value is possible
-                                comp = CPE1_1._create_comp(elem_comp,
-                                                           CPE1_1.VALUE_COMP_OP_ANY)
-
-                                self._cpe_dict[pk][i][j].append(comp)
-                            else:
-                                # Component is not empty
-                                not_found = elem_comp.find('~') != -1
-                                or_found = elem_comp.find('!') != -1
-
-                                if (not_found) and (or_found):
-                                    # The OR and NOT operators may not be used
-                                    # together
-                                    msg = "Malformed CPE name: operators '~' and '!' "
-                                    msg += "cannot be together in the same component"
-
-                                    raise ValueError(msg)
-
-                                elif elem_comp.find('~') == 0:
-                                    # Operator NOT with a string
-                                    str = elem_comp[1:]
-
-                                    comp = CPE1_1._create_comp(elem_comp,
-                                                               CPE1_1.VALUE_COMP_OP_NOT)
-
-                                    if (str_rxc.match(str) is None):
-                                        msg = "Malformed CPE name: component string must have "
-                                        msg += "only alphanumeric and the following characters:"
-                                        msg += " '.', '_', '-', ',', '(', ')', '@', '#'"
-
-                                        raise ValueError(msg)
-
-                                    self._cpe_dict[pk][i][j].append(comp)
-
-                                elif elem_comp.find('!') != -1:
-                                    # Operator OR with two or more strings
-                                    for str in elem_comp.split('!'):
-                                        if (str_rxc.match(str) is None):
-                                            msg = "Malformed CPE name: names must have "
-                                            msg += "only the following characters:"
-                                            msg += " alfanumeric, '.', '_', '-', "
-                                            msg += "',', '(', ')', '@', '#'"
-
-                                            raise ValueError(msg)
-
-                                        comp = CPE1_1._create_comp(str,
-                                                                   CPE1_1.VALUE_COMP_OP_OR)
-
-                                        self._cpe_dict[pk][i][j].append(comp)
-                                else:
-                                    # Name without operator
-                                    comp = CPE1_1._create_comp(elem_comp,
-                                                               CPE1_1.VALUE_COMP_OP_NONE)
-
-                                    self._cpe_dict[pk][i][j].append(comp)
                         j += 1
-                    i += 1
 
-        return self._cpe_dict
+                    # Store the element identified
+                    elements.append(components)
+            # Store the part identified
+            self[pk] = elements
 
-    def _getPartCompNameList(self, part, index):
+    def as_uri(self):
         """
-        Returns the i'th component name of elements of input part:
-
-        INPUT:
-            - part: Type of part of system (hardware, os, application)
-            - index: position of component inside part
-
-        OUTPUT:
-            - list of subcomponents of i'th component
-
-        - TEST: empty part and index not exists
-        >>> str = 'cpe://microsoft:windows:2000!2007'
-        >>> c = CPE1_1(str)
-        >>> c._getPartCompNameList(CPE1_1.KEY_HW, 2)
-        []
-
-        - TEST: not empty result
-        >>> str = 'cpe://microsoft:windows:2000!2007'
-        >>> c = CPE1_1(str)
-        >>> c._getPartCompNameList(CPE1_1.KEY_OS, 1)
-        ['windows']
-
-        - TEST: two elements in part
-        >>> str = 'cpe://microsoft:windows:2000!2007;linux:suse'
-        >>> c = CPE1_1(str)
-        >>> c._getPartCompNameList(CPE1_1.KEY_OS, 1)
-        ['windows', 'suse']
+        Return the CPE name with URI style.
         """
 
-        lc = []
-        if (part not in self._cpe_dict.keys()):
-            raise KeyError("Part key is not exist")
-
-        elements = self._cpe_dict[part]
-        for elem in elements:
-            if len(elem) > index:
-                comp = elem[index]
-                for subcomp in comp:
-                    key = CPE1_1.KEY_COMP_STR
-                    lc.append(subcomp[key])
-        return lc
-
-    def getHardwareVendorList(self):
-        """
-        Returns the hardware vendor list.
-        """
-
-        return self._getPartCompNameList(CPE1_1.KEY_HW, 0)
-
-    def getHardwareProductList(self):
-        """
-        Returns the hardware family name list.
-        """
-
-        return self._getPartCompNameList(CPE1_1.KEY_HW, 1)
-
-    def getHardwareVersionList(self):
-        """
-        Returns the hardware model list.
-        """
-
-        return self._getPartCompNameList(CPE1_1.KEY_HW, 2)
-
-    def getOsVendorList(self):
-        """
-        Returns the operating system vendor list.
-        """
-
-        return self._getPartCompNameList(CPE1_1.KEY_OS, 0)
-
-    def getOsProductList(self):
-        """
-        Returns the operating system family name list.
-        """
-
-        return self._getPartCompNameList(CPE1_1.KEY_OS, 1)
-
-    def getOsVersionList(self):
-        """
-        Returns the operating system version list.
-        """
-
-        return self._getPartCompNameList(CPE1_1.KEY_OS, 2)
-
-    def getAppVendorList(self):
-        """
-        Returns the application vendor list.
-        """
-
-        return self._getPartCompNameList(CPE1_1.KEY_APP, 0)
-
-    def getAppProductList(self):
-        """
-        Returns the application family name list.
-        """
-
-        return self._getPartCompNameList(CPE1_1.KEY_APP, 1)
-
-    def getAppVersionList(self):
-        """
-        Returns the application edition list.
-        """
-
-        return self._getPartCompNameList(CPE1_1.KEY_APP, 2)
-
+        return self.cpe_str
 
 if __name__ == "__main__":
 
     import doctest
-    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
+    doctest.testmod()
