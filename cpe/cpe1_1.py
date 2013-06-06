@@ -29,6 +29,7 @@ feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
 from cpe import CPE
+from cpecomp import CPEComponent
 from cpecomp1_1 import CPEComponent1_1
 from emptycpecomp import EmptyCPEComponent
 from undefinedcpecomp import UndefinedCPEComponent
@@ -60,6 +61,133 @@ class CPE1_1(CPE):
     ####################
     #  OBJECT METHODS  #
     ####################
+
+    def __getitem__(self, i):
+        """
+        Returns the i'th component name of CPE name.
+
+        INPUT:
+            - self: initialized CPE name
+            - i: component index to find
+        OUTPUT:
+            - component string found
+        EXCEPTIONS:
+            - IndexError: index not found in CPE name
+            - KeyError: not correct internal dictionary of CPE object
+
+        - TEST: CPE name of version 1.1
+        >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
+        >>> c = CPE1_1(str)
+        >>> comp = c[1]
+        >>> comp._data
+        ['sun@os']
+
+        - TEST: CPE name of version 1.1
+        >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
+        >>> c = CPE1_1(str)
+        >>> c[6]
+        Traceback (most recent call last):
+        IndexError: Component index of CPE name out of range
+
+        - TEST: CPE name of version 1.1
+        >>> str = 'cpe://'
+        >>> c = CPE1_1(str)
+        >>> c[6]
+        Traceback (most recent call last):
+        IndexError: Component index of CPE name out of range
+        """
+
+        count = 0
+        nullcomp = UndefinedCPEComponent()
+        errmsg = "Component index of CPE name out of range"
+
+        for pk in CPE.CPE_PART_KEYS:
+            elements = self.get(pk)
+            for elem in elements:
+                for ck in CPE.CPE_COMP_KEYS:
+                    # Part value not exist as value in version 1.1 of CPE
+                    if ck != CPE.KEY_PART:
+                        comp = elem.get(ck)
+                        if (count == i):
+                            if comp != nullcomp:
+                                return comp
+                            else:
+                                raise IndexError(errmsg)
+                        else:
+                            count += 1
+
+        raise IndexError(errmsg)
+
+    def __init__(self, cpe_str, *args, **kwargs):
+        """
+        Checks if input CPE name is valid and,
+        if so, stores its parts, elements and components.
+
+        INPUT:
+            - self: CPE name object
+            - cpe_str: CPE name string
+        OUTPUT:
+            - None
+        EXCEPTIONS:
+            - ValueError: CPE name bad-formed
+
+        - TEST: an empty hardware part, and no OS or application part.
+        >>> str = 'cpe:/'
+        >>> c = CPE(str, CPE.VERSION_1_1)
+
+        - TEST: an application part
+        >>> str = 'cpe://microsoft:windows:2000'
+        >>> c = CPE(str, CPE.VERSION_1_1)
+
+        - TEST: an OS part with an application part
+        >>> str = 'cpe://redhat:enterprise_linux:3:as/apache:httpd:2.0.52'
+        >>> c = CPE(str, CPE.VERSION_1_1)
+
+        - TEST: an hardware part with OS part
+        >>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+        >>> c = CPE(str, CPE.VERSION_1_1)
+
+        - TEST: an application part
+        >>> str = 'cpe:///microsoft:ie:6.0'
+        >>> c = CPE(str, CPE.VERSION_1_1)
+
+        - TEST: OS part with operator OR (two subcomponents)
+        >>> str = 'cpe://microsoft:windows:xp!vista'
+        >>> c = CPE(str, CPE.VERSION_1_1)
+
+        - TEST: OS part with operator NOT (a subcomponent)
+        >>> str = 'cpe://microsoft:windows:~xp'
+        >>> c = CPE(str, CPE.VERSION_1_1)
+
+        - TEST: OS part with two elements in application part
+        >>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+        >>> c = CPE(str, CPE.VERSION_1_1)
+
+        - TEST: CPE with special characters
+        >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
+        >>> c = CPE(str, CPE.VERSION_1_1)
+
+        - TEST: bad URI syntax
+        >>> str = 'baduri'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValueError: Malformed CPE name: validation of parts failed
+
+        - TEST: URI with whitespaces
+        >>> str = 'cpe:/con espacios'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValueError: Malformed CPE name: it must not have whitespaces
+
+        - TEST: two operators in a subcomponent
+        >>> str = 'cpe://microsoft:windows:~2000!2007'
+        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +IGNORE_EXCEPTION_DETAIL
+        Traceback (most recent call last):
+        ValueError: not correct value '~2000!2007'
+        """
+
+        super(CPE1_1, self).__init__(cpe_str)
+        self._parse()
 
     def __len__(self):
         """
@@ -99,77 +227,6 @@ class CPE1_1(CPE):
         """
 
         return dict.__new__(cls)
-
-    def __init__(self, cpe_str, *args, **kwargs):
-        """
-        Checks if input CPE name is valid and,
-        if so, stores its parts, elements and components.
-
-        INPUT:
-            - self: CPE name object
-            - cpe_str: CPE name string
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: CPE name bad-formed
-
-        - TEST: an empty hardware part, and no OS or application part.
-        >>> str = 'cpe:/'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
-
-        - TEST: an application part
-        >>> str = 'cpe://microsoft:windows:2000'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
-
-        - TEST: an OS part with an application part
-        >>> str = 'cpe://redhat:enterprise_linux:3:as/apache:httpd:2.0.52'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
-
-        - TEST: an hardware part with OS part
-        >>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
-
-        - TEST: an application part
-        >>> str = 'cpe:///microsoft:ie:6.0'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
-
-        - TEST: OS part with operator OR (two subcomponents)
-        >>> str = 'cpe://microsoft:windows:xp!vista'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
-
-        - TEST: OS part with operator NOT (a subcomponent)
-        >>> str = 'cpe://microsoft:windows:~xp'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
-
-        - TEST: OS part with two elements in application part
-        >>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
-
-        - TEST: CPE with special characters
-        >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +ELLIPSIS
-
-        - TEST: bad URI syntax
-        >>> str = 'baduri'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValueError: Malformed CPE name: validation of parts failed
-
-        - TEST: URI with whitespaces
-        >>> str = 'cpe:/con espacios'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValueError: Malformed CPE name: it must not have whitespaces
-
-        - TEST: two operators in a subcomponent
-        >>> str = 'cpe://microsoft:windows:~2000!2007'
-        >>> c = CPE(str, CPE.VERSION_1_1) # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValueError: not correct value '~2000!2007'
-        """
-
-        super(CPE1_1, self).__init__(cpe_str)
-        self._parse()
 
     def __str__(self):
         """
@@ -239,8 +296,7 @@ class CPE1_1(CPE):
 
                     # colon (:) is used to separate the element components
                     for elem_comp in part_elem.split(":"):
-                        if elem_comp == "":
-                            # Empty value: any value is possible
+                        if elem_comp == CPEComponent.EMPTY_VALUE:
                             comp = EmptyCPEComponent()
                         else:
                             try:
@@ -274,13 +330,6 @@ class CPE1_1(CPE):
                     elements.append(components)
             # Store the part identified
             self[pk] = elements
-
-    def as_uri(self):
-        """
-        Return the CPE name with URI style.
-        """
-
-        return self.cpe_str
 
 if __name__ == "__main__":
     import doctest

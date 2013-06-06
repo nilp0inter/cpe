@@ -28,7 +28,6 @@ For any problems using the cpe package, or general questions and
 feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
-from emptycpecomp import EmptyCPEComponent
 from undefinedcpecomp import UndefinedCPEComponent
 
 
@@ -124,30 +123,6 @@ class CPE(dict):
 
     VERSION = VERSION_UNDEFINED
 
-    ###################
-    #  CLASS METHODS  #
-    ###################
-
-    @classmethod
-    def _init_part(cls, part):
-        """
-        Returns a part with empty CPE components.
-        """
-
-        part[cls.KEY_PART] = EmptyCPEComponent()
-        part[cls.KEY_VENDOR] = EmptyCPEComponent()
-        part[cls.KEY_PRODUCT] = EmptyCPEComponent()
-        part[cls.KEY_VERSION] = EmptyCPEComponent()
-        part[cls.KEY_UPDATE] = EmptyCPEComponent()
-        part[cls.KEY_EDITION] = EmptyCPEComponent()
-        part[cls.KEY_LANGUAGE] = EmptyCPEComponent()
-        part[cls.KEY_SW_EDITION] = EmptyCPEComponent()
-        part[cls.KEY_TARGET_SW] = EmptyCPEComponent()
-        part[cls.KEY_TARGET_HW] = EmptyCPEComponent()
-        part[cls.KEY_OTHER] = EmptyCPEComponent()
-
-        return part
-
     def __new__(cls, cpe_str, version=None, *args, **kwargs):
         """
         Generator of CPE names.
@@ -167,10 +142,12 @@ class CPE(dict):
         """
 
         from cpe1_1 import CPE1_1
+        from cpe2_2 import CPE2_2
 
         # List of implemented versions of CPE names
         _CPE_VERSIONS = {
-            CPE.VERSION_1_1: CPE1_1}
+            CPE.VERSION_1_1: CPE1_1,
+            CPE.VERSION_2_2: CPE2_2}
 
         errmsg = 'Version of CPE not implemented'
 
@@ -283,21 +260,14 @@ class CPE(dict):
             - IndexError: index not found in CPE name
             - KeyError: not correct internal dictionary of CPE object
 
-        - TEST: CPE name of version 1.1
-        >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
+        - TEST: CPE name of version 2.2
+        >>> str = 'cpe:/a:sun_microsystem:sun@os:5.9:#update'
         >>> c = CPE(str)
-        >>> c[1]
+        >>> c[2]
         sun@os
 
-        - TEST: CPE name of version 1.1
-        >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
-        >>> c = CPE(str)
-        >>> c[6]
-        Traceback (most recent call last):
-        IndexError: Component index of CPE name out of range
-
-        - TEST: CPE name of version 1.1
-        >>> str = 'cpe://'
+        - TEST: CPE name of version 2.2
+        >>> str = 'cpe:/h:hp:graphicmedia:7.0'
         >>> c = CPE(str)
         >>> c[6]
         Traceback (most recent call last):
@@ -305,7 +275,7 @@ class CPE(dict):
         """
 
         count = 0
-        nullcomp = EmptyCPEComponent()
+        nullcomp = UndefinedCPEComponent()
         errmsg = "Component index of CPE name out of range"
 
         for pk in CPE.CPE_PART_KEYS:
@@ -389,6 +359,13 @@ class CPE(dict):
         """
 
         return super(CPE, self).__str__()
+
+    def as_uri(self):
+        """
+        Return the CPE name with URI style.
+        """
+
+        return self.cpe_str
 
     def isHardware(self):
         """
