@@ -5,9 +5,9 @@
 This file is part of cpe package.
 
 This module allows to store the value of the components of a CPE name and
-compare two components to know if they are equal.
+compare it with others.
 
-Copyright (C) 2013  Alejandro Galindo, Roberto A. Martínez
+Copyright (C) 2013  Alejandro Galindo
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,139 +26,212 @@ For any problems using the cpe package, or general questions and
 feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
+from abc import ABCMeta
+from abc import abstractmethod
+
+import types
+
 
 class CPEComponent(object):
     """
-    Represents a generic component of CPE name compatible with
-    the components of all versions of CPE specification.
+    Represents a generic component of CPE name,
+    compatible with the components of all versions of CPE specification.
     """
+
+    __metaclass__ = ABCMeta
 
     ###############
     #  CONSTANTS  #
     ###############
 
-    # Value of an empty component. For example, product in the CPE name
-    # cpe:/cisco::2345 of version 1.1 of CPE specification
-    EMPTY_VALUE = ""
+    # Constants of possible versions of CPE components
+    COMP_1_1 = "1.1"
+    COMP_2_2 = "2.2"
+    COMP_2_3_WFN = "2.3_wfn"
+    COMP_2_3_URI = "2.3_uri"
+    COMP_2_3_FS = "2.3_fs"
 
-    # Value of an undefined component. For example, edition in the CPE name
-    # cpe:/cisco::2345 of version 1.1 of CPE specification
-    UNDEFINED_VALUE = None
+    # Attributes associated with components of all versions of CPE
+    ATT_PART = "part"
+    ATT_VENDOR = "vendor"
+    ATT_PRODUCT = "product"
+    ATT_VERSION = "version"
+    ATT_UPDATE = "update"
+    ATT_EDITION = "edition"
+    ATT_LANGUAGE = "language"
+
+    # Attributes associated with components of version 2.3 of CPE
+    ATT_SW_EDITION = "sw_edition"
+    ATT_TARGET_SW = "target_sw"
+    ATT_TARGET_HW = "target_hw"
+    ATT_OTHER = "other"
+
+    # Possible values of "part" attribute of CPE (type of system)
+    VALUE_PART_HW = "h"
+    VALUE_PART_OS = "o"
+    VALUE_PART_APP = "a"
+    VALUE_PART_UNDEFINED = "u"
+
+    # List of attribute names associated with CPE name components
+    CPE_COMP_KEYS_EXTEND = [ATT_PART,
+                            ATT_VENDOR,
+                            ATT_PRODUCT,
+                            ATT_VERSION,
+                            ATT_UPDATE,
+                            ATT_EDITION,
+                            ATT_LANGUAGE,
+                            ATT_SW_EDITION,
+                            ATT_TARGET_SW,
+                            ATT_TARGET_HW,
+                            ATT_OTHER]
+
+    CPE_COMP_KEYS = [ATT_PART,
+                     ATT_VENDOR,
+                     ATT_PRODUCT,
+                     ATT_VERSION,
+                     ATT_UPDATE,
+                     ATT_EDITION,
+                     ATT_LANGUAGE]
+
+    SYSTEM_VALUES = [VALUE_PART_HW,
+                     VALUE_PART_OS,
+                     VALUE_PART_APP,
+                     VALUE_PART_UNDEFINED]
+
+    # Order of attributes of CPE name components
+    ORDERED_COMP_PARTS = {
+        0: ATT_PART,
+        1: ATT_VENDOR,
+        2: ATT_PRODUCT,
+        3: ATT_VERSION,
+        4: ATT_UPDATE,
+        5: ATT_EDITION,
+        6: ATT_LANGUAGE,
+        7: ATT_SW_EDITION,
+        8: ATT_TARGET_SW,
+        9: ATT_TARGET_HW,
+        10: ATT_OTHER}
 
     ###################
     #  CLASS METHODS  #
     ###################
 
     @classmethod
-    def _isAnyValue(cls, value):
+    def is_valid_attribute(cls, att_name):
         """
-        Returns True if value is an empty or undefined value.
+        Check if input attribute name is correct.
+
+        TEST: a wrong attribute
+        >>> from cpecomp import CPEComponent
+        >>> att = CPEComponent.ATT_PRODUCT
+        >>> CPEComponent.is_valid_attribute(att)
+        True
         """
 
-        return ((value == CPEComponent.EMPTY_VALUE) or
-               (value is CPEComponent.UNDEFINED_VALUE))
+        return att_name in CPEComponent.CPE_COMP_KEYS_EXTEND
 
     ####################
     #  OBJECT METHODS  #
     ####################
-
-    def __init__(self, comp_str):
-        """
-        Store the value of component.
-
-        INPUT:
-            - comp_str: value of component
-        OUPUT:
-            - None
-        """
-
-        if comp_str == CPEComponent.UNDEFINED_VALUE:
-            self._data = None
-        else:
-            self._data = [comp_str]
-
-        self._is_negated = False
-
-    def __eq__(self, other):
-        """
-        Returns True if self and other are equal components.
-        """
-
-        return ((self._data == other._data) and
-               (self._is_negated == other._is_negated))
-
-    def __ne__(self, other):
-        """
-        Returns True if self and other are equal components.
-        """
-
-        return not (self == other)
 
     def __contains__(self, item):
         """
         Returns True if item is included in set of values of self.
 
         INPUT:
-            - self: set of elements
-            - item: elem to find in self
+            - item: component to find in self
         OUTPUT:
             - True if item is included in set of self
-
-        TEST: a empty value with a single value
-        >>> comp1 = CPEComponent('xp')
-        >>> comp2 = CPEComponent('')
-        >>> comp1 in comp2
-        True
-
-        TEST: a empty value with a single value
-        >>> comp1 = CPEComponent('')
-        >>> comp2 = CPEComponent('xp')
-        >>> comp1 in comp2
-        False
-
-        TEST: two single equal values
-        >>> comp1 = CPEComponent('xp')
-        >>> comp2 = CPEComponent('xp')
-        >>> comp1 in comp2
-        True
-
-        TEST: two single different values
-        >>> comp1 = CPEComponent('vista')
-        >>> comp2 = CPEComponent('xp')
-        >>> comp1 in comp2
-        False
-
-        TEST: two single different values
-        >>> comp1 = CPEComponent('xp!vista')
-        >>> comp2 = CPEComponent('xp')
-        >>> comp1 in comp2
-        False
         """
 
-        if ((self == item) or (self._data is CPEComponent.UNDEFINED_VALUE)):
-            return True
+        from cpecomp_undefined import CPEComponentUndefined
+        from cpecomp_empty import CPEComponentEmpty
+        from cpecomp_anyvalue import CPEComponentAnyValue
 
-        if len(self._data) == 1:
-            if self._data[0] == CPEComponent.EMPTY_VALUE:
-                return True
+        if ((self == item) or
+           isinstance(self, CPEComponentUndefined) or
+           isinstance(self, CPEComponentEmpty) or
+           isinstance(self, CPEComponentAnyValue)):
+
+            return True
 
         return False
 
-    def __str__(self):
+    def __eq__(self, other):
         """
-        Returns a human-readable representation of CPE component.
+        Returns True if other (first element of operation) and
+        self (second element of operation) are equal components,
+        false otherwise.
+
+        INPUT:
+            - other: component to compare
+        OUTPUT:
+            True if other == self, False otherwise
         """
 
-        if CPEComponent._isAnyValue(self._data):
-            txt = "<ANY>"
+        len_self = len(self._standard_value)
+        len_other = len(other._standard_value)
+
+        if isinstance(self._standard_value, types.ListType):
+            # Self is version 1.1 of CPE name
+            if isinstance(other._standard_value, types.ListType):
+                # Other is version 1.1 of CPE name
+                value_self = self._standard_value
+                value_other = other._standard_value
+            # Other is higher version than to 1.1 of CPE name
+            elif len_self == 1:
+                value_self = self._standard_value[0]
+                value_other = other._standard_value
+            else:
+                # The comparation between components is impossible
+                return False
         else:
-            txt = self._data
+            #Self is higher version than to 1.1 of CPE name
+            if isinstance(other._standard_value, types.ListType):
+                # Other is version 1.1 of CPE name
+                if len_other == 1:
+                    value_self = self._standard_value
+                    value_other = other._standard_value[0]
+                else:
+                    # The comparation between components is impossible
+                    return False
+            else:
+                value_self = self._standard_value
+                value_other = other._standard_value
 
-        if self._is_negated:
-            txt = "NOT(%s)" % txt
+        return ((value_self == value_other) and
+               (self._is_negated == other._is_negated))
 
-        return txt
+    @abstractmethod
+    def __init__(self, comp_str):
+        """
+        Store the value of component.
+
+        INPUT:
+            - comp_str: value of component value
+        OUPUT:
+            - None
+        """
+
+        self._is_negated = False
+        self._encoded_value = comp_str
+        self._standard_value = [comp_str]
+
+    def __ne__(self, other):
+        """
+        Returns True if other (first element of operation) and
+        self (second element of operation) are not equal components,
+        false otherwise.
+
+        INPUT:
+            - other: component to compare
+        OUTPUT:
+            True if other != self, False otherwise
+        """
+
+        return not (self == other)
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    doctest.testfile('tests/testfile_cpecomp.txt')

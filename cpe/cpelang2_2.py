@@ -29,10 +29,10 @@ feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
 from cpe2_2 import CPE2_2
-from xml.dom import minidom
+from cpelang import CPELanguage
 
 
-class CPELanguage2_2(object):
+class CPELanguage2_2(CPELanguage):
     """
     Represents an expression in the CPE Language.
 
@@ -42,43 +42,16 @@ class CPELanguage2_2(object):
     (CPE Description Format).
     """
 
+    ###############
+    #  CONSTANTS  #
+    ###############
+
+    # Version of CPE Language
+    VERSION = "2.2"
+
     ####################
     #  OBJECT METHODS  #
     ####################
-
-    def __init__(self, expression, isFile=False):
-        """
-        Create an object that contains the input expression in
-        the CPE Language (a set of CPE Names) and
-        the DOM tree asociated with expression.
-
-        INPUT:
-            - expression: XML content in string or a path to XML file
-            - isFile: indicates whether expression is a XML file or
-                      XML content string
-        OUPUT:
-            - None
-        """
-
-        if isFile:
-            self.expression = ""
-            self.path = expression
-
-            # Parse an XML file by name (filepath)
-            self.document = minidom.parse(self.expression)
-        else:
-            self.expression = expression
-            self.path = ""
-
-            # Parse an XML stored in a string
-            self.document = minidom.parseString(self.expression)
-
-    def __str__(self):
-        """
-        Returns a human-readable representation of CPE name.
-        """
-
-        return "CPE language version 2.2\n" + self.expression
 
     def language_match(self, cpeset, cpel_dom=None):
         """
@@ -88,81 +61,21 @@ class CPELanguage2_2(object):
 
         INPUT:
             - self: An expression in the CPE Language, represented as
-                    the XML infoset for the platform element.
+                the XML infoset for the platform element.
             - cpeset: CPE set object to match with self expression.
             - cpel_dom: An expression in the CPE Language, represented as
-                       DOM tree.
+                DOM tree.
         OUTPUT:
             - True if self expression can be satisfied by language matching
               against cpeset, False otherwise.
-
-        - TEST: matching
-        >>> from cpeset2_2 import CPESet2_2
-        >>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform id="123"><cpe:title>Sun Solaris 5.8 or 5.9 with BEA Weblogic 8.1 installed</cpe:title><cpe:logical-test operator="AND" negate="FALSE"><cpe:logical-test operator="OR" negate="FALSE"><cpe:fact-ref name="cpe:/o:sun:solaris:5.8" /><cpe:fact-ref name="cpe:/o:sun:solaris:5.9" /></cpe:logical-test><cpe:fact-ref name="cpe:/a:bea:weblogic:8.1" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
-
-        >>> c1 = CPE2_2('cpe:/o:sun:solaris:5.9:::en-us')
-        >>> c2 = CPE2_2('cpe:/a:bea:weblogic:8.1')
-
-        >>> s = CPESet2_2()
-        >>> s.append(c1)
-        >>> s.append(c2)
-
-        >>> l = CPELanguage2_2(document)
-        >>> l.language_match(s)
-        True
-
-        - TEST: matching
-        >>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform><cpe:title>Windows with secedit.exe tool </cpe:title><cpe:logical-test operator="OR" negate="FALSE"><cpe:fact-ref name="cpe:/o:microsoft:windows_server_2008" /><cpe:fact-ref name="cpe:/o:microsoft:windows_7" /><cpe:fact-ref name="cpe:/o:microsoft:windows_vista" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2003" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2003_server" /><cpe:fact-ref name="cpe:/o:microsoft:windows_xp" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2000" /><cpe:fact-ref name="cpe:/o:microsoft:windows_nt" /><cpe:fact-ref name="cpe:/o:microsoft:windows-nt" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
-
-        >>> c1 = CPE2_2('cpe:/o:microsoft:windows_2000::pro')
-        >>> c2 = CPE2_2('cpe:/a:microsoft:office:2007')
-        >>> c3 = CPE2_2('cpe:/o:sun:solaris:5')
-
-        >>> s = CPESet2_2()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.append(c3)
-
-        >>> l = CPELanguage2_2(document)
-        >>> l.language_match(s)
-        True
-
-        - TEST: matching (negate)
-        >>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform><cpe:title>Windows with secedit.exe tool </cpe:title><cpe:logical-test operator="AND" negate="TRUE"><cpe:fact-ref name="cpe:/o:microsoft:windows_server_2008" /><cpe:fact-ref name="cpe:/o:microsoft:windows_xp" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2000" /><cpe:fact-ref name="cpe:/o:microsoft:windows_nt" /><cpe:fact-ref name="cpe:/o:microsoft:windows-nt" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
-
-        >>> c1 = CPE2_2('cpe:/o:microsoft:windows_2000::pro')
-        >>> c2 = CPE2_2('cpe:/a:microsoft:office:2007')
-        >>> c3 = CPE2_2('cpe:/o:sun:solaris:5')
-
-        >>> s = CPESet2_2()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.append(c3)
-
-        >>> l = CPELanguage2_2(document)
-        >>> l.language_match(s)
-        True
-
-        - TEST: not matching
-        >>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform><cpe:title>Windows with secedit.exe tool </cpe:title><cpe:logical-test operator="AND" negate="FALSE"><cpe:fact-ref name="cpe:/o:microsoft:windows_server_2008" /><cpe:fact-ref name="cpe:/o:microsoft:windows_xp" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2000" /><cpe:fact-ref name="cpe:/o:microsoft:windows_nt" /><cpe:fact-ref name="cpe:/o:microsoft:windows-nt" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
-
-        >>> c1 = CPE2_2('cpe:/o:microsoft:windows_2000::pro')
-        >>> c2 = CPE2_2('cpe:/a:microsoft:office:2007')
-        >>> c3 = CPE2_2('cpe:/o:sun:solaris:5')
-
-        >>> s = CPESet2_2()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.append(c3)
-
-        >>> l = CPELanguage2_2(document)
-        >>> l.language_match(s)
-        False
         """
 
-        # Tags
+        # Root element tag
         TAG_ROOT = '#document'
+        # A container for child platform definitions
         TAG_PLATSPEC = 'cpe:platform-specification'
+
+        # Information about a platform definition
         TAG_PLATFORM = 'cpe:platform'
         TAG_LOGITEST = 'cpe:logical-test'
         TAG_CPE = 'cpe:fact-ref'
@@ -236,3 +149,4 @@ class CPELanguage2_2(object):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    doctest.testfile("tests/testfile_cpelang2_2.txt")

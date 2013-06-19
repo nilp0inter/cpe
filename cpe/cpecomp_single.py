@@ -1,0 +1,445 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+'''
+This file is part of cpe package.
+
+This module allows to store the value of the string components
+of a CPE name and compare it with others.
+
+Copyright (C) 2013  Alejandro Galindo
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+For any problems using the cpe package, or general questions and
+feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+'''
+
+from cpecomp import CPEComponent
+from abc import ABCMeta
+from abc import abstractmethod
+
+import re
+
+
+class CPEComponentSingle(CPEComponent):
+    """
+    Represents a generic string component of CPE name,
+    compatible with the components of all versions of CPE specification.
+    """
+
+    __metaclass__ = ABCMeta
+
+    ###############
+    #  CONSTANTS  #
+    ###############
+
+    # Characters to convert to percent-encoded characters when converts
+    # WFN to URI
+    PCE_DICT = {
+        '!': "%21",
+        '"': "%22",
+        '#': "%23",
+        '$': "%24",
+        '%': "%25",
+        '&': "%26",
+        '\'': "%27",
+        '(': "%28",
+        ')': "%29",
+        '*': "%2a",
+        '+': "%2b",
+        ',': "%2c",
+        '/': "%2f",
+        ':': "%3a",
+        ';': "%3b",
+        '<': "%3c",
+        '=': "%3d",
+        '>': "%3e",
+        '?': "%3f",
+        '@': "%40",
+        '[': "%5b",
+        '\\': "%5c",
+        ']': "%5d",
+        '^': "%5e",
+        '`': "%60",
+        '{': "%7b",
+        '|': "%7c",
+        '}': "%7d",
+        '~': "%7e"}
+
+    ###################
+    #  CLASS METHODS  #
+    ###################
+
+    @classmethod
+    def _is_alphanum(cls, c):
+        """
+        Returns True if c is an uppercase letter, a lowercase letter,
+        a digit or an underscore, otherwise False.
+
+        INPUT:
+            - Character to check
+        OUTPUT:
+            - True if char is alphanumeric or an underscore, False otherwise
+
+        TEST: a wrong character
+        >>> c = "#"
+        >>> CPEComponentSingle._is_alphanum(c)
+        False
+        """
+
+        alphanum_pattern = "\w"
+        alphanum_rxc = re.compile(alphanum_pattern)
+
+        return (alphanum_rxc.match(c) is not None)
+
+    @classmethod
+    def _pct_encode_uri(cls, c):
+        """
+        Return the appropriate percent-encoding of character c (URI string).
+        Certain characters are returned without encoding.
+
+        INPUT:
+            - Character to check
+        OUTPUT:
+            - Encoded character as URI
+
+        TEST:
+        >>> c = '.'
+        >>> CPEComponentSingle._pct_encode_uri(c)
+        '.'
+
+        TEST:
+        >>> c = '@'
+        >>> CPEComponentSingle._pct_encode_uri(c)
+        '%40'
+        """
+
+        CPEComponentSingle.PCE_DICT['-'] = c  # bound without encoding
+        CPEComponentSingle.PCE_DICT['.'] = c  # bound without encoding
+
+        return CPEComponentSingle.PCE_DICT[c]
+
+    ####################
+    #  OBJECT METHODS  #
+    ####################
+
+    @abstractmethod
+    def __init__(self, comp_str, comp_att):
+        """
+        Store the value of component.
+
+        INPUT:
+            - comp_str: value of component value
+            - comp_att: attribute associated with component value
+        OUPUT:
+            - None
+        EXCEPTIONS:
+            - ValueError: incorrect value of component
+        """
+
+        super(CPEComponentSingle, self).__init__(comp_str)
+        self._standard_value = self._standard_value
+        self.set_value(comp_str, comp_att)
+
+    @abstractmethod
+    def __repr__(self):
+        """
+        Returns a unambiguous representation of CPE component.
+
+        INPUT:
+            - None
+        OUTPUT:
+            - Representation of CPE component as string
+        """
+
+        pass
+
+    def __str__(self):
+        """
+        Returns a human-readable representation of CPE component.
+
+        INPUT:
+            - None
+        OUTPUT:
+            - Representation of CPE component as string
+        """
+
+        return self.get_value()
+
+    @abstractmethod
+    def _decode(self):
+        """
+        Convert the encoded value of component to standard value (WFN value).
+
+        INPUT:
+            - None
+        OUTPUT:
+            - None
+        """
+        pass
+
+    def _is_valid_edition(self):
+        """
+        Return True if the value of component in attribute "edition" is valid,
+        and otherwise False.
+
+        INPUT:
+            - None
+        OUTPUT:
+            True if value is valid, False otherwise
+        """
+
+        return self._is_valid_value() is not None
+
+    def _is_valid_language(self):
+        """
+        Return True if the value of component in attribute "language" is valid,
+        and otherwise False.
+
+        INPUT:
+            - None
+        OUTPUT:
+            True if value is valid, False otherwise
+        """
+
+        comp_str = self._encoded_value.lower()
+
+        # Compilation of regular expression associated with value of language
+        alpha = "a-z"
+        region = "([%s]{2}|[\d]{3})" % alpha
+        language = "[%s]{2,3}" % alpha
+        langtag = "%s(-%s)?" % (language, region)
+
+        lang_pattern = "^(%s)$" % langtag
+        lang_rxc = re.compile(lang_pattern)
+
+        # Validation of language value
+        return lang_rxc.match(comp_str) is not None
+
+    def _is_valid_part(self):
+        """
+        Return True if the value of component in attribute "part" is valid,
+        and otherwise False.
+
+        INPUT:
+            - None
+        OUTPUT:
+            True if value of component is valid, False otherwise
+        """
+
+        comp_str = self._encoded_value.lower()
+
+        # Compilation of regular expression associated with value of part
+        part_pattern = "^(h|o|a)$"
+        part_rxc = re.compile(part_pattern)
+
+        # Validation of language value
+        return part_rxc.match(comp_str) is not None
+
+    @abstractmethod
+    def _is_valid_value(self):
+        """
+        Return True if the value of component in generic attribute is valid,
+        and otherwise False.
+
+        INPUT:
+            - None
+        OUTPUT:
+            True if value is valid, False otherwise
+        """
+        pass
+
+    def _parse(self, comp_att):
+        """
+        Check if the value of component is correct
+        in the attribute "comp_att".
+
+        INPUT:
+            - comp_att: attribute associated with value of component
+        OUTPUT:
+            - None
+        EXCEPTIONS:
+            - ValueError: incorrect value of component
+        """
+
+        errmsg = "Invalid attribute '%s'" % (comp_att)
+        if not CPEComponent.is_valid_attribute(comp_att):
+            raise ValueError(errmsg)
+
+        comp_str = self._encoded_value
+        errmsg = "Invalid value of attribute '%s': " % (comp_att)
+
+        # Check part (system type) value
+        if comp_att == CPEComponentSingle.ATT_PART:
+            if not self._is_valid_part():
+                errmsg += comp_str
+                raise ValueError(errmsg)
+
+        # Check language value
+        elif comp_att == CPEComponentSingle.ATT_LANGUAGE:
+            if not self._is_valid_language():
+                errmsg += comp_str
+                raise ValueError(errmsg)
+
+        # Check edition value
+        elif comp_att == CPEComponentSingle.ATT_EDITION:
+            if not self._is_valid_edition():
+                errmsg += comp_str
+                raise ValueError(errmsg)
+
+        # Check other type of component value
+        elif not self._is_valid_value():
+            errmsg += comp_str
+            raise ValueError(errmsg)
+
+    def as_fs(self):
+        """
+        Returns the value of compoment encoded as formatted string.
+
+        Inspect each character in value of component.
+        Certain nonalpha characters pass thru without escaping
+        into the result, but most retain escaping.
+
+        INPUT:
+            - None
+        OUTPUT:
+            - Formatted string
+        """
+
+        s = self._standard_value
+        result = ""
+        idx = 0
+        while (idx < len(s)):
+
+            c = s[idx]  # get the idx'th character of s
+            if c != "\\":
+                # unquoted characters pass thru unharmed
+                result = "%s%s" % (result, c)
+            else:
+                # Escaped characters are examined
+                nextchr = s[idx + 1]
+
+                if (nextchr == ".") or (nextchr == "-") or (nextchr == "_"):
+                    # the period, hyphen and underscore pass unharmed
+                    result = "%s%s" % (result, nextchr)
+                    idx += 1
+                else:
+                    # all others retain escaping
+                    result = "%s\\%s" % (result, nextchr)
+                    idx += 2
+                    continue
+            idx += 1
+
+        return result
+
+    def as_uri_2_3(self):
+        """
+        Returns the value of compoment encoded as URI string.
+
+        Scans an input string s and applies the following transformations:
+        - Pass alphanumeric characters thru untouched
+        - Percent-encode quoted non-alphanumerics as needed
+        - Unquoted special characters are mapped to their special forms.
+
+        INPUT:
+            - None
+        OUTPUT:
+            - URI string
+        """
+
+        s = self._standard_value
+        result = ""
+        idx = 0
+        while (idx < len(s)):
+            thischar = s[idx]  # get the idx'th character of s
+
+            # alphanumerics (incl. underscore) pass untouched
+            if (CPEComponentSingle._is_alphanum(thischar)):
+                result += thischar
+                idx += 1
+                continue
+
+            # escape character
+            if (thischar == "\\"):
+                idx += 1
+                nxtchar = s[idx]
+                result += CPEComponentSingle._pct_encode_uri(nxtchar)
+                idx += 1
+                continue
+
+            # Bind the unquoted '?' special character to "%01".
+            if (thischar == "?"):
+                result += "%01"
+
+            # Bind the unquoted '*' special character to "%02".
+            if (thischar == "*"):
+                result += "%02"
+
+            idx += 1
+
+        return result
+
+    def as_wfn(self):
+        """
+        Returns the value of compoment encoded as Well-Formed Name (WFN)
+        string.
+
+        INPUT:
+            - None
+        OUTPUT:
+            - WFN string
+        """
+
+        return self._standard_value
+
+    def get_value(self):
+        """
+        Returns the encoded value of component.
+        """
+
+        return self._encoded_value
+
+    def set_value(self, comp_str, comp_att):
+        """
+        Set the value of component. By default, the component has a single
+        value.
+
+        INPUT:
+            - comp_str: new value of component
+            - comp_att: attribute associated with value of component
+        OUPUT:
+            - None
+        EXCEPTIONS:
+            - ValueError: incorrect value of component
+        """
+
+        old_value = self._encoded_value
+        self._encoded_value = comp_str
+
+        # Check the value of component
+        try:
+            self._parse(comp_att)
+        except ValueError:
+            # Restore old value of component
+            self._encoded_value = old_value
+            raise
+
+        # Convert encoding value to standard value (WFN)
+        self._decode()
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+    doctest.testfile('tests/testfile_cpecomp_single.txt')

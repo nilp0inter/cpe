@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 '''
 This file is part of cpe package.
 
@@ -34,12 +33,19 @@ from cpeset import CPESet
 
 class CPESet2_2(CPESet):
     """
-    Represents a set of CPEs.
+    Represents a set of CPE names.
 
     This class allows:
-        - create set of CPE elements.
-        - match a CPE element against a set of CPE elements.
+        - create set of CPE names.
+        - match a CPE element against a set of CPE names.
     """
+
+    ###############
+    #  CONSTANTS  #
+    ###############
+
+    # Version of CPE set
+    VERSION = "2.2"
 
     ####################
     #  OBJECT METHODS  #
@@ -47,7 +53,7 @@ class CPESet2_2(CPESet):
 
     def append(self, cpe):
         """
-        Adds a CPE element to the set if not already.
+        Adds a CPE name to the set if not already.
 
         INPUT:
             - cpe: CPE name to store in set
@@ -56,14 +62,13 @@ class CPESet2_2(CPESet):
         EXCEPTIONS:
             - ValueError: Invalid version of CPE name
 
-        - TEST: set with invalid CPE name
-        >>> from cpe1_1 import CPE1_1
-        >>> uri = 'cpe:///'
-        >>> c = CPE1_1(uri)
+        - TEST:
+        >>> from cpeset2_2 import CPESet2_2
+        >>> from cpe2_2 import CPE2_2
+        >>> uri1 = 'cpe:/h:hp'
+        >>> c1 = CPE2_2(uri1)
         >>> s = CPESet2_2()
-        >>> s.append(c)  #doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValueError: CPE name version 1.1 not valid, version 2.2 expected
+        >>> s.append(c1)
         """
 
         if cpe.VERSION != CPE.VERSION_2_2:
@@ -77,6 +82,37 @@ class CPESet2_2(CPESet):
 
         self.K.append(cpe)
 
+    def name_match(self, cpe):
+        """
+        Accepts a set of known instances of CPE names and a candidate CPE name,
+        and returns 'True' if the candidate can be shown to be
+        an instance based on the content of the known instances.
+        Otherwise, it returns 'False'.
+
+        INPUT:
+            - self: A set of m known CPE names K = {K1, K2, …, Km}.
+            - cpe: A candidate CPE name X.
+        OUTPUT:
+            - True if X matches K, otherwise False.
+
+        - TEST: matching with ANY values explicit
+        >>> from cpe2_2 import CPE2_2
+        >>> uri1 = 'cpe:/o:microsoft:windows:vista'
+        >>> uri2 = 'cpe:/o:cisco:ios:12.3:enterprise'
+        >>> c1 = CPE2_2(uri1)
+        >>> c2 = CPE2_2(uri2)
+        >>> s = CPESet2_2()
+        >>> s.append(c1)
+        >>> s.append(c2)
+        >>> uri3 = 'cpe:/o:microsoft::vista'
+        >>> c3 = CPE2_2(uri3)
+        >>> s.name_match(c3)
+        True
+        """
+
+        return super(CPESet2_2, self).name_match(cpe)
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    doctest.testfile("tests/testfile_cpeset2_2.txt")

@@ -29,6 +29,7 @@ feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
 from cpe import CPE
+from cpecomp import CPEComponent
 from cpeset import CPESet
 
 
@@ -37,9 +38,16 @@ class CPESet1_1(CPESet):
     Represents a set of CPE names.
 
     This class allows:
-        - create set of CPE elements.
-        - match a CPE element against a set of CPE elements.
+        - create set of CPE names.
+        - match a CPE element against a set of CPE names.
     """
+
+    ###############
+    #  CONSTANTS  #
+    ###############
+
+    # Version of CPE set
+    VERSION = "1.1"
 
     ####################
     #  OBJECT METHODS  #
@@ -47,7 +55,7 @@ class CPESet1_1(CPESet):
 
     def append(self, cpe):
         """
-        Adds a CPE element to the set if not already.
+        Adds a CPE name to the set if not already.
 
         INPUT:
             - cpe: CPE name to store in set
@@ -56,14 +64,13 @@ class CPESet1_1(CPESet):
         EXCEPTIONS:
             - ValueError: Invalid version of CPE name
 
-        - TEST: set with invalid CPE name
-        >>> from cpe2_2 import CPE2_2
-        >>> uri = 'cpe:/o:sun:solaris:5.8'
-        >>> c = CPE2_2(uri)
+        - TEST:
+        >>> from cpeset1_1 import CPESet1_1
+        >>> from cpe1_1 import CPE1_1
+        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
+        >>> c1 = CPE1_1(uri1)
         >>> s = CPESet1_1()
-        >>> s.append(c)  #doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValueError: CPE name version 2.2 not valid, version 1.1 expected
+        >>> s.append(c1)
         """
 
         if cpe.VERSION != CPE.VERSION_1_1:
@@ -102,104 +109,6 @@ class CPESet1_1(CPESet):
         >>> s.append(c2)
         >>> s.name_match(c2)
         True
-
-        - TEST: matching with ANY values implicit
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> uri3 = 'cpe:/cisco'
-        >>> c3 = CPE1_1(uri3)
-        >>> s.name_match(c3)
-        True
-
-        - TEST: matching with empty CPE name
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> uri3 = 'cpe:/'
-        >>> c3 = CPE1_1(uri3)
-        >>> s.name_match(c3)
-        True
-
-        - TEST: not matching with CPE name
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> uri3 = 'cpe://noexists'
-        >>> c3 = CPE1_1(uri3)
-        >>> s.name_match(c3)
-        False
-
-        - TEST: matching with ANY values explicit
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> uri3 = 'cpe://microsoft:::'
-        >>> c3 = CPE1_1(uri3)
-        >>> s.name_match(c3)
-        True
-
-        - TEST: matching with NOT
-        >>> uri1 = 'cpe://microsoft:windows:~xp'
-        >>> c1 = CPE1_1(uri1)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> uri2 = 'cpe://microsoft:windows:vista'
-        >>> c2 = CPE1_1(uri2)
-        >>> s.name_match(c2)
-        False
-
-        - TEST: matching with NOT
-        >>> uri1 = 'cpe://microsoft:windows:xp'
-        >>> c1 = CPE1_1(uri1)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> uri2 = 'cpe://microsoft:windows:~vista'
-        >>> c2 = CPE1_1(uri2)
-        >>> s.name_match(c2)
-        True
-
-        - TEST: matching with OR
-        >>> uri1 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
-        >>> uri2 = 'cpe://microsoft:windows:xp!vista'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> uri3 = 'cpe://microsoft:windows:vista'
-        >>> c3 = CPE1_1(uri3)
-        >>> s.name_match(c3)
-        False
-
-        - TEST: matching with OR
-        >>> uri1 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
-        >>> uri2 = 'cpe://microsoft:windows:vista'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> uri3 = 'cpe://microsoft:windows:xp!vista'
-        >>> c3 = CPE1_1(uri3)
-        >>> s.name_match(c3)
-        True
         """
 
         # An empty set not matching with any CPE
@@ -232,7 +141,7 @@ class CPESet1_1(CPESet):
 
                         # Each component in element ec is compared with
                         # each component in element ek
-                        for ck in CPE.CPE_COMP_KEYS:
+                        for ck in CPEComponent.CPE_COMP_KEYS:
                             comp_cpe = ec.get(ck)
                             comp_k = ek.get(ck)
 
@@ -263,3 +172,4 @@ class CPESet1_1(CPESet):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    doctest.testfile("tests/testfile_cpeset1_1.txt")

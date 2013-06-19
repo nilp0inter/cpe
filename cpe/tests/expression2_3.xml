@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0">
+	<cpe:platform id="123">
+		<cpe:title>Sun Solaris 5.8 or 5.9 with BEA Weblogic 8.1 installed</cpe:title>
+		<cpe:logical-test operator="AND" negate="FALSE">
+			<cpe:logical-test operator="OR" negate="FALSE">
+				<cpe:fact-ref name="cpe:2.3:o:sun:solaris:5.8:*:*:*:*:*:*:*" />
+				<cpe:fact-ref name="cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*" />
+			</cpe:logical-test>
+			<cpe:fact-ref name="cpe:2.3:a:bea:weblogic:8.1:*:*:*:*:*:*:*" />
+		</cpe:logical-test>
+	</cpe:platform>
+</cpe:platform-specification>

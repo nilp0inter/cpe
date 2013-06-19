@@ -1,0 +1,38 @@
+# PynSource Version 1.1
+{'type':'meta', 'info1':'Lorem ipsum dolor sit amet, consectetur adipiscing elit is latin.'}
+{'type':'umlshape', 'id':'CPE', 'x':18, 'y':85, 'width':203, 'height':829, 'attrs':'VERSION_UNDEFINED|VERSION_1_1|VERSION_2_2|VERSION_2_3|KEY_APP|KEY_HW|KEY_OS|KEY_UNDEFINED|CPE_PART_KEYS|SYSTEM_AND_PARTS|VERSION|cpe_str|_str|pk', 'meths':'_trim|__eq__|__getitem__|__init__|__len__|__new__|__repr__|__str__|_createCPEParts|_getAttributeComponents|_hasOneElement|_hasNoElement|_numElements|_pack_edition|_parse|as_dict|as_uri_2_3|as_wfn|as_fs|getAttributeValues|getEdition|getLanguage|getOther|getPart|getProduct|getSoftwareEdition|getTargetHardware|getTargetSoftware|getUpdate|getVendor|getVersion|isApplication|isHardware|isOperatingSystem'}
+{'type':'umlshape', 'id':'dict', 'x':88, 'y':15, 'width':54, 'height':31, 'attrs':'', 'meths':''}
+{'type':'umlshape', 'id':'CPE1_1', 'x':363, 'y':25, 'width':162, 'height':269, 'attrs':'COMP_SEPARATOR|PART_SEPARATOR|VERSION|pk|CPE', 'meths':'__getitem__|__init__|__len__|__new__|__str__|_parse|as_wfn|getAttributeValues'}
+{'type':'umlshape', 'id':'CPE2_2', 'x':363, 'y':389, 'width':163, 'height':221, 'attrs':'COMP_SEPARATOR|VERSION|pk', 'meths':'__init__|__len__|__new__|__str__|_parse|as_wfn|getAttributeValues'}
+{'type':'umlshape', 'id':'CPE2_3', 'x':368, 'y':662, 'width':163, 'height':205, 'attrs':'STYLE_UNDEFINED|STYLE_URI|STYLE_WFN|STYLE_FS|VERSION|STYLE', 'meths':'__new__|_parse|getAttributeValues'}
+{'type':'umlshape', 'id':'CPE2_3_FS', 'x':658, 'y':433, 'width':160, 'height':173, 'attrs':'STYLE|CPE|pk', 'meths':'__new__|__str__|_parse|getAttributeValues'}
+{'type':'umlshape', 'id':'CPE2_3_URI', 'x':663, 'y':638, 'width':164, 'height':253, 'attrs':'STYLE|CPE|pk', 'meths':'_create_component|_unpack_edition|__getitem__|__len__|__new__|__str__|_parse|as_wfn|getAttributeValues'}
+{'type':'umlshape', 'id':'CPE2_3_WFN', 'x':663, 'y':918, 'width':165, 'height':173, 'attrs':'STYLE|CPE|pk', 'meths':'__new__|__str__|_parse|getAttributeValues'}
+{'type':'edge', 'id':'CPE_to_dict', 'source':'CPE', 'target':'dict', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE_to_dict', 'source':'CPE', 'target':'dict', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE1_1_to_CPE', 'source':'CPE1_1', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE_to_dict', 'source':'CPE', 'target':'dict', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE1_1_to_CPE', 'source':'CPE1_1', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_2_to_CPE', 'source':'CPE2_2', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE_to_dict', 'source':'CPE', 'target':'dict', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE1_1_to_CPE', 'source':'CPE1_1', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_2_to_CPE', 'source':'CPE2_2', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_to_CPE', 'source':'CPE2_3', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE_to_dict', 'source':'CPE', 'target':'dict', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE1_1_to_CPE', 'source':'CPE1_1', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_2_to_CPE', 'source':'CPE2_2', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_to_CPE', 'source':'CPE2_3', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_FS_to_CPE2_3', 'source':'CPE2_3_FS', 'target':'CPE2_3', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE_to_dict', 'source':'CPE', 'target':'dict', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE1_1_to_CPE', 'source':'CPE1_1', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_2_to_CPE', 'source':'CPE2_2', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_to_CPE', 'source':'CPE2_3', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_FS_to_CPE2_3', 'source':'CPE2_3_FS', 'target':'CPE2_3', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_URI_to_CPE2_3', 'source':'CPE2_3_URI', 'target':'CPE2_3', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE_to_dict', 'source':'CPE', 'target':'dict', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE1_1_to_CPE', 'source':'CPE1_1', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_2_to_CPE', 'source':'CPE2_2', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_to_CPE', 'source':'CPE2_3', 'target':'CPE', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_FS_to_CPE2_3', 'source':'CPE2_3_FS', 'target':'CPE2_3', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_URI_to_CPE2_3', 'source':'CPE2_3_URI', 'target':'CPE2_3', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPE2_3_WFN_to_CPE2_3', 'source':'CPE2_3_WFN', 'target':'CPE2_3', 'uml_edge_type':'generalisation'}

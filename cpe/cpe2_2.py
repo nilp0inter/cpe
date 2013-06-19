@@ -30,8 +30,9 @@ feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 
 from cpe import CPE
 from cpecomp import CPEComponent
-from emptycpecomp import EmptyCPEComponent
-from undefinedcpecomp import UndefinedCPEComponent
+from cpecomp2_2 import CPEComponent2_2
+from cpecomp_empty import CPEComponentEmpty
+from cpecomp_undefined import CPEComponentUndefined
 
 import re
 
@@ -62,6 +63,10 @@ class CPE2_2(CPE):
     #  CONSTANTS  #
     ###############
 
+    # Separator of components of a part of CPE name
+    COMP_SEPARATOR = ":"
+
+    # Version of CPE name
     VERSION = CPE.VERSION_2_2
 
     ####################
@@ -71,102 +76,36 @@ class CPE2_2(CPE):
     def __init__(self, cpe_str, *args, **kwargs):
         """
         Checks if input CPE name is valid and,
-        if so, stores its components.
+        if so, stores its parts, elements and components.
 
         INPUT:
-            - self: CPE name object
-            - cpe_str: CPE name string
+            - cpe_str: CPE name as string
         OUTPUT:
             - None
         EXCEPTIONS:
-            - ValueError: CPE name bad-formed
+            - ValueError: Bad-formed CPE name
 
-        - TEST: bad URI
-        >>> str = 'baduri'
-        >>> CPE(str, CPE.VERSION_2_2) # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValueError: Malformed CPE name: validation of parts failed
-
-        - TEST: URI with whitespaces
-        >>> str = 'cpe con espacios'
-        >>> CPE(str, CPE.VERSION_2_2) # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValueError: Malformed CPE name: it must not have whitespaces
-
-        - TEST: an empty CPE.
-        >>> str = 'cpe:/'
-        >>> c = CPE(str, CPE.VERSION_2_2)
-
-        - TEST: an empty CPE with five parts
-        >>> str = 'cpe:/::::'
-        >>> c = CPE(str, CPE.VERSION_2_2)
-
-        - TEST: an empty CPE with bad part name
-        >>> str = 'cpe:/b::::'
-        >>> CPE(str, CPE.VERSION_2_2) # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValueError: Input identifier is not a valid CPE name: Error to split CPE name parts
-
-        - TEST: an CPE with too many components
-        >>> str = 'cpe:/a:1:2:3:4:5:6:7'
-        >>> CPE(str, CPE.VERSION_2_2) # doctest: +IGNORE_EXCEPTION_DETAIL
-        Traceback (most recent call last):
-        ValueError: Input identifier is not a valid CPE name: Error to split CPE name parts
-
-        - TEST: an application CPE
-        >>> str = 'cpe:/a:acme:product:1.0:update2:pro:en-us'
-        >>> c = CPE(str, CPE.VERSION_2_2)
-
-        - TEST: an operating system CPE
-        >>> str = 'cpe:/o:microsoft:windows_xp:::pro'
-        >>> c = CPE(str, CPE.VERSION_2_2)
-
-        - TEST: an hardware CPE
-        >>> str = 'cpe:/h:nvidia'
-        >>> c = CPE(str, CPE.VERSION_2_2)
-
-        - TEST: an CPE with special characters
-        >>> str = 'cpe:/h:nvidia.buena_2~~pero_rara:11.0'
-        >>> c = CPE(str, CPE.VERSION_2_2)
+        - TEST: a CPE name with some full components
+        >>> str = 'cpe:/a:i4s:javas'
+        >>> c = CPE2_2(str)
         """
 
         super(CPE2_2, self).__init__(cpe_str)
-        self._parse()
 
     def __len__(self):
         """
         Returns the number of components of CPE name.
-
-        - TEST: a CPE name without components
-        >>> str = "cpe:/"
-        >>> c = CPE(str)
-        >>> len(c)
-        0
-
-        - TEST: a CPE name with some full components
-        >>> str = "cpe:/a:i4s:javas"
-        >>> c = CPE(str)
-        >>> len(c)
-        3
-
-        - TEST: a CPE name with some empty components
-        >>> str = "cpe:/a:i4s:::javas"
-        >>> c = CPE(str)
-        >>> len(c)
-        5
-
-        - TEST: a CPE name with all components
-        >>> str = "cpe:/a:acme:product:1.0:update2:-:en-us"
-        >>> c = CPE(str)
-        >>> len(c)
-        7
         """
 
-        count = self.cpe_str.count(":")
-        if count > 1:
-            return count
-        else:
+        prefix = "cpe:/"
+        data = self.cpe_str[len(prefix):]
+
+        if data == "":
             return 0
+
+        count = data.count(":")
+
+        return count + 1
 
     def __new__(cls, cpe_str, *args, **kwargs):
         """
@@ -178,6 +117,17 @@ class CPE2_2(CPE):
     def __str__(self):
         """
         Returns a human-readable representation of CPE name.
+
+        INPUT:
+            - None
+        OUTPUT:
+            - Representation of CPE component as string
+
+        TEST:
+        >>> str = 'cpe:/a:i4s:javas'
+        >>> c = CPE2_2(str, CPE.VERSION_2_2)
+        >>> print c
+        CPE v2.2: cpe:/a:i4s:javas
         """
 
         return "CPE v%s: %s" % (CPE2_2.VERSION, self.cpe_str)
@@ -187,11 +137,11 @@ class CPE2_2(CPE):
         Checks if CPE name is valid.
 
         INPUT:
-            - self: CPE name object with CPE name string
+            - None
         OUTPUT:
             - None
         EXCEPTIONS:
-            - ValueError: CPE name bad-formed
+            - ValueError: bad-formed CPE name
         """
 
         # CPE name must not have whitespaces
@@ -201,13 +151,13 @@ class CPE2_2(CPE):
 
         # Compilation of regular expression associated with components
         # of CPE name
-        part = "?P<%s>(h|o|a)" % CPE.KEY_PART
-        vendor = "?P<%s>[^:]+" % CPE.KEY_VENDOR
-        product = "?P<%s>[^:]+" % CPE.KEY_PRODUCT
-        version = "?P<%s>[^:]+" % CPE.KEY_VERSION
-        update = "?P<%s>[^:]+" % CPE.KEY_UPDATE
-        edition = "?P<%s>[^:]+" % CPE.KEY_EDITION
-        language = "?P<%s>[^:]+" % CPE.KEY_LANGUAGE
+        part = "?P<%s>(h|o|a)" % CPEComponent.ATT_PART
+        vendor = "?P<%s>[^:]+" % CPEComponent.ATT_VENDOR
+        product = "?P<%s>[^:]+" % CPEComponent.ATT_PRODUCT
+        version = "?P<%s>[^:]+" % CPEComponent.ATT_VERSION
+        update = "?P<%s>[^:]+" % CPEComponent.ATT_UPDATE
+        edition = "?P<%s>[^:]+" % CPEComponent.ATT_EDITION
+        language = "?P<%s>[^:]+" % CPEComponent.ATT_LANGUAGE
 
         parts_pattern = "^cpe:/"
         parts_pattern += "(%s)?" % part
@@ -222,71 +172,126 @@ class CPE2_2(CPE):
         # Partitioning of CPE name
         parts_match = parts_rxc.match(self._str)
 
-        # #####################################
-        #  Validation of CPE name components  #
-        # #####################################
-
+        # Validation of CPE name parts
         if (parts_match is None):
             msg = "Malformed CPE name: validation of parts failed"
             raise ValueError(msg)
 
-        # Compilation of regular expression associated with value of CPE part
-        part_value_pattern = "[\d\w\._\-~%]+"
-        part_value_rxc = re.compile(part_value_pattern)
-
         components = dict()
         parts_match_dict = parts_match.groupdict()
 
-        for ck in CPE.CPE_COMP_KEYS:
-
+        for ck in CPEComponent.CPE_COMP_KEYS:
             if ck in parts_match_dict:
                 value = parts_match.group(ck)
 
-                if (value is None):
-                    comp = UndefinedCPEComponent()
-                elif (value == CPEComponent.EMPTY_VALUE):
-                    comp = EmptyCPEComponent()
+                if (value == CPEComponent2_2.VALUE_UNDEFINED):
+                    comp = CPEComponentUndefined()
+                elif (value == CPEComponent2_2.VALUE_EMPTY):
+                    comp = CPEComponentEmpty()
                 else:
-                    if (part_value_rxc.match(value) is None):
-                        msg = "Malformed CPE name: part value must have "
-                        msg += "only alphanumeric and the following characters"
-                        msg += ": '.', '_', '-', '~', '%'"
+                    try:
+                        comp = CPEComponent2_2(value, ck)
+                    except ValueError:
+                        errmsg = "Malformed CPE name: "
+                        errmsg += "not correct value '%s'" % value
 
-                        raise ValueError(msg)
-                    else:
-                        comp = CPEComponent(value)
+                        raise ValueError(errmsg)
             else:
                 # Component not exist in this version of CPE
-                comp = UndefinedCPEComponent()
+                comp = CPEComponentUndefined()
 
-            # Identification of component name
             components[ck] = comp
+
+        # Adds the components of version 2.3 of CPE not defined in version 2.2
+        for ck2 in CPEComponent.CPE_COMP_KEYS_EXTEND:
+            if ck2 not in components.keys():
+                components[ck2] = CPEComponentUndefined()
 
         # #######################
         #  Storage of CPE name  #
         # #######################
 
-        system = parts_match.group(CPE.KEY_PART)
+        # If part component is undefined, store it in the part without name
+        if components[CPEComponent.ATT_PART] == CPEComponentUndefined():
+            system = CPEComponent.VALUE_PART_UNDEFINED
+        else:
+            system = parts_match.group(CPEComponent.ATT_PART)
+
+        self._createCPEParts(system, components)
+
+        # Adds the undefined parts
+        for sys in CPEComponent.SYSTEM_VALUES:
+            if sys != system:
+                pk = CPE.SYSTEM_AND_PARTS[sys]
+                self[pk] = []
+
+    def as_wfn(self):
+        """
+        Returns the CPE name as WFN string of version 2.3.
+        Only shows the first seven components.
+
+        INPUT:
+            - None
+        OUTPUT:
+            - None
+        EXCEPTIONS:
+            - TypeError: incompatible version
+        """
+
+        separator = ", "
+        wfn = "wfn:["
+
+        for ck in CPEComponent.CPE_COMP_KEYS:
+            lc = self._getAttributeComponents(ck)
+
+            comp = lc[0]
+            if (isinstance(comp, CPEComponentUndefined) or
+               isinstance(comp, CPEComponentEmpty)):
+                v = '%s=ANY' % (ck)
+            else:
+                # Get the value of WFN of component
+                v = '%s="%s"' % (ck, comp.as_wfn())
+
+            # Append v to the WFN then add a separator.
+            wfn = "%s%s%s" % (wfn, v, separator)
+
+        # Return the WFN string
+        wfn = "%s]" % wfn[0:len(wfn) - len(separator)]
+        return wfn
+
+    def getAttributeValues(self, att_name):
+        """
+        Returns the values of attribute "att_name" of CPE name.
+        By default a only element in each part.
+
+        INPUT:
+            - att_name: Attribute name to get
+        OUTPUT:
+            - List of attribute values
+        """
+
+        lc = []
+
+        if not CPEComponent.is_valid_attribute(att_name):
+            errmsg = "Invalid attribute name '%s'" % att_name
+            raise ValueError(errmsg)
 
         for pk in CPE.CPE_PART_KEYS:
-            elements = []
+            elements = self.get(pk)
+            for elem in elements:
+                comp = elem.get(att_name)
 
-            # Find out the type of system of CPE name to store its values
-            if pk == CPE.KEY_HW:
-                if (system == CPE.VALUE_PART_HW):
-                    # CPE name corresponds with hardware system
-                    elements.append(components)
-            elif pk == CPE.KEY_OS:
-                if (system == CPE.VALUE_PART_OS):
-                    # CPE name corresponds with operating system
-                    elements.append(components)
-            elif pk == CPE.KEY_APP:
-                if (system == CPE.VALUE_PART_APP):
-                    # CPE name corresponds with application system
-                    elements.append(components)
+                if (isinstance(comp, CPEComponentEmpty) or
+                   isinstance(comp, CPEComponentUndefined)):
 
-            self[pk] = elements
+                    value = CPEComponent2_2.VALUE_EMPTY
+                else:
+                    value = comp.get_value()
+
+                lc.append(value)
+        return lc
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
+    doctest.testfile("tests/testfile_cpe2_2.txt")

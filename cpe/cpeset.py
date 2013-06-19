@@ -28,8 +28,10 @@ For any problems using the cpe package, or general questions and
 feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
-
 from cpe import CPE
+from cpecomp import CPEComponent
+from abc import ABCMeta
+from abc import abstractmethod
 
 
 class CPESet(object):
@@ -37,9 +39,11 @@ class CPESet(object):
     Represents a set of CPE names.
 
     This class allows:
-        - create set of CPE elements.
-        - match a CPE element against a set of CPE elements.
+        - create a set of CPE names.
+        - match a CPE name against a set of CPE names.
     """
+
+    __metaclass__ = ABCMeta
 
     ####################
     #  OBJECT METHODS  #
@@ -47,12 +51,14 @@ class CPESet(object):
 
     def __getitem__(self, i):
         """
-        Returns the i'th CPE element of set.
+        Returns the i'th CPE name of set.
 
         INPUT:
-            - i: index of CPE element of set to return
+            - i: index of CPE name of set to return
         OUTPUT:
-            - i'th CPE element of set found
+            - CPE name found
+        EXCEPTION:
+            - IndexError: list index out of range
         """
 
         return self.K[i]
@@ -65,88 +71,56 @@ class CPESet(object):
 
     def __len__(self):
         """
-        Returns the count of CPE elements of set.
+        Returns the count of CPE names of set.
 
         - TEST: empty set
-        >>> from cpe1_1 import CPE1_1
         >>> from cpeset1_1 import CPESet1_1
         >>> s = CPESet1_1()
         >>> len(s)
         0
-
-        - TEST: set with two CPE elements
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> len(s)
-        2
-
-        - TEST: set with three CPE elements and one repeated
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.append(c2)
-        >>> len(s)
-        2
-
-        - TEST: set with three CPE elements and one repeated
-        >>> uri1 = 'cpe://microsoft:windows:xp!vista'
-        >>> uri2 = 'cpe:/cisco::3825;cisco:2:44'
-        >>> c1 = CPE1_1(uri1)
-        >>> c2 = CPE1_1(uri2)
-        >>> c3 = CPE1_1(uri2)
-        >>> s = CPESet1_1()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.append(c3)
-        >>> len(s)
-        2
         """
 
         return len(self.K)
 
     def __str__(self):
         """
-        Returns a CPE set as string.
+        Returns a human-readable representation of CPE set.
+
+        INPUT:
+            - None
+        OUTPUT:
+            - Representation of CPE component as string
         """
 
-        len = self.__len__()
+        setlen = self.__len__()
 
-        str = "Set contains %s elements" % len
-        if len > 0:
+        str = "CPE Set version %s contains %s elements" % (self.VERSION,
+                                                           setlen)
+        if setlen > 0:
             str += ":\n"
 
-            for i in range(0, len):
+            for i in range(0, setlen):
                 str += "    %s" % self.K[i].__str__()
 
-                if i+1 < len:
+                if i+1 < setlen:
                     str += "\n"
 
         return str
 
+    @abstractmethod
     def append(self, cpe):
         """
-        Adds a CPE element to the set if not already.
+        Adds a CPE name to the set if not already.
 
         INPUT:
             - cpe: CPE name to store in set
         OUTPUT:
             - None
         """
-        for k in self.K:
-            if cpe.cpe_str == k.cpe_str:
-                return None
 
-        self.K.append(cpe)
+        pass
 
+    @abstractmethod
     def name_match(self, cpe):
         """
         Accepts a set of known instances of CPE names and a candidate CPE name,
@@ -159,48 +133,6 @@ class CPESet(object):
             - cpe: A candidate CPE name X.
         OUTPUT:
             - True if X matches K, otherwise False.
-
-        - TEST: matching (identical cpe in set)
-        >>> from cpe2_2 import CPE2_2
-        >>> from cpeset2_2 import CPESet2_2
-        >>> uri1 = 'cpe:/o:redhat:enterprise_linux:3'
-        >>> uri2 = 'cpe:/o:sun:sunos:5.8'
-        >>> uri3 = 'cpe:/o:microsoft:windows_2003'
-        >>> c1 = CPE2_2(uri1)
-        >>> c2 = CPE2_2(uri2)
-        >>> m = CPE2_2(uri3)
-        >>> s = CPESet2_2()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.append(m)
-        >>> s.name_match(m)
-        True
-
-        - TEST: matching with any values (cpe in set)
-        >>> uri1 = 'cpe:/o:redhat:enterprise_linux:3'
-        >>> uri2 = 'cpe:/o:sun:sunos:5.8'
-        >>> uri3 = 'cpe:/o:sun'
-        >>> c1 = CPE2_2(uri1)
-        >>> c2 = CPE2_2(uri2)
-        >>> m = CPE2_2(uri3)
-        >>> s = CPESet2_2()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.name_match(m)
-        True
-
-        - TEST: not matching
-        >>> uri1 = 'cpe:/o:redhat:enterprise_linux:3'
-        >>> uri2 = 'cpe:/o:sun:sunos:5.8'
-        >>> uri3 = 'cpe:/a:microsoft:ie:9'
-        >>> c1 = CPE2_2(uri1)
-        >>> c2 = CPE2_2(uri2)
-        >>> m = CPE2_2(uri3)
-        >>> s = CPESet2_2()
-        >>> s.append(c1)
-        >>> s.append(c2)
-        >>> s.name_match(m)
-        False
         """
 
         # An empty set not matching with any CPE
@@ -212,6 +144,10 @@ class CPESet(object):
         for k in self.K:
             if (k.cpe_str == cpe.cpe_str):
                 return True
+
+        # If "cpe" is an empty CPE name any system matches
+        if len(cpe) == 0:
+            return True
 
         # There are not a CPE name string in set equal to
         # input CPE name string
@@ -235,10 +171,9 @@ class CPESet(object):
                             # Each component in element ec is compared with
                             # each component in element ek
                             for c in range(0, len(cpe)):
-                                key = CPE.ORDERED_COMP_PARTS[c]
+                                key = CPEComponent.ORDERED_COMP_PARTS[c]
                                 comp_cpe = ec.get(key)
                                 comp_k = ek.get(key)
-
                                 match = comp_k in comp_cpe
 
                                 if not match:
@@ -262,7 +197,3 @@ class CPESet(object):
 
         # All parts in input CPE name matched
         return True
-
-if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
