@@ -8,7 +8,7 @@ This module allows to store the value of the components of a CPE name
 of version 2.3 of CPE (Common Platform Enumeration) specification with
 Well-Formed Name (WFN) style.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpecomp2_3 import CPEComponent2_3
@@ -41,6 +44,19 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
     #  CONSTANTS  #
     ###############
 
+    # Patterns used to check the value of component
+    _ESCAPE = r"\\"
+    _PUNC_NO_DASH = "\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\.|\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~"
+
+    # Separator of components of CPE name with URI style
+    SEPARATOR_COMP = ", "
+
+    # Separator of attribute and value in pairs of component
+    SEPARATOR_PAIR = "="
+
+    # Separator of language parts: language and region
+    SEPARATOR_LANG = r"\-"
+
     # Logical values in string format
     VALUE_ANY = "ANY"
     VALUE_NA = "NA"
@@ -50,51 +66,32 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
     # Constant associated with wildcard to indicate a character
     WILDCARD_ONE = "?"
 
-    # Separator of language parts: language and region
-    SEPARATOR_LANG = r"\-"
+    ###############
+    #  VARIABLES  #
+    ###############
+
+    _spec1 = "\{0}".format(WILDCARD_ONE)
+    _spec2 = "\{0}".format(WILDCARD_MULTI)
+    _spec_chrs = "{0}+|{1}".format(_spec1, _spec2)
+    _special = "{0}|{1}".format(_spec1, _spec2)
+    _punc_w_dash = "{0}|-".format(_PUNC_NO_DASH)
+    _quoted1 = "{0}({1}|{2}|{3})".format(_ESCAPE, _ESCAPE, _special,
+                                         _PUNC_NO_DASH)
+    _quoted2 = "{0}({1}|{2}|{3})".format(_ESCAPE, _ESCAPE,
+                                         _special, _punc_w_dash)
+    _body1 = "\w|{0}".format(_quoted1)
+    _body2 = "\w|{0}".format(_quoted2)
+    _body = "(({0})({1})*)|{2}({3})+".format(_body1, _body2, _body2, _body2)
+    _avstring_pattern = "^((({0})|(({1})({2})*))({3})?)$".format(_body,
+                                                                 _spec_chrs,
+                                                                 _body2,
+                                                                 _spec_chrs)
+
+    _value_rxc = re.compile(_avstring_pattern)
 
     ####################
     #  OBJECT METHODS  #
     ####################
-
-    def __init__(self, comp_str, comp_att):
-        """
-        Store the value of component.
-
-        INPUT:
-            - comp_str: value of component value
-            - comp_att: attribute associated with component value
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
-        """
-
-        super(CPEComponent2_3_WFN, self).__init__(comp_str, comp_att)
-
-    def __repr__(self):
-        """
-        Returns a unambiguous representation of CPE component.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return "CPEComponent2_3_WFN(%s)" % self.get_value()
-
-    def __str__(self):
-        """
-        Returns a human-readable representation of CPE name.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return super(CPEComponent2_3_WFN, self).__str__()
 
     def _decode(self):
         """
@@ -110,19 +107,6 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
 
         pass
 
-    def _is_valid_edition(self):
-        """
-        Return True if the value of component in attribute "edition" is valid,
-        and otherwise False.
-
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
-        """
-
-        return super(CPEComponent2_3_WFN, self)._is_valid_edition()
-
     def _is_valid_value(self):
         """
         Return True if the value of component in generic attribute is valid,
@@ -135,43 +119,15 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
         """
 
         comp_str = self._standard_value
-        # Checks value not equal than a dash
-        #if comp_str == ("-") or comp_str == ("\\-"):
-        #    return False
-
-        # Compilation of regular expression associated with value of CPE part
-        escape = r"\\"
-        unreserved = "\w"
-        dash = "-"
-        spec1 = "\%s" % CPEComponent2_3_WFN.WILDCARD_ONE
-        spec2 = "\%s" % CPEComponent2_3_WFN.WILDCARD_MULTI
-        spec_chrs = "%s+|%s" % (spec1, spec2)
-        special = "%s|%s" % (spec1, spec2)
-        punc_no_dash = "\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\.|"
-        punc_no_dash += "\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~"
-        punc_w_dash = "%s|%s" % (punc_no_dash, dash)
-        quoted1 = "%s(%s|%s|%s)" % (escape, escape, special, punc_no_dash)
-        quoted2 = "%s(%s|%s|%s)" % (escape, escape, special, punc_w_dash)
-        body1 = "%s|%s" % (unreserved, quoted1)
-        body2 = "%s|%s" % (unreserved, quoted2)
-        body = "((%s)(%s)*)|%s(%s)+" % (body1, body2, body2, body2)
-        avstring_pattern = "^(((%s)|((%s)(%s)*))(%s)?)$" % (body, spec_chrs,
-                                                            body2, spec_chrs)
-
-        value_rxc = re.compile(avstring_pattern)
-
-        # Validation of value
-        return value_rxc.match(comp_str) is not None
+        return CPEComponent2_3_WFN._value_rxc.match(comp_str) is not None
 
     def get_value(self):
         """
         Returns the encoded value of component.
         """
 
-        value = super(CPEComponent2_3_WFN, self).get_value()
-
         # Add double quotes
-        return '"%s"' % value
+        return '"{0}"'.format(super(CPEComponent2_3_WFN, self).get_value())
 
     def set_value(self, comp_str, comp_att):
         """

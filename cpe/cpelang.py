@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 '''
 This file is part of cpe package.
 
@@ -9,7 +8,7 @@ This module contains the common characteristics of
 any CPE language matching algorithm, associated with a version of
 Common Platform Enumeration (CPE) specification.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,12 +23,13 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-For any problems using the cpe packge, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+For any problems using the cpe package, or general questions and
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
-from abc import ABCMeta
-from abc import abstractmethod
 from xml.dom import minidom
 
 
@@ -42,8 +42,6 @@ class CPELanguage(object):
     binding descriptive prose and diagnostic test to a CPE name
     (CPE Description Format).
     """
-
-    __metaclass__ = ABCMeta
 
     ####################
     #  OBJECT METHODS  #
@@ -86,10 +84,9 @@ class CPELanguage(object):
             - Representation of CPE component as string
         """
 
-        return "Expression of CPE language version %s:\n%s" % (self.VERSION,
-                                                               self.expression)
+        return "Expression of CPE language version {0}:\n{1}".format(
+            self.VERSION, self.expression)
 
-    @abstractmethod
     def language_match(self, cpeset, cpel_dom=None):
         """
         Accepts a set of known CPE Names and an expression in the CPE language,
@@ -107,4 +104,5 @@ class CPELanguage(object):
               against cpeset, False otherwise.
         """
 
-        pass
+        errmsg = "Class method not implemented. Use the method of some child class"
+        raise NotImplementedError(errmsg)

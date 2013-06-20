@@ -9,7 +9,7 @@ of IT platforms (hardware, operating systems or applications of system)
 in accordance with binding style formatted string of version 2.3 of CPE
 (Common Platform Enumeration) specification.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +25,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpe import CPE
@@ -70,9 +73,43 @@ class CPE2_3_FS(CPE2_3):
     # Style of CPE name
     STYLE = CPE2_3.STYLE_FS
 
+    ###############
+    #  VARIABLES  #
+    ###############
+
+    # Compilation of regular expression associated with parts of CPE name
+    _logical = "\\{0}|\\{1}".format(
+        CPEComponent2_3_FS.VALUE_ANY, CPEComponent2_3_FS.VALUE_NA)
+    _typesys = "(?P<{0}>(h|o|a|{1}))".format(
+        CPEComponent.ATT_PART, _logical)
+    _vendor = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_VENDOR)
+    _product = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_PRODUCT)
+    _version = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_VERSION)
+    _update = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_UPDATE)
+    _edition = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_EDITION)
+    _language = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_LANGUAGE)
+    _sw_edition = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_SW_EDITION)
+    _target_sw = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_TARGET_SW)
+    _target_hw = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_TARGET_HW)
+    _other = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_OTHER)
+
+    _parts_pattern = "^cpe:2.3:{0}\:{1}\:{2}\:{3}\:{4}\:{5}\:{6}\:{7}\:{8}\:{9}\:{10}$".format(
+        _typesys, _vendor, _product, _version, _update, _edition,
+        _language, _sw_edition, _target_sw, _target_hw, _other)
+
+    _parts_rxc = re.compile(_parts_pattern, re.IGNORECASE)
+
     ####################
     #  OBJECT METHODS  #
     ####################
+
+    def __len__(self):
+        """
+        Returns the number of components of CPE name. This CPE name always
+        have twelve components.
+        """
+
+        return 11
 
     def __new__(cls, cpe_str, *args, **kwargs):
         """
@@ -80,20 +117,6 @@ class CPE2_3_FS(CPE2_3):
         """
 
         return dict.__new__(cls)
-
-    def __str__(self):
-        """
-        Returns a human-readable representation of CPE name.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return "CPE v%s (%s): %s" % (CPE2_3.VERSION,
-                                     CPE2_3_FS.STYLE,
-                                     self.cpe_str)
 
     def _parse(self):
         """
@@ -112,41 +135,8 @@ class CPE2_3_FS(CPE2_3):
             msg = "Malformed CPE name: it must not have whitespaces"
             raise ValueError(msg)
 
-        # Compilation of regular expression associated with parts of CPE name
-        logical = "\\%s|\\%s" % (CPEComponent2_3_FS.VALUE_ANY,
-                                 CPEComponent2_3_FS.VALUE_NA)
-        typesys = "(?P<%s>(h|o|a|%s))" % (CPEComponent.ATT_PART, logical)
-        aux_pattern = "(?P<%s>[^\:]+)"
-        vendor = aux_pattern % (CPEComponent.ATT_VENDOR)
-        product = aux_pattern % (CPEComponent.ATT_PRODUCT)
-        version = aux_pattern % (CPEComponent.ATT_VERSION)
-        update = aux_pattern % (CPEComponent.ATT_UPDATE)
-        edition = aux_pattern % (CPEComponent.ATT_EDITION)
-        language = aux_pattern % (CPEComponent.ATT_LANGUAGE)
-        sw_edition = aux_pattern % (CPEComponent.ATT_SW_EDITION)
-        target_sw = aux_pattern % (CPEComponent.ATT_TARGET_SW)
-        target_hw = aux_pattern % (CPEComponent.ATT_TARGET_HW)
-        other = aux_pattern % (CPEComponent.ATT_OTHER)
-
-        parts_pattern = "^cpe:2.3:%s" % typesys
-
-        aux_parts_pattern = "\:%s"
-        parts_pattern += aux_parts_pattern % vendor
-        parts_pattern += aux_parts_pattern % product
-        parts_pattern += aux_parts_pattern % version
-        parts_pattern += aux_parts_pattern % update
-        parts_pattern += aux_parts_pattern % edition
-        parts_pattern += aux_parts_pattern % language
-        parts_pattern += aux_parts_pattern % sw_edition
-        parts_pattern += aux_parts_pattern % target_sw
-        parts_pattern += aux_parts_pattern % target_hw
-        parts_pattern += aux_parts_pattern % other
-        parts_pattern += "$"
-
-        parts_rxc = re.compile(parts_pattern, re.IGNORECASE)
-
         # Partitioning of CPE name
-        parts_match = parts_rxc.match(self._str)
+        parts_match = CPE2_3_FS._parts_rxc.match(self._str)
 
         # Validation of CPE name parts
         if (parts_match is None):
@@ -156,7 +146,7 @@ class CPE2_3_FS(CPE2_3):
         components = dict()
         parts_match_dict = parts_match.groupdict()
 
-        for ck in CPEComponent.CPE_COMP_KEYS_EXTEND:
+        for ck in CPEComponent.CPE_COMP_KEYS_EXTENDED:
             if ck in parts_match_dict:
                 value = parts_match.group(ck)
 
@@ -168,12 +158,11 @@ class CPE2_3_FS(CPE2_3):
                     try:
                         comp = CPEComponent2_3_FS(value, ck)
                     except ValueError:
-                        errmsg = "Malformed CPE name: "
-                        errmsg += "not correct value '%s'" % value
-
+                        errmsg = "Malformed CPE name: not correct value: {0}".format(
+                            value)
                         raise ValueError(errmsg)
             else:
-                errmsg = "Component %s should be specified" % ck
+                errmsg = "Component {0} should be specified".format(ck)
                 raise ValueError(ck)
 
             components[ck] = comp
@@ -218,7 +207,7 @@ class CPE2_3_FS(CPE2_3):
         lc = []
 
         if not CPEComponent.is_valid_attribute(att_name):
-            errmsg = "Invalid attribute name '%s'" % att_name
+            errmsg = "Invalid attribute name: {0}".format(att_name)
             raise ValueError(errmsg)
 
         for pk in CPE.CPE_PART_KEYS:
@@ -228,8 +217,10 @@ class CPE2_3_FS(CPE2_3):
 
                 if isinstance(comp, CPEComponentAnyValue):
                     value = CPEComponent2_3_FS.VALUE_ANY
+
                 elif isinstance(comp, CPEComponentNotApplicable):
                     value = CPEComponent2_3_FS.VALUE_NA
+
                 else:
                     value = comp.get_value()
 

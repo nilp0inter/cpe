@@ -9,7 +9,7 @@ of IT platforms (hardware, operating systems or applications of system)
 in accordance with Well-Formed Name (WFN) of version 2.3 of CPE
 (Common Platform Enumeration) specification.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,7 +25,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpe import CPE
@@ -80,6 +83,9 @@ class CPE2_3_WFN(CPE2_3):
     # Style of CPE name
     STYLE = CPE2_3.STYLE_WFN
 
+    # Prefix of CPE name with WFN style
+    CPE_PREFIX = "wfn:["
+
     ####################
     #  OBJECT METHODS  #
     ####################
@@ -90,20 +96,6 @@ class CPE2_3_WFN(CPE2_3):
         """
 
         return dict.__new__(cls)
-
-    def __str__(self):
-        """
-        Returns a human-readable representation of CPE name.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return "CPE v%s (%s): %s" % (CPE2_3.VERSION,
-                                     CPE2_3_WFN.STYLE,
-                                     self.cpe_str)
 
     def _parse(self):
         """
@@ -118,7 +110,7 @@ class CPE2_3_WFN(CPE2_3):
         """
 
         # Check prefix and initial bracket of WFN
-        if self._str[0:5] != "wfn:[":
+        if self._str[0:5] != CPE2_3_WFN.CPE_PREFIX:
             errmsg = "Malformed CPE name: WFN prefix not found"
             raise ValueError(errmsg)
 
@@ -134,7 +126,7 @@ class CPE2_3_WFN(CPE2_3):
             components = dict()
 
             # Split WFN in components
-            list_component = content.split(", ")
+            list_component = content.split(CPEComponent2_3_WFN.SEPARATOR_COMP)
 
             # Adds the defined components
             for e in list_component:
@@ -144,20 +136,20 @@ class CPE2_3_WFN(CPE2_3):
                     raise ValueError(msg)
 
                 # Split pair attribute-value
-                pair = e.split("=")
+                pair = e.split(CPEComponent2_3_WFN.SEPARATOR_PAIR)
                 att_name = pair[0]
                 att_value = pair[1]
 
                 # Check valid attribute name
-                if att_name not in CPEComponent.CPE_COMP_KEYS_EXTEND:
-                    msg = "Malformed CPE name: invalid attribute name "
-                    msg += "'%s'" % att_name
+                if att_name not in CPEComponent.CPE_COMP_KEYS_EXTENDED:
+                    msg = "Malformed CPE name: invalid attribute name '{0}'".format(
+                        att_name)
                     raise ValueError(msg)
 
                 if att_name in components:
                     # Duplicate attribute
-                    msg = "Malformed CPE name: attribute '%s' "
-                    msg += "repeated" % att_name
+                    msg = "Malformed CPE name: attribute '{0}' repeated".format(
+                        att_name)
                     raise ValueError(msg)
 
                 if not (att_value.startswith('"') and
@@ -170,7 +162,7 @@ class CPE2_3_WFN(CPE2_3):
                     elif strUpper in CPEComponent2_3_WFN.VALUE_NA:
                         comp = CPEComponentNotApplicable()
                     else:
-                        msg = "Invalid logical value '%s'" % att_value
+                        msg = "Invalid logical value '{0}'".format(att_value)
                         raise ValueError(msg)
 
                 elif att_value.startswith('"') and att_value.endswith('"'):
@@ -179,14 +171,14 @@ class CPE2_3_WFN(CPE2_3):
 
                 else:
                     # Bad value
-                    msg = "Malformed CPE name: invalid value "
-                    msg += "'%s'" % att_value
+                    msg = "Malformed CPE name: invalid value '{0}'".format(
+                        att_value)
                     raise ValueError(msg)
 
                 components[att_name] = comp
 
             # Adds the undefined components
-            for ck in CPEComponent.CPE_COMP_KEYS_EXTEND:
+            for ck in CPEComponent.CPE_COMP_KEYS_EXTENDED:
                 if ck not in components:
                     components[ck] = CPEComponentUndefined()
 
@@ -231,7 +223,7 @@ class CPE2_3_WFN(CPE2_3):
         lc = []
 
         if not CPEComponent.is_valid_attribute(att_name):
-            errmsg = "Invalid attribute name '%s'" % att_name
+            errmsg = "Invalid attribute name '{0}'".format(att_name)
             raise ValueError(errmsg)
 
         for pk in CPE.CPE_PART_KEYS:
@@ -248,6 +240,7 @@ class CPE2_3_WFN(CPE2_3):
                     value = comp.get_value()
 
                 lc.append(value)
+
         return lc
 
 if __name__ == "__main__":

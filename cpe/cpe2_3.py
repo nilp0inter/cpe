@@ -9,7 +9,7 @@ of IT platforms (hardware, operating systems or applications of system)
 in accordance with version 2.3 of CPE (Common Platform Enumeration)
 specification.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,11 +25,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpe import CPE
-from abc import abstractmethod
 
 
 class CPE2_3(CPE):
@@ -43,10 +45,10 @@ class CPE2_3(CPE):
     ###############
 
     # Constants of possible CPE name styles of 2.3 version
-    STYLE_UNDEFINED = "undefined"
+    STYLE_FS = "FS"
     STYLE_URI = "URI"
     STYLE_WFN = "WFN"
-    STYLE_FS = "FS"
+    STYLE_UNDEFINED = "undefined"
 
     # Version of CPE name
     VERSION = CPE.VERSION_2_3
@@ -101,34 +103,19 @@ class CPE2_3(CPE):
 
         raise NotImplementedError(errmsg)
 
-    @abstractmethod
-    def _parse(self):
+    def __str__(self):
         """
-        Checks if CPE name is valid.
+        Returns a human-readable representation of CPE name.
 
         INPUT:
             - None
         OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: bad-formed CPE name
+            - Representation of CPE component as string
         """
 
-        pass
-
-    @abstractmethod
-    def getAttributeValues(self, att_name):
-        """
-        Returns the values of attribute "att_name" of CPE name.
-        By default a only element in each part.
-
-        INPUT:
-            - att_name: Attribute name to get
-        OUTPUT:
-            - List of attribute values
-        """
-
-        pass
+        return "CPE v{0} ({1}): {2}".format(CPE2_3.VERSION,
+                                            self.STYLE,
+                                            self.cpe_str)
 
 if __name__ == "__main__":
     import doctest

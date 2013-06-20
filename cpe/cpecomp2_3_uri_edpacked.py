@@ -8,7 +8,7 @@ This module allows to store the value of the packed edition component
 of a CPE name of version 2.3 of CPE (Common Platform Enumeration)
 specification with Universal Resource Identifier (URI) style.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpecomp2_3_uri import CPEComponent2_3_URI
@@ -35,6 +38,12 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
     Represents a packd edition component of version 2.3 of CPE
     specification with URI style.
     """
+
+    ###############
+    #  CONSTANTS  #
+    ###############
+
+    SEPARATOR_COMP = "~"
 
     ####################
     #  OBJECT METHODS  #
@@ -53,30 +62,6 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
         """
 
         self.set_value(comp_str)
-
-    def __repr__(self):
-        """
-        Returns a unambiguous representation of CPE component.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return "CPEComponent2_3_URI_edpacked(%s)" % self.get_value()
-
-    def __str__(self):
-        """
-        Returns a human-readable representation of CPE name.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return super(CPEComponent2_3_URI_edpacked, self).__str__()
 
     def _decode(self):
         """
@@ -114,13 +99,6 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
 
         True
 
-    def get_value(self):
-        """
-        Returns the encoded value of component.
-        """
-
-        return super(CPEComponent2_3_URI, self).get_value()
-
     def set_value(self, comp_str):
         """
         Set the value of component.
@@ -135,7 +113,7 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
 
         self._is_negated = False
         self._encoded_value = comp_str
-        self._standard_value = super(CPEComponent2_3_URI, self)._decode()
+        self._standard_value = super(CPEComponent2_3_URI_edpacked, self)._decode()
 
 if __name__ == "__main__":
     import doctest

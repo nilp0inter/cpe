@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 '''
 This file is part of cpe package.
 
@@ -9,7 +8,7 @@ This module contains the common characteristics of
 any name matching algorithm, associated with a version of Common Platform
 Enumeration (CPE) specification.
 
-Copyright (C) 2013  Roberto A. Martínez, Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,13 +24,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpe import CPE
 from cpecomp import CPEComponent
-from abc import ABCMeta
-from abc import abstractmethod
 
 
 class CPESet(object):
@@ -42,8 +42,6 @@ class CPESet(object):
         - create a set of CPE names.
         - match a CPE name against a set of CPE names.
     """
-
-    __metaclass__ = ABCMeta
 
     ####################
     #  OBJECT METHODS  #
@@ -94,20 +92,17 @@ class CPESet(object):
 
         setlen = self.__len__()
 
-        str = "CPE Set version %s contains %s elements" % (self.VERSION,
-                                                           setlen)
+        str = []
+        str.append("CPE Set version {0} contains {1} elements".format(
+            self.VERSION, setlen))
         if setlen > 0:
-            str += ":\n"
+            str.append(":")
 
             for i in range(0, setlen):
-                str += "    %s" % self.K[i].__str__()
+                str.append("    {0}".format(self.K[i].__str__()))
 
-                if i+1 < setlen:
-                    str += "\n"
+        return "\n".join(str)
 
-        return str
-
-    @abstractmethod
     def append(self, cpe):
         """
         Adds a CPE name to the set if not already.
@@ -118,9 +113,9 @@ class CPESet(object):
             - None
         """
 
-        pass
+        errmsg = "Class method not implemented. Use the method of some child class"
+        raise NotImplementedError(errmsg)
 
-    @abstractmethod
     def name_match(self, cpe):
         """
         Accepts a set of known instances of CPE names and a candidate CPE name,
@@ -171,7 +166,7 @@ class CPESet(object):
                             # Each component in element ec is compared with
                             # each component in element ek
                             for c in range(0, len(cpe)):
-                                key = CPEComponent.ORDERED_COMP_PARTS[c]
+                                key = CPEComponent.ordered_comp_parts[c]
                                 comp_cpe = ec.get(key)
                                 comp_k = ek.get(key)
                                 match = comp_k in comp_cpe

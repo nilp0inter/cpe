@@ -8,7 +8,7 @@ This module is an implementation of name matching
 algorithm in accordance with version 2.3 of CPE (Common Platform
 Enumeration) specification.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpe2_3 import CPE2_3
@@ -47,9 +50,6 @@ class CPESet2_3(CPESet):
     #  CONSTANTS  #
     ###############
 
-    # Version of CPE set
-    VERSION = "2.3"
-
     # Possible set relations between a source WFN and a target WFN:
     # - The source is a SUPERSET of the target
     # - The source is a SUBSET of the target
@@ -61,6 +61,9 @@ class CPESet2_3(CPESet):
     LOGICAL_VALUE_EQUAL = 3
     LOGICAL_VALUE_DISJOINT = 4
     LOGICAL_VALUE_UNDEFINED = 5
+
+    # Version of CPE set
+    VERSION = "2.3"
 
     ###################
     #  CLASS METHODS  #
@@ -83,7 +86,7 @@ class CPESet2_3(CPESet):
 
         # If any pairwise comparison returned DISJOINT  then
         # the overall name relationship is DISJOINT
-        for att in CPEComponent.CPE_COMP_KEYS_EXTEND:
+        for att in CPEComponent.CPE_COMP_KEYS_EXTENDED:
             result = result_dict[att]
 
             isDisjoint = result == CPESet2_3.LOGICAL_VALUE_DISJOINT
@@ -108,7 +111,7 @@ class CPESet2_3(CPESet):
 
         # If any pairwise comparison returned EQUAL then
         # the overall name relationship is EQUAL
-        for att in CPEComponent.CPE_COMP_KEYS_EXTEND:
+        for att in CPEComponent.CPE_COMP_KEYS_EXTENDED:
             result = result_dict[att]
 
             isEqual = result == CPESet2_3.LOGICAL_VALUE_EQUAL
@@ -133,7 +136,7 @@ class CPESet2_3(CPESet):
 
         # If any pairwise comparison returned something other than SUBSET
         # or EQUAL, then SUBSET is False.
-        for att in CPEComponent.CPE_COMP_KEYS_EXTEND:
+        for att in CPEComponent.CPE_COMP_KEYS_EXTENDED:
             result = result_dict[att]
 
             isSubset = result == CPESet2_3.LOGICAL_VALUE_SUBSET
@@ -159,7 +162,7 @@ class CPESet2_3(CPESet):
 
         # If any pairwise comparison returned something other than SUPERSET
         # or EQUAL, then SUPERSET is False.
-        for att in CPEComponent.CPE_COMP_KEYS_EXTEND:
+        for att in CPEComponent.CPE_COMP_KEYS_EXTENDED:
             result = result_dict[att]
 
             isSuperset = result == CPESet2_3.LOGICAL_VALUE_SUPERSET
@@ -188,7 +191,7 @@ class CPESet2_3(CPESet):
         result = dict()
 
         # Compare results using the get() function in WFN
-        for att in CPEComponent.CPE_COMP_KEYS_EXTEND:
+        for att in CPEComponent.CPE_COMP_KEYS_EXTENDED:
             value_src = source.getAttributeValues(att)[0]
             if value_src.find('"') > -1:
                 # Not a logical value: del double quotes
@@ -279,7 +282,8 @@ class CPESet2_3(CPESet):
             begins = -1
         else:
             while ((start < len(source)) and
-                   source.startswith(CPEComponent2_3_WFN.WILDCARD_ONE, start, start)):
+                   source.startswith(CPEComponent2_3_WFN.WILDCARD_ONE,
+                                     start, start)):
                 # Source starts with one or more "?"
                 start += 1
                 begins += 1
@@ -396,9 +400,9 @@ class CPESet2_3(CPESet):
         """
 
         if cpe.VERSION != CPE2_3.VERSION:
-            msg = "CPE name version %s not valid, " % cpe.version
-            msg += "version 2.3 expected"
-            raise ValueError(msg)
+            errmsg = "CPE name version {0} not valid, version 2.3 expected".format(
+                cpe.version)
+            raise ValueError(errmsg)
 
         for k in self.K:
             if cpe._str == k._str:

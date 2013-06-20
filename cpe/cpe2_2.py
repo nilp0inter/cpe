@@ -9,7 +9,7 @@ of IT platforms (hardware, operating systems or applications of system)
 in accordance with version 2.2 of CPE (Common Platform Enumeration)
 specification.
 
-Copyright (C) 2013  Roberto A. Martínez, Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,12 +25,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpe import CPE
+from cpe2_3_wfn import CPE2_3_WFN
 from cpecomp import CPEComponent
 from cpecomp2_2 import CPEComponent2_2
+from cpecomp2_3_wfn import CPEComponent2_3_WFN
 from cpecomp_empty import CPEComponentEmpty
 from cpecomp_undefined import CPEComponentUndefined
 
@@ -63,34 +68,30 @@ class CPE2_2(CPE):
     #  CONSTANTS  #
     ###############
 
-    # Separator of components of a part of CPE name
-    COMP_SEPARATOR = ":"
-
     # Version of CPE name
     VERSION = CPE.VERSION_2_2
+
+    ###############
+    #  VARIABLES  #
+    ###############
+
+    # Compilation of regular expression associated with components
+    # of CPE name
+    _part = "?P<{0}>(h|o|a)".format(CPEComponent.ATT_PART)
+    _vendor = "?P<{0}>[^:]+".format(CPEComponent.ATT_VENDOR)
+    _product = "?P<{0}>[^:]+".format(CPEComponent.ATT_PRODUCT)
+    _version = "?P<{0}>[^:]+".format(CPEComponent.ATT_VERSION)
+    _update = "?P<{0}>[^:]+".format(CPEComponent.ATT_UPDATE)
+    _edition = "?P<{0}>[^:]+".format(CPEComponent.ATT_EDITION)
+    _language = "?P<{0}>[^:]+".format(CPEComponent.ATT_LANGUAGE)
+
+    _parts_pattern = "^cpe:/({0})?(:({1})?)?(:({2})?)?(:({3})?)?(:({4})?)?(:({5})?)?(:({6})?)?$".format(
+        _part, _vendor, _product, _version, _update, _edition, _language)
+    _parts_rxc = re.compile(_parts_pattern)
 
     ####################
     #  OBJECT METHODS  #
     ####################
-
-    def __init__(self, cpe_str, *args, **kwargs):
-        """
-        Checks if input CPE name is valid and,
-        if so, stores its parts, elements and components.
-
-        INPUT:
-            - cpe_str: CPE name as string
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: Bad-formed CPE name
-
-        - TEST: a CPE name with some full components
-        >>> str = 'cpe:/a:i4s:javas'
-        >>> c = CPE2_2(str)
-        """
-
-        super(CPE2_2, self).__init__(cpe_str)
 
     def __len__(self):
         """
@@ -103,7 +104,7 @@ class CPE2_2(CPE):
         if data == "":
             return 0
 
-        count = data.count(":")
+        count = data.count(CPEComponent2_2.SEPARATOR_COMP)
 
         return count + 1
 
@@ -113,24 +114,6 @@ class CPE2_2(CPE):
         """
 
         return dict.__new__(cls)
-
-    def __str__(self):
-        """
-        Returns a human-readable representation of CPE name.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-
-        TEST:
-        >>> str = 'cpe:/a:i4s:javas'
-        >>> c = CPE2_2(str, CPE.VERSION_2_2)
-        >>> print c
-        CPE v2.2: cpe:/a:i4s:javas
-        """
-
-        return "CPE v%s: %s" % (CPE2_2.VERSION, self.cpe_str)
 
     def _parse(self):
         """
@@ -149,28 +132,8 @@ class CPE2_2(CPE):
             msg = "Malformed CPE name: it must not have whitespaces"
             raise ValueError(msg)
 
-        # Compilation of regular expression associated with components
-        # of CPE name
-        part = "?P<%s>(h|o|a)" % CPEComponent.ATT_PART
-        vendor = "?P<%s>[^:]+" % CPEComponent.ATT_VENDOR
-        product = "?P<%s>[^:]+" % CPEComponent.ATT_PRODUCT
-        version = "?P<%s>[^:]+" % CPEComponent.ATT_VERSION
-        update = "?P<%s>[^:]+" % CPEComponent.ATT_UPDATE
-        edition = "?P<%s>[^:]+" % CPEComponent.ATT_EDITION
-        language = "?P<%s>[^:]+" % CPEComponent.ATT_LANGUAGE
-
-        parts_pattern = "^cpe:/"
-        parts_pattern += "(%s)?" % part
-        parts_pattern += "(:(%s)?)?" % vendor
-        parts_pattern += "(:(%s)?)?" % product
-        parts_pattern += "(:(%s)?)?" % version
-        parts_pattern += "(:(%s)?)?" % update
-        parts_pattern += "(:(%s)?)?" % edition
-        parts_pattern += "(:(%s)?)?$" % language
-        parts_rxc = re.compile(parts_pattern)
-
         # Partitioning of CPE name
-        parts_match = parts_rxc.match(self._str)
+        parts_match = CPE2_2._parts_rxc.match(self._str)
 
         # Validation of CPE name parts
         if (parts_match is None):
@@ -192,9 +155,8 @@ class CPE2_2(CPE):
                     try:
                         comp = CPEComponent2_2(value, ck)
                     except ValueError:
-                        errmsg = "Malformed CPE name: "
-                        errmsg += "not correct value '%s'" % value
-
+                        errmsg = "Malformed CPE name: not correct value: {0}".format(
+                            value)
                         raise ValueError(errmsg)
             else:
                 # Component not exist in this version of CPE
@@ -203,7 +165,7 @@ class CPE2_2(CPE):
             components[ck] = comp
 
         # Adds the components of version 2.3 of CPE not defined in version 2.2
-        for ck2 in CPEComponent.CPE_COMP_KEYS_EXTEND:
+        for ck2 in CPEComponent.CPE_COMP_KEYS_EXTENDED:
             if ck2 not in components.keys():
                 components[ck2] = CPEComponentUndefined()
 
@@ -222,7 +184,7 @@ class CPE2_2(CPE):
         # Adds the undefined parts
         for sys in CPEComponent.SYSTEM_VALUES:
             if sys != system:
-                pk = CPE.SYSTEM_AND_PARTS[sys]
+                pk = CPE.system_and_parts[sys]
                 self[pk] = []
 
     def as_wfn(self):
@@ -238,26 +200,40 @@ class CPE2_2(CPE):
             - TypeError: incompatible version
         """
 
-        separator = ", "
-        wfn = "wfn:["
+        wfn = []
+        wfn.append(CPE2_3_WFN.CPE_PREFIX)
 
         for ck in CPEComponent.CPE_COMP_KEYS:
             lc = self._getAttributeComponents(ck)
 
             comp = lc[0]
+
             if (isinstance(comp, CPEComponentUndefined) or
                isinstance(comp, CPEComponentEmpty)):
-                v = '%s=ANY' % (ck)
-            else:
-                # Get the value of WFN of component
-                v = '%s="%s"' % (ck, comp.as_wfn())
 
-            # Append v to the WFN then add a separator.
-            wfn = "%s%s%s" % (wfn, v, separator)
+                # Do not set the attribute
+                continue
+            else:
+                v = []
+                v.append(ck)
+                v.append("=")
+
+                # Get the value of WFN of component
+                v.append('"')
+                v.append(comp.as_wfn())
+                v.append('"')
+
+                # Append v to the WFN and add a separator
+                wfn.append("".join(v))
+                wfn.append(CPEComponent2_3_WFN.SEPARATOR_COMP)
+
+        # Del the last separator
+        wfn = wfn[:-1]
 
         # Return the WFN string
-        wfn = "%s]" % wfn[0:len(wfn) - len(separator)]
-        return wfn
+        wfn.append("]")
+
+        return "".join(wfn)
 
     def getAttributeValues(self, att_name):
         """
@@ -268,12 +244,14 @@ class CPE2_2(CPE):
             - att_name: Attribute name to get
         OUTPUT:
             - List of attribute values
+        EXCEPTIONS:
+            - ValueError: invalid attribute name
         """
 
         lc = []
 
         if not CPEComponent.is_valid_attribute(att_name):
-            errmsg = "Invalid attribute name '%s'" % att_name
+            errmsg = "Invalid attribute name: {0}".format(att_name)
             raise ValueError(errmsg)
 
         for pk in CPE.CPE_PART_KEYS:

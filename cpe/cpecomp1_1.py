@@ -7,7 +7,7 @@ This file is part of cpe package.
 This module allows to store the value of the components of a CPE name
 of version 1.1 of CPE (Common Platform Enumeration) specification.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpecomp_single import CPEComponentSingle
@@ -45,6 +48,15 @@ class CPEComponent1_1(CPEComponentSingle):
     ###############
     #  CONSTANTS  #
     ###############
+
+    # Escape component separator
+    _ESCAPE_SEPARATOR = "\\!"
+
+    # Pattern used in regular expression of the value of a component
+    _STRING = "\w\.\-,\(\)@\#"
+
+    # Separator of components of CPE name with URI style
+    SEPARATOR_COMP = ":"
 
     # Characters of version 1.1 of CPE name to convert
     # to standard value (WFN value)
@@ -114,21 +126,6 @@ class CPEComponent1_1(CPEComponentSingle):
 
         return False
 
-    def __init__(self, comp_str, comp_att):
-        """
-        Store the value of component.
-
-        INPUT:
-            - comp_str: value of component value
-            - comp_att: attribute associated with component value
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
-        """
-
-        return super(CPEComponent1_1, self).__init__(comp_str, comp_att)
-
     def __repr__(self):
         """
         Returns a unambiguous representation of CPE component.
@@ -140,25 +137,18 @@ class CPEComponent1_1(CPEComponentSingle):
         """
 
         value = self.get_value()
-        txt = ""
+        result = []
+
         if self._is_negated:
             value = value.replace("~", "")
-            txt = "NOT "
-        txt += "CPEComponent1_1(%s)" % value
+            result.append("NOT ")
 
-        return txt
+        result.append(self.__class__.__name__)
+        result.append("(")
+        result.append(value)
+        result.append(")")
 
-    def __str__(self):
-        """
-        Returns a human-readable representation of CPE component.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return super(CPEComponent1_1, self).__str__()
+        return "".join(result)
 
     def _decode(self):
         """
@@ -182,7 +172,7 @@ class CPEComponent1_1(CPEComponentSingle):
         dec_elements = []
 
         for elem in elements:
-            result = ""
+            result = []
             idx = 0
             while (idx < len(elem)):
                 # Get the idx'th character of s
@@ -190,54 +180,16 @@ class CPEComponent1_1(CPEComponentSingle):
 
                 if (c in CPEComponent1_1.NON_STANDARD_VALUES):
                     # Escape character
-                    result = "%s\\%s" % (result, c)
+                    result.append("\\")
+                    result.append(c)
                 else:
                     # Do nothing
-                    result = "%s%s" % (result, c)
+                    result.append(c)
 
                 idx += 1
-            dec_elements.append(result)
+            dec_elements.append("".join(result))
 
         self._standard_value = dec_elements
-
-    def _is_valid_edition(self):
-        """
-        Return True if the value of component in attribute "edition" is valid,
-        and otherwise False.
-
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
-        """
-
-        return super(CPEComponent1_1, self)._is_valid_edition()
-
-    def _is_valid_language(self):
-        """
-        Return True if the value of component in attribute "language" is valid,
-        and otherwise False.
-
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
-        """
-
-        return super(CPEComponent1_1, self)._is_valid_language()
-
-    def _is_valid_part(self):
-        """
-        Return True if the value of component in attribute "part" is valid,
-        and otherwise False.
-
-        INPUT:
-            - None
-        OUTPUT:
-            True if value of component is valid, False otherwise
-        """
-
-        return super(CPEComponent1_1, self)._is_valid_part()
 
     def _is_valid_value(self):
         """
@@ -252,30 +204,21 @@ class CPEComponent1_1(CPEComponentSingle):
 
         comp_str = self._encoded_value
 
-        # Compilation of regular expression associated with value of component
-        string = "\w\.\-,\(\)@\#"
-        negate_pattern = "~[%s]+" % string
-        not_negate_pattern = "[%s]+(![%s]+)*" % (string, string)
-        value_pattern = "^((%s)|(%s))$" % (negate_pattern, not_negate_pattern)
-        value_rxc = re.compile(value_pattern)
+        value_pattern = []
+        value_pattern.append("^((")
+        value_pattern.append("~[")
+        value_pattern.append(CPEComponent1_1._STRING)
+        value_pattern.append("]+")
+        value_pattern.append(")|(")
+        value_pattern.append("[")
+        value_pattern.append(CPEComponent1_1._STRING)
+        value_pattern.append("]+(![")
+        value_pattern.append(CPEComponent1_1._STRING)
+        value_pattern.append("]+)*")
+        value_pattern.append("))$")
 
-        # Validation of value
+        value_rxc = re.compile("".join(value_pattern))
         return value_rxc.match(comp_str) is not None
-
-    def _parse(self, comp_att):
-        """
-        Check if the value of component is correct
-        in the attribute "comp_att".
-
-        INPUT:
-            - comp_att: attribute associated with value of component
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
-        """
-
-        super(CPEComponent1_1, self)._parse(comp_att)
 
     def as_fs(self):
         r"""
@@ -297,9 +240,7 @@ class CPEComponent1_1(CPEComponentSingle):
         'xp\\!vista'
         """
 
-        # Escape component separator
-        separator = "\\!"
-        result = ""
+        result = []
 
         for s in self._standard_value:
             idx = 0
@@ -307,7 +248,7 @@ class CPEComponent1_1(CPEComponentSingle):
                 c = s[idx]  # get the idx'th character of s
                 if c != "\\":
                     # unquoted characters pass thru unharmed
-                    result = "%s%s" % (result, c)
+                    result.append(c)
                 else:
                     # Escaped characters are examined
                     nextchr = s[idx + 1]
@@ -315,17 +256,18 @@ class CPEComponent1_1(CPEComponentSingle):
                     if ((nextchr == ".") or (nextchr == "-")
                        or (nextchr == "_")):
                         # the period, hyphen and underscore pass unharmed
-                        result = "%s%s" % (result, nextchr)
+                        result.append(nextchr)
                         idx += 1
                     else:
                         # all others retain escaping
-                        result = "%s\\%s" % (result, nextchr)
+                        result.append("\\")
+                        result.append(nextchr)
                         idx += 2
                         continue
                 idx += 1
-            result += separator
+            result.append(CPEComponent1_1._ESCAPE_SEPARATOR)
 
-        return result[0:len(result)-len(separator)]
+        return "".join(result[0:-1])
 
     def as_uri_2_3(self):
         """
@@ -349,7 +291,7 @@ class CPEComponent1_1(CPEComponentSingle):
         """
 
         separator = CPEComponentSingle._pct_encode_uri("!")
-        result = ""
+        result = []
 
         for s in self._standard_value:
             idx = 0
@@ -358,7 +300,7 @@ class CPEComponent1_1(CPEComponentSingle):
 
                 # alphanumerics (incl. underscore) pass untouched
                 if (CPEComponentSingle._is_alphanum(thischar)):
-                    result += thischar
+                    result.append(thischar)
                     idx += 1
                     continue
 
@@ -366,15 +308,15 @@ class CPEComponent1_1(CPEComponentSingle):
                 if (thischar == "\\"):
                     idx += 1
                     nxtchar = s[idx]
-                    result += CPEComponentSingle._pct_encode_uri(nxtchar)
+                    result.append(CPEComponentSingle._pct_encode_uri(nxtchar))
                     idx += 1
                     continue
 
                 idx += 1
 
-            result += separator
+            result.append(separator)
 
-        return result[0:len(result)-len(separator)]
+        return "".join(result[0:-1])
 
     def as_wfn(self):
         r"""
@@ -393,28 +335,13 @@ class CPEComponent1_1(CPEComponentSingle):
         'xp\\!vista'
         """
 
-        # Escape component separator
-        separator = "\\!"
-        result = ""
+        result = []
 
         for s in self._standard_value:
-            result = "%s%s%s" % (result, s, separator)
+            result.append(s)
+            result.append(CPEComponent1_1._ESCAPE_SEPARATOR)
 
-        return result[0:len(result)-len(separator)]
-
-    def get_value(self):
-        """
-        Returns the encoded value of component.
-
-        TEST:
-        >>> value = "hp"
-        >>> att = CPEComponentSingle.ATT_VENDOR
-        >>> comp1 = CPEComponent1_1(value, att)
-        >>> comp1.get_value()
-        'hp'
-        """
-
-        return super(CPEComponent1_1, self).get_value()
+        return "".join(result[0:-1])
 
     def set_value(self, comp_str, comp_att):
         """

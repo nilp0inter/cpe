@@ -8,7 +8,7 @@ This module of is an implementation of name matching
 algorithm in accordance with version 2.2 of CPE (Common Platform
 Enumeration) specification.
 
-Copyright (C) 2013  Roberto A. Martínez, Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpe import CPE
@@ -72,9 +75,9 @@ class CPESet2_2(CPESet):
         """
 
         if cpe.VERSION != CPE.VERSION_2_2:
-            msg = "CPE name version %s not valid, " % cpe.VERSION
-            msg += "version 2.2 expected"
-            raise ValueError(msg)
+            errmsg = "CPE name version {0} not valid, version 2.2 expected".format(
+                cpe.VERSION)
+            raise ValueError(errmsg)
 
         for k in self.K:
             if cpe.cpe_str == k.cpe_str:

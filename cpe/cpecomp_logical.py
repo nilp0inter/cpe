@@ -7,7 +7,7 @@ This file is part of cpe package.
 This module allows to store the value of the logical components
 of a CPE name and compare it with others.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,12 +23,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpecomp import CPEComponent
-from abc import ABCMeta
-from abc import abstractmethod
 
 
 class CPEComponentLogical(CPEComponent):
@@ -36,8 +37,6 @@ class CPEComponentLogical(CPEComponent):
     Represents a generic logical component of CPE name,
     compatible with the components of all versions of CPE specification.
     """
-
-    __metaclass__ = ABCMeta
 
     ###############
     #  CONSTANTS  #
@@ -65,7 +64,6 @@ class CPEComponentLogical(CPEComponent):
     #  OBJECT METHODS  #
     ####################
 
-    @abstractmethod
     def __contains__(self, item):
         """
         Returns True if item is included in set of values of self.
@@ -78,7 +76,6 @@ class CPEComponentLogical(CPEComponent):
 
         return True
 
-    @abstractmethod
     def __eq__(self, other):
         """
         Returns True if other (first element of operation) and
@@ -89,39 +86,13 @@ class CPEComponentLogical(CPEComponent):
             - other: component to compare
         OUTPUT:
             True if other == self, False otherwise
-        """
-
-        pass
-
-    @abstractmethod
-    def __init__(self, comp_str):
-        """
-        Store the value of component.
-
-        INPUT:
-            - comp_str: value of component value
-        OUPUT:
-            - None
         EXCEPTIONS:
-            - ValueError: incorrect value of component
+            - NotImplementedError: class method not implemented
         """
 
-        return super(CPEComponentLogical, self).__init__(comp_str)
+        errmsg = "Class method not implemented. Use the method of some child class"
+        raise NotImplementedError(errmsg)
 
-    @abstractmethod
-    def __repr__(self):
-        """
-        Returns a unambiguous representation of CPE component.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        pass
-
-    @abstractmethod
     def __str__(self):
         """
         Returns a human-readable representation of CPE component.
@@ -130,6 +101,14 @@ class CPEComponentLogical(CPEComponent):
             - None
         OUTPUT:
             - Representation of CPE component as string
+        EXCEPTIONS:
+            - NotImplementedError: class method not implemented
         """
 
-        pass
+        errmsg = "Class method not implemented. Use the method of some child class"
+        raise NotImplementedError(errmsg)
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+    doctest.testfile('tests/testfile_cpecomp_logical.txt')

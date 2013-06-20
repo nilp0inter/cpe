@@ -7,7 +7,7 @@ This file is part of cpe package.
 This module allows to create a component of CPE name with a
 not applicable value.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,7 +23,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpecomp_logical import CPEComponentLogical
@@ -81,18 +84,6 @@ class CPEComponentNotApplicable(CPEComponentLogical):
         super(CPEComponentNotApplicable, self).__init__(
             CPEComponentLogical._VALUE_INT_NA)
 
-    def __repr__(self):
-        """
-        Returns a unambiguous representation of CPE component.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return "CPEComponentNotApplicable()"
-
     def __str__(self):
         """
         Returns a human-readable representation of CPE component.
@@ -104,3 +95,8 @@ class CPEComponentNotApplicable(CPEComponentLogical):
         """
 
         return "<NA>"
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
+    doctest.testfile('tests/testfile_cpecomp_notapplicable.txt')

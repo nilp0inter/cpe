@@ -74,8 +74,8 @@ class CPESet1_1(CPESet):
         """
 
         if cpe.VERSION != CPE.VERSION_1_1:
-            msg = "CPE name version %s not valid, " % cpe.VERSION
-            msg += "version 1.1 expected"
+            msg = "CPE name version {0} not valid, version 1.1 expected".format(
+                cpe.VERSION)
             raise ValueError(msg)
 
         for k in self.K:

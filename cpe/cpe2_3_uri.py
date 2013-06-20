@@ -9,7 +9,7 @@ of IT platforms (hardware, operating systems or applications of system)
 in accordance with binding style URI of version 2.3 of CPE
 (Common Platform Enumeration) specification.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,14 +25,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpe import CPE
 from cpe2_3 import CPE2_3
+from cpe2_3_wfn import CPE2_3_WFN
 from cpecomp import CPEComponent
 from cpecomp_logical import CPEComponentLogical
 from cpecomp2_3_uri import CPEComponent2_3_URI
+from cpecomp2_3_wfn import CPEComponent2_3_WFN
 from cpecomp2_3_uri_edpacked import CPEComponent2_3_URI_edpacked
 from cpecomp_anyvalue import CPEComponentAnyValue
 from cpecomp_empty import CPEComponentEmpty
@@ -72,6 +77,24 @@ class CPE2_3_URI(CPE2_3):
     # Style of CPE name
     STYLE = CPE2_3.STYLE_URI
 
+    ###############
+    #  VARIABLES  #
+    ###############
+
+    # Compilation of regular expression associated with parts of CPE name
+    _typesys = "?P<{0}>(h|o|a)".format(CPEComponent.ATT_PART)
+    _vendor = "?P<{0}>[^:]+".format(CPEComponent.ATT_VENDOR)
+    _product = "?P<{0}>[^:]+".format(CPEComponent.ATT_PRODUCT)
+    _version = "?P<{0}>[^:]+".format(CPEComponent.ATT_VERSION)
+    _update = "?P<{0}>[^:]+".format(CPEComponent.ATT_UPDATE)
+    _edition = "?P<{0}>[^:]+".format(CPEComponent.ATT_EDITION)
+    _language = "?P<{0}>[^:]+".format(CPEComponent.ATT_LANGUAGE)
+
+    _parts_pattern = "^cpe:/({0})?(:({1})?)?(:({2})?)?(:({3})?)?(:({4})?)?(:({5})?)?(:({6})?)?$".format(
+        _typesys, _vendor, _product, _version, _update, _edition, _language)
+
+    _parts_rxc = re.compile(_parts_pattern, re.IGNORECASE)
+
     ###################
     #  CLASS METHODS  #
     ###################
@@ -89,10 +112,10 @@ class CPE2_3_URI(CPE2_3):
             - ValueError: invalid value of component
         """
 
-        if (value == CPEComponent2_3_URI.VALUE_UNDEFINED or
-           value == CPEComponent2_3_URI.VALUE_EMPTY):
+        if value == CPEComponent2_3_URI.VALUE_UNDEFINED:
             comp = CPEComponentUndefined()
-        elif (value == CPEComponent2_3_URI.VALUE_ANY):
+        elif (value == CPEComponent2_3_URI.VALUE_ANY or
+              value == CPEComponent2_3_URI.VALUE_EMPTY):
             comp = CPEComponentAnyValue()
         elif (value == CPEComponent2_3_URI.VALUE_NA):
             comp = CPEComponentNotApplicable()
@@ -101,7 +124,8 @@ class CPE2_3_URI(CPE2_3):
             try:
                 comp = CPEComponent2_3_URI(value, att)
             except ValueError:
-                errmsg = "Invalid value of attribute '%s': %s " % (att, value)
+                errmsg = "Invalid value of attribute '{0}': {1} ".format(att,
+                                                                         value)
                 raise ValueError(errmsg)
 
         return comp
@@ -121,7 +145,7 @@ class CPE2_3_URI(CPE2_3):
             - ValueError: invalid value of edition component
         """
 
-        components = value.split(CPEComponent2_3_URI.PACKED_EDITION_SEPARATOR)
+        components = value.split(CPEComponent2_3_URI.SEPARATOR_PACKED_EDITION)
         d = dict()
 
         ed = components[1]
@@ -212,7 +236,7 @@ class CPE2_3_URI(CPE2_3):
         if data == "":
             return 0
 
-        count = data.count(":")
+        count = data.count(CPEComponent2_3_URI.SEPARATOR_COMP)
 
         return count + 1
 
@@ -222,20 +246,6 @@ class CPE2_3_URI(CPE2_3):
         """
 
         return dict.__new__(cls)
-
-    def __str__(self):
-        """
-        Returns a human-readable representation of CPE name.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return "CPE v%s (%s): %s" % (CPE2_3.VERSION,
-                                     CPE2_3_URI.STYLE,
-                                     self.cpe_str)
 
     def _parse(self):
         """
@@ -254,27 +264,8 @@ class CPE2_3_URI(CPE2_3):
             msg = "Malformed CPE name: it must not have whitespaces"
             raise ValueError(msg)
 
-        # Compilation of regular expression associated with parts of CPE name
-        typesys = "?P<%s>(h|o|a)" % CPEComponent.ATT_PART
-        vendor = "?P<%s>[^:]+" % CPEComponent.ATT_VENDOR
-        product = "?P<%s>[^:]+" % CPEComponent.ATT_PRODUCT
-        version = "?P<%s>[^:]+" % CPEComponent.ATT_VERSION
-        update = "?P<%s>[^:]+" % CPEComponent.ATT_UPDATE
-        edition = "?P<%s>[^:]+" % CPEComponent.ATT_EDITION
-        language = "?P<%s>[^:]+" % CPEComponent.ATT_LANGUAGE
-
-        parts_pattern = "^cpe:/"
-        parts_pattern += "(%s)?" % typesys
-        parts_pattern += "(:(%s)?)?" % vendor
-        parts_pattern += "(:(%s)?)?" % product
-        parts_pattern += "(:(%s)?)?" % version
-        parts_pattern += "(:(%s)?)?" % update
-        parts_pattern += "(:(%s)?)?" % edition
-        parts_pattern += "(:(%s)?)?$" % language
-        parts_rxc = re.compile(parts_pattern, re.IGNORECASE)
-
         # Partitioning of CPE name
-        parts_match = parts_rxc.match(self._str)
+        parts_match = CPE2_3_URI._parts_rxc.match(self._str)
 
         # Validation of CPE name parts
         if (parts_match is None):
@@ -289,7 +280,7 @@ class CPE2_3_URI(CPE2_3):
 
             try:
                 if (ck == CPEComponent.ATT_EDITION and value is not None):
-                    if value[0] == CPEComponent2_3_URI.PACKED_EDITION_SEPARATOR:
+                    if value[0] == CPEComponent2_3_URI.SEPARATOR_PACKED_EDITION:
                         # Unpack the edition part
                         edition_parts = CPE2_3_URI._unpack_edition(value)
                     else:
@@ -297,9 +288,8 @@ class CPE2_3_URI(CPE2_3):
                 else:
                     comp = CPE2_3_URI._create_component(ck, value)
             except ValueError:
-                errmsg = "Malformed CPE name: "
-                errmsg += "not correct value '%s'" % value
-
+                errmsg = "Malformed CPE name: not correct value '{0}'".format(
+                    value)
                 raise ValueError(errmsg)
             else:
                 components[ck] = comp
@@ -307,7 +297,7 @@ class CPE2_3_URI(CPE2_3):
         components = dict(components, **edition_parts)
 
         # Adds the components of version 2.3 of CPE not defined in version 2.2
-        for ck2 in CPEComponent.CPE_COMP_KEYS_EXTEND:
+        for ck2 in CPEComponent.CPE_COMP_KEYS_EXTENDED:
             if ck2 not in components.keys():
                 components[ck2] = CPEComponentUndefined()
 
@@ -366,11 +356,11 @@ class CPE2_3_URI(CPE2_3):
             - TypeError: incompatible version
         """
 
-        if self._str.find(CPEComponent2_3_URI.PACKED_EDITION_SEPARATOR) == -1:
+        if self._str.find(CPEComponent2_3_URI.SEPARATOR_PACKED_EDITION) == -1:
             # Edition unpacked, only show the first seven components
 
-            separator = ", "
-            wfn = "wfn:["
+            wfn = []
+            wfn.append(CPE2_3_WFN.CPE_PREFIX)
 
             for ck in CPEComponent.CPE_COMP_KEYS:
                 lc = self._getAttributeComponents(ck)
@@ -378,27 +368,50 @@ class CPE2_3_URI(CPE2_3):
                 if len(lc) > 1:
                     # Incompatible version 1.1, there are two or more elements
                     # in CPE name
-                    errmsg = "Incompatible version %s with WFN" % self.VERSION
+                    errmsg = "Incompatible version {0} with WFN".format(
+                        self.VERSION)
                     raise TypeError(errmsg)
 
                 else:
                     comp = lc[0]
+
+                    v = []
+                    v.append(ck)
+                    v.append("=")
+
                     if (isinstance(comp, CPEComponentUndefined) or
-                       isinstance(comp, CPEComponentEmpty) or
-                       isinstance(comp, CPEComponentAnyValue)):
-                        v = '%s=ANY' % (ck)
+                       isinstance(comp, CPEComponentEmpty)):
+
+                        # Do not set the attribute
+                        continue
+
+                    elif isinstance(comp, CPEComponentAnyValue):
+
+                        # Logical value any
+                        v.append(CPEComponent2_3_WFN.VALUE_ANY)
+
                     elif isinstance(comp, CPEComponentNotApplicable):
-                        v = '%s=NA' % (ck)
+
+                        # Logical value not applicable
+                        v.append(CPEComponent2_3_WFN.VALUE_NA)
+
                     else:
                         # Get the value of WFN of component
-                        v = '%s="%s"' % (ck, comp.as_wfn())
+                        v.append('"')
+                        v.append(comp.as_wfn())
+                        v.append('"')
 
-                # Append v to the WFN then add a separator.
-                wfn = "%s%s%s" % (wfn, v, separator)
+                    # Append v to the WFN and add a separator
+                    wfn.append("".join(v))
+                    wfn.append(CPEComponent2_3_WFN.SEPARATOR_COMP)
+
+            # Del the last separator
+            wfn = wfn[:-1]
 
             # Return the WFN string
-            wfn = "%s]" % wfn[0:len(wfn) - len(separator)]
-            return wfn
+            wfn.append("]")
+
+            return "".join(wfn)
 
         else:
             # Shows all components
@@ -418,7 +431,7 @@ class CPE2_3_URI(CPE2_3):
         lc = []
 
         if not CPEComponent.is_valid_attribute(att_name):
-            errmsg = "Invalid attribute name '%s'" % att_name
+            errmsg = "Invalid attribute name '{0}'".format(att_name)
             raise ValueError(errmsg)
 
         for pk in CPE.CPE_PART_KEYS:

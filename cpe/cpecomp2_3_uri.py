@@ -8,7 +8,7 @@ This module allows to store the value of the components of a CPE name
 of version 2.3 of CPE (Common Platform Enumeration) specification
 with Universal Resource Identifier (URI) style.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,7 +24,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
 from cpecomp2_3 import CPEComponent2_3
@@ -42,6 +45,20 @@ class CPEComponent2_3_URI(CPEComponent2_3):
     #  CONSTANTS  #
     ###############
 
+    # Patterns used to check the value of component
+    _PCT_ENCODED = "%21|%22|%23|%24|%25|%26|%27|%28|%29|%2a|%2b|%2c|%2f|%3a|%3b|%3c|%3d|%3e|%3f|%40|%5b|%5c|%5d|%5e|%60|%7b|%7c|%7d|%7e"
+    _SPEC_CHRS = "((%01)+|%02)"
+    _UNRESERVED = "[\w\-\.]"
+
+    # Separator of components of CPE name with URI style
+    SEPARATOR_COMP = ":"
+
+    # Separator of language parts: language and region
+    SEPARATOR_LANG = "-"
+
+    # Separator of edition part components in CPE uri
+    SEPARATOR_PACKED_EDITION = "~"
+
     # Logical values in string format
     VALUE_ANY = ""
     VALUE_NA = "-"
@@ -53,40 +70,22 @@ class CPEComponent2_3_URI(CPEComponent2_3):
     # Constant associated with wildcard to indicate a character
     WILDCARD_ONE = "%01"
 
-    # Percent-encoded characters to decode
-    DECODE_DICT = {
-        "%21": '\\!',
-        "%22": '\\\"',
-        "%23": '\\#',
-        "%24": '\\$',
-        "%25": '\\%',
-        "%26": '\\&',
-        "%27": '\\\'',
-        "%28": '\\(',
-        "%29": '\\)',
-        "%2a": '\\*',
-        "%2b": '\\+',
-        "%2c": '\\,',
-        "%2f": '\\/',
-        "%3a": '\\:',
-        "%3b": '\\;',
-        "%3c": '\\<',
-        "%3d": '\\=',
-        "%3e": '\\>',
-        "%3f": '\\?',
-        "%40": '\\@',
-        "%5b": '\\[',
-        "%5c": '\\\\',
-        "%5d": '\\]',
-        "%5e": '\\^',
-        "%60": '\\`',
-        "%7b": '\\{',
-        "%7c": '\\|',
-        "%7d": '\\}',
-        "%7e": '\\~'}
+    ###############
+    #  VARIABLES  #
+    ###############
+
+    # Variable used to check the value of component
+    _str_w_special = "({0}?({1}|{2})+{3}?)".format(_SPEC_CHRS, _UNRESERVED,
+                                                   _PCT_ENCODED, _SPEC_CHRS)
+    _str_wo_special = "({0}|{1})*".format(_UNRESERVED, _PCT_ENCODED)
+    _string = "({0}|{1})".format(_str_wo_special, _str_w_special)
+
+    # Compilation of regular expression associated with value of component
+    _value_pattern = "^{0}$".format(_string)
+    _value_rxc = re.compile(_value_pattern)
 
     # Characters to convert to percent-encoded characters
-    PCE_DICT = {
+    char_to_pce = {
         '!': "%21",
         '"': "%22",
         '#': "%23",
@@ -117,66 +116,41 @@ class CPEComponent2_3_URI(CPEComponent2_3):
         '}': "%7d",
         '~': "%7e"}
 
-    PCT_ENCODED = "%21|%22|%23|%24|%25|%26|%27|%28|%29"
-    PCT_ENCODED += "|%2a|%2b|%2c|%2f"
-    PCT_ENCODED += "|%3a|%3b|%3c|%3d|%3e|%3f"
-    PCT_ENCODED += "|%40|%5b|%5c|%5d|%5e"
-    PCT_ENCODED += "|%60|%7b|%7c|%7d|%7e"
-    UNRESERVED = "[\w\-\.]"
-    SPEC_CHRS = "((%01)+|%02)"
-    STR_W_SPECIAL = "(%s?(%s|%s)+%s?)" % (SPEC_CHRS, UNRESERVED,
-                                          PCT_ENCODED, SPEC_CHRS)
-    STR_WO_SPECIAL = "(%s|%s)*" % (UNRESERVED, PCT_ENCODED)
-    STRING = "(%s|%s)" % (STR_WO_SPECIAL, STR_W_SPECIAL)
-
-    # Separator of edition part components in CPE uri
-    PACKED_EDITION_SEPARATOR = "~"
-
-    # Separator of language parts: language and region
-    SEPARATOR_LANG = "-"
+    # Percent-encoded characters to decode
+    pce_char_to_decode = {
+        "%21": '\\!',
+        "%22": '\\\"',
+        "%23": '\\#',
+        "%24": '\\$',
+        "%25": '\\%',
+        "%26": '\\&',
+        "%27": '\\\'',
+        "%28": '\\(',
+        "%29": '\\)',
+        "%2a": '\\*',
+        "%2b": '\\+',
+        "%2c": '\\,',
+        "%2f": '\\/',
+        "%3a": '\\:',
+        "%3b": '\\;',
+        "%3c": '\\<',
+        "%3d": '\\=',
+        "%3e": '\\>',
+        "%3f": '\\?',
+        "%40": '\\@',
+        "%5b": '\\[',
+        "%5c": '\\\\',
+        "%5d": '\\]',
+        "%5e": '\\^',
+        "%60": '\\`',
+        "%7b": '\\{',
+        "%7c": '\\|',
+        "%7d": '\\}',
+        "%7e": '\\~'}
 
     ####################
     #  OBJECT METHODS  #
     ####################
-
-    def __init__(self, comp_str, comp_att):
-        """
-        Store the value of component.
-
-        INPUT:
-            - comp_str: value of component value
-            - comp_att: attribute associated with component value
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
-        """
-
-        super(CPEComponent2_3_URI, self).__init__(comp_str, comp_att)
-
-    def __repr__(self):
-        """
-        Returns a unambiguous representation of CPE component.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return "CPEComponent2_3_URI(%s)" % self.get_value()
-
-    def __str__(self):
-        """
-        Returns a human-readable representation of CPE name.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        """
-
-        return super(CPEComponent2_3_URI, self).__str__()
 
     def _decode(self):
         """
@@ -193,24 +167,31 @@ class CPEComponent2_3_URI(CPEComponent2_3):
             - ValueError: Invalid character in value of component
         """
 
-        result = ""
+        result = []
         idx = 0
         s = self._encoded_value
         embedded = False
 
+        errmsg = []
+        errmsg.append("Invalid value: ")
+
         while (idx < len(s)):
+            errmsg.append(s)
+            errmsg_str = "".join(errmsg)
+
             # Get the idx'th character of s
             c = s[idx]
 
             # Deal with dot, hyphen and tilde: decode with quoting
             if ((c == '.') or (c == '-') or (c == '~')):
-                result = "%s\\%s" % (result, c)
+                result.append("\\")
+                result.append(c)
                 idx += 1
                 embedded = True  # a non-%01 encountered
                 continue
 
             if (c != '%'):
-                result = "%s%s" % (result, c)
+                result.append(c)
                 idx += 1
                 embedded = True  # a non-%01 encountered
                 continue
@@ -230,37 +211,34 @@ class CPEComponent2_3_URI(CPEComponent2_3):
                     # at the beginning or the end of the string,
                     # or embedded in sequence as required.
                     # Decode to unquoted form.
-                    result = "%s%s" % (result,
-                                       CPEComponent2_3_WFN.WILDCARD_ONE)
+                    result.append(CPEComponent2_3_WFN.WILDCARD_ONE)
                     idx += 3
                     continue
                 else:
-                    errmsg = "Invalid value '%s'" % s
-                    raise ValueError(errmsg)
+                    raise ValueError(errmsg_str)
 
             elif form == CPEComponent2_3_URI.WILDCARD_MULTI:
                 if ((idx == 0) or (idx == (len(s) - 3))):
                     # Percent-encoded asterisk is at the beginning
                     # or the end of the string, as required.
                     # Decode to unquoted form.
-                    result = "%s%s" % (result,
-                                       CPEComponent2_3_WFN.WILDCARD_MULTI)
+                    result.append(CPEComponent2_3_WFN.WILDCARD_MULTI)
                 else:
-                    errmsg = "Invalid value '%s'" % s
-                    raise ValueError(errmsg)
+                    raise ValueError(errmsg_str)
 
-            elif form in CPEComponent2_3_URI.DECODE_DICT.keys():
-                value = CPEComponent2_3_URI.DECODE_DICT[form]
-                result = "%s%s" % (result, value)
+            elif form in CPEComponent2_3_URI.pce_char_to_decode.keys():
+                value = CPEComponent2_3_URI.pce_char_to_decode[form]
+                result.append(value)
 
             else:
-                errmsg = "Invalid percent-encoded character '%s'" % s
-                raise ValueError(errmsg)
+                errmsg.append("Invalid percent-encoded character: ")
+                errmsg.append(s)
+                raise ValueError("".join(errmsg))
 
             idx += 3
             embedded = True  # a non-%01 encountered.
 
-        self._standard_value = result
+        self._standard_value = "".join(result)
 
     def _is_valid_edition(self):
         """
@@ -275,14 +253,20 @@ class CPEComponent2_3_URI(CPEComponent2_3):
 
         comp_str = self._standard_value[0]
 
-        # Compilation of regular expression associated with value of CPE part
-        packed = "(%s%s){5}" % (CPEComponent2_3_URI.PACKED_EDITION_SEPARATOR,
-                                CPEComponent2_3_URI.STRING)
+        packed = []
+        packed.append("(")
+        packed.append(CPEComponent2_3_URI.SEPARATOR_PACKED_EDITION)
+        packed.append(CPEComponent2_3_URI._string)
+        packed.append("){5}")
 
-        value_pattern = "^(%s|%s)$" % (CPEComponent2_3_URI.STRING, packed)
-        value_rxc = re.compile(value_pattern)
+        value_pattern = []
+        value_pattern.append("^(")
+        value_pattern.append(CPEComponent2_3_URI._string)
+        value_pattern.append("|")
+        value_pattern.append("".join(packed))
+        value_pattern.append(")$")
 
-        # Validation of value
+        value_rxc = re.compile("".join(value_pattern))
         return value_rxc.match(comp_str) is not None
 
     def _is_valid_value(self):
@@ -297,35 +281,7 @@ class CPEComponent2_3_URI(CPEComponent2_3):
         """
 
         comp_str = self._standard_value[0]
-
-        # Compilation of regular expression associated with value of CPE part
-        value_pattern = "^%s$" % CPEComponent2_3_URI.STRING
-        value_rxc = re.compile(value_pattern)
-
-        # Validation of value
-        return value_rxc.match(comp_str) is not None
-
-    def get_value(self):
-        """
-        Returns the encoded value of component.
-        """
-
-        return super(CPEComponent2_3_URI, self).get_value()
-
-    def set_value(self, comp_str, comp_att):
-        """
-        Set the value of component.
-
-        INPUT:
-            - comp_str: value of component
-            - comp_att: attribute associated with comp_str
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
-        """
-
-        super(CPEComponent2_3_URI, self).set_value(comp_str, comp_att)
+        return CPEComponent2_3_URI._value_rxc.match(comp_str) is not None
 
 if __name__ == "__main__":
     import doctest
