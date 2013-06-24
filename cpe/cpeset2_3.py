@@ -70,6 +70,222 @@ class CPESet2_3(CPESet):
     ###################
 
     @classmethod
+    def _compare(cls, source, target):
+        """
+        Compares two values associated with a attribute of two WFNs.
+        This function is a support function for compare_WFNs.
+
+        Input
+            - A pair of attribute values, which may be logical values
+             (ANY or NA) or string values.
+        Output
+            - The attribute comparison relation.
+        """
+
+        if (CPESet2_3._is_string(source)):
+            source = source.lower()
+        if (CPESet2_3._is_string(target)):
+            target = target.lower()
+
+        # In this specification, unquoted wildcard characters in the target
+        # yield an undefined result
+
+        if (CPESet2_3._is_string(target) and
+           CPESet2_3._contains_wildcards(target)):
+            return CPESet2_3.LOGICAL_VALUE_UNDEFINED
+
+        # If source and target attribute values are equal,
+        # then the result is EQUAL
+        if (source == target):
+            return CPESet2_3.LOGICAL_VALUE_EQUAL
+
+        # If source attribute value is ANY, then the result is SUPERSET
+        if (source == CPEComponent2_3_WFN.VALUE_ANY):
+            return CPESet2_3.LOGICAL_VALUE_SUPERSET
+
+        # If target attribute value is ANY, then the result is SUBSET
+        if (target == CPEComponent2_3_WFN.VALUE_ANY):
+            return CPESet2_3.LOGICAL_VALUE_SUBSET
+
+        # If either source or target attribute value is NA
+        # then the result is DISJOINT
+        isSourceNA = source == CPEComponent2_3_WFN.VALUE_NA
+        isTargetNA = target == CPEComponent2_3_WFN.VALUE_NA
+
+        if (isSourceNA or isTargetNA):
+            return CPESet2_3.LOGICAL_VALUE_DISJOINT
+
+        # If we get to this point, we are comparing two strings
+        return CPESet2_3._compare_strings(source, target)
+
+    @classmethod
+    def _compare_strings(cls, source, target):
+        """
+        Compares a source string to a target string,
+        and addresses the condition in which the source string
+        includes unquoted special characters.
+
+        It performs a simple regular expression match,
+        with the assumption that (as required) unquoted special characters
+        appear only at the beginning and/or the end of the source string.
+
+        It also properly differentiates between unquoted and quoted
+        special characters.
+        """
+
+        start = 0
+        end = len(source)
+        begins = 0
+        ends = 0
+
+        # Reading of initial wildcard in source
+        if source.startswith(CPEComponent2_3_WFN.WILDCARD_MULTI):
+            # Source starts with "*"
+            start = 1
+            begins = -1
+        else:
+            while ((start < len(source)) and
+                   source.startswith(CPEComponent2_3_WFN.WILDCARD_ONE,
+                                     start, start)):
+                # Source starts with one or more "?"
+                start += 1
+                begins += 1
+
+        # Reading of final wildcard in source
+        if (source.endswith(CPEComponent2_3_WFN.WILDCARD_MULTI) and
+           CPESet2_3._is_even_wildcards(source, end - 1)):
+
+            # Source ends in "*"
+            end -= 1
+            ends = -1
+        else:
+            while ((end > 0) and
+                   source.endswith(CPEComponent2_3_WFN.WILDCARD_ONE, end - 1, end - 1) and
+                   CPESet2_3._is_even_wildcards(source, end - 1)):
+
+                # Source ends in "?"
+                end -= 1
+                ends += 1
+
+        source = source[start: end]
+        index = -1
+        leftover = len(target)
+
+        while (leftover > 0):
+            index = target.find(source, index + 1)
+            if (index == -1):
+                break
+            escapes = target.count("\\", 0, index)
+            if ((index > 0) and (begins != -1) and
+               (begins < (index - escapes))):
+
+                break
+
+            escapes = target.count("\\", index + 1, len(target))
+            leftover = len(target) - index - escapes - len(source)
+            if ((leftover > 0) and ((ends != -1) and (leftover > ends))):
+                continue
+
+            return CPESet2_3.LOGICAL_VALUE_SUPERSET
+
+        return CPESet2_3.LOGICAL_VALUE_DISJOINT
+
+    @classmethod
+    def _contains_wildcards(cls, s):
+        """
+        Return True if the string contains any unquoted special characters
+        (question-mark or asterisk), otherwise False.
+
+        This function is a support function for _compare().
+
+        Ex: _contains_wildcards("foo") => FALSE
+        Ex: _contains_wildcards("foo\?") => FALSE
+        Ex: _contains_wildcards("foo?") => TRUE
+        Ex: _contains_wildcards("\*bar") => FALSE
+        Ex: _contains_wildcards("*bar") => TRUE
+        """
+
+        idx = s.find("*")
+        if idx != -1:
+            if idx == 0:
+                return True
+            else:
+                if s[idx - 1] != "\\":
+                    return True
+
+        idx = s.find("?")
+        if idx != -1:
+            if idx == 0:
+                return True
+            else:
+                if s[idx - 1] != "\\":
+                    return True
+        return False
+
+    @classmethod
+    def _is_even_wildcards(cls, str, idx):
+        """
+        Returns True if an even number of escape (backslash) characters
+        precede the character at index idx in string str.
+        """
+
+        result = 0
+        while ((idx > 0) and (str[idx - 1] == "\\")):
+            idx -= 1
+            result += 1
+
+        isEvenNumber = (result % 2) == 0
+        return isEvenNumber
+
+    @classmethod
+    def _is_string(cls, arg):
+        """
+        Return True if arg is a string value,
+        and False if arg is a logical value (ANY or NA).
+
+        This function is a support function for _compare().
+        """
+
+        isAny = arg == CPEComponent2_3_WFN.VALUE_ANY
+        isNa = arg == CPEComponent2_3_WFN.VALUE_NA
+
+        return not (isAny or isNa)
+
+    @classmethod
+    def compare_wfns(cls, source, target):
+        """
+        Compares two WFNs and returns a list of pairwise attribute-value
+        comparison results. It provides full access to the individual
+        comparison results to enable use-case specific implementations
+        of novel name-comparison algorithms.
+
+        Compare each attribute of the Source WFN to the Target WFN:
+        Input
+            - Two WFNs: source WFN y target WFN
+        Output
+            - List of pairwise attribute comparison results
+        """
+
+        # Create a new associative array table implemented as a dictionary
+        result = dict()
+
+        # Compare results using the get() function in WFN
+        for att in CPEComponent.CPE_COMP_KEYS_EXTENDED:
+            value_src = source.get_attribute_values(att)[0]
+            if value_src.find('"') > -1:
+                # Not a logical value: del double quotes
+                value_src = value_src[1:-1]
+
+            value_tar = target.get_attribute_values(att)[0]
+            if value_tar.find('"') > -1:
+                # Not a logical value: del double quotes
+                value_tar = value_tar[1:-1]
+
+            result[att] = CPESet2_3._compare(value_src, value_tar)
+
+        return result
+
+    @classmethod
     def cpe_disjoint(cls, source, target):
         """
         Compares two WFNs and returns True if the set-theoretic relation
@@ -171,222 +387,6 @@ class CPESet2_3(CPESet):
                 return False
 
         return True
-
-    @classmethod
-    def compare_wfns(cls, source, target):
-        """
-        Compares two WFNs and returns a list of pairwise attribute-value
-        comparison results. It provides full access to the individual
-        comparison results to enable use-case specific implementations
-        of novel name-comparison algorithms.
-
-        Compare each attribute of the Source WFN to the Target WFN:
-        Input
-            - Two WFNs: source WFN y target WFN
-        Output
-            - List of pairwise attribute comparison results
-        """
-
-        # Create a new associative array table implemented as a dictionary
-        result = dict()
-
-        # Compare results using the get() function in WFN
-        for att in CPEComponent.CPE_COMP_KEYS_EXTENDED:
-            value_src = source.getAttributeValues(att)[0]
-            if value_src.find('"') > -1:
-                # Not a logical value: del double quotes
-                value_src = value_src[1:-1]
-
-            value_tar = target.getAttributeValues(att)[0]
-            if value_tar.find('"') > -1:
-                # Not a logical value: del double quotes
-                value_tar = value_tar[1:-1]
-
-            result[att] = CPESet2_3.compare(value_src, value_tar)
-
-        return result
-
-    @classmethod
-    def compare(cls, source, target):
-        """
-        Compares two values associated with a attribute of two WFNs.
-        This function is a support function for compare_WFNs.
-
-        Input
-            - A pair of attribute values, which may be logical values
-             (ANY or NA) or string values.
-        Output
-            - The attribute comparison relation.
-        """
-
-        if (CPESet2_3.is_string(source)):
-            source = source.lower()
-        if (CPESet2_3.is_string(target)):
-            target = target.lower()
-
-        # In this specification, unquoted wildcard characters in the target
-        # yield an undefined result
-
-        if (CPESet2_3.is_string(target) and
-           CPESet2_3.contains_wildcards(target)):
-            return CPESet2_3.LOGICAL_VALUE_UNDEFINED
-
-        # If source and target attribute values are equal,
-        # then the result is EQUAL
-        if (source == target):
-            return CPESet2_3.LOGICAL_VALUE_EQUAL
-
-        # If source attribute value is ANY, then the result is SUPERSET
-        if (source == CPEComponent2_3_WFN.VALUE_ANY):
-            return CPESet2_3.LOGICAL_VALUE_SUPERSET
-
-        # If target attribute value is ANY, then the result is SUBSET
-        if (target == CPEComponent2_3_WFN.VALUE_ANY):
-            return CPESet2_3.LOGICAL_VALUE_SUBSET
-
-        # If either source or target attribute value is NA
-        # then the result is DISJOINT
-        isSourceNA = source == CPEComponent2_3_WFN.VALUE_NA
-        isTargetNA = target == CPEComponent2_3_WFN.VALUE_NA
-
-        if (isSourceNA or isTargetNA):
-            return CPESet2_3.LOGICAL_VALUE_DISJOINT
-
-        # If we get to this point, we are comparing two strings
-        return CPESet2_3.compareStrings(source, target)
-
-    @classmethod
-    def compareStrings(cls, source, target):
-        """
-        Compares a source string to a target string,
-        and addresses the condition in which the source string
-        includes unquoted special characters.
-
-        It performs a simple regular expression match,
-        with the assumption that (as required) unquoted special characters
-        appear only at the beginning and/or the end of the source string.
-
-        It also properly differentiates between unquoted and quoted
-        special characters.
-        """
-
-        start = 0
-        end = len(source)
-        begins = 0
-        ends = 0
-
-        # Reading of initial wildcard in source
-        if source.startswith(CPEComponent2_3_WFN.WILDCARD_MULTI):
-            # Source starts with "*"
-            start = 1
-            begins = -1
-        else:
-            while ((start < len(source)) and
-                   source.startswith(CPEComponent2_3_WFN.WILDCARD_ONE,
-                                     start, start)):
-                # Source starts with one or more "?"
-                start += 1
-                begins += 1
-
-        # Reading of final wildcard in source
-        if (source.endswith(CPEComponent2_3_WFN.WILDCARD_MULTI) and
-           CPESet2_3.isEvenWildcards(source, end - 1)):
-
-            # Source ends in "*"
-            end -= 1
-            ends = -1
-        else:
-            while ((end > 0) and
-                   source.endswith(CPEComponent2_3_WFN.WILDCARD_ONE, end - 1, end - 1) and
-                   CPESet2_3.isEvenWildcards(source, end - 1)):
-
-                # Source ends in "?"
-                end -= 1
-                ends += 1
-
-        source = source[start: end]
-        index = -1
-        leftover = len(target)
-
-        while (leftover > 0):
-            index = target.find(source, index + 1)
-            if (index == -1):
-                break
-            escapes = target.count("\\", 0, index)
-            if ((index > 0) and (begins != -1) and
-               (begins < (index - escapes))):
-
-                break
-
-            escapes = target.count("\\", index + 1, len(target))
-            leftover = len(target) - index - escapes - len(source)
-            if ((leftover > 0) and ((ends != -1) and (leftover > ends))):
-                continue
-
-            return CPESet2_3.LOGICAL_VALUE_SUPERSET
-
-        return CPESet2_3.LOGICAL_VALUE_DISJOINT
-
-    @classmethod
-    def is_string(cls, arg):
-        """
-        Return True if arg is a string value,
-        and False if arg is a logical value (ANY or NA).
-
-        This function is a support function for compare().
-        """
-
-        isAny = arg == CPEComponent2_3_WFN.VALUE_ANY
-        isNa = arg == CPEComponent2_3_WFN.VALUE_NA
-
-        return not (isAny or isNa)
-
-    @classmethod
-    def contains_wildcards(cls, s):
-        """
-        Return True if the string contains any unquoted special characters
-        (question-mark or asterisk), otherwise False.
-
-        This function is a support function for compare().
-
-        Ex: contains_wildcards("foo") => FALSE
-        Ex: contains_wildcards("foo\?") => FALSE
-        Ex: contains_wildcards("foo?") => TRUE
-        Ex: contains_wildcards("\*bar") => FALSE
-        Ex: contains_wildcards("*bar") => TRUE
-        """
-
-        idx = s.find("*")
-        if idx != -1:
-            if idx == 0:
-                return True
-            else:
-                if s[idx - 1] != "\\":
-                    return True
-
-        idx = s.find("?")
-        if idx != -1:
-            if idx == 0:
-                return True
-            else:
-                if s[idx - 1] != "\\":
-                    return True
-        return False
-
-    @classmethod
-    def isEvenWildcards(cls, str, idx):
-        """
-        Returns True if an even number of escape (backslash) characters
-        precede the character at index idx in string str.
-        """
-
-        result = 0
-        while ((idx > 0) and (str[idx - 1] == "\\")):
-            idx -= 1
-            result += 1
-
-        isEvenNumber = (result % 2) == 0
-        return isEvenNumber
 
     ####################
     #  OBJECT METHODS  #

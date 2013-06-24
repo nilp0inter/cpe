@@ -182,10 +182,10 @@ class CPE2_3_FS(CPE2_3):
             # the rest are empty
             system = parts_match.group(CPEComponent.ATT_PART)
             if system in CPEComponent.SYSTEM_VALUES:
-                self._createCPEParts(system, components)
+                self._create_cpe_parts(system, components)
             else:
-                self._createCPEParts(CPEComponent.VALUE_PART_UNDEFINED,
-                                     components)
+                self._create_cpe_parts(CPEComponent.VALUE_PART_UNDEFINED,
+                                       components)
 
         # Fills the empty parts of internal structure of CPE name
         for pk in CPE.CPE_PART_KEYS:
@@ -193,7 +193,7 @@ class CPE2_3_FS(CPE2_3):
                 # Empty part
                 self[pk] = []
 
-    def getAttributeValues(self, att_name):
+    def get_attribute_values(self, att_name):
         """
         Returns the values of attribute "att_name" of CPE name.
         By default a only element in each part.

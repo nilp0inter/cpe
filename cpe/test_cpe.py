@@ -295,14 +295,14 @@ class GetAttributeValues(unittest.TestCase):
         """
 
         # Version 1.1
-        self.assertTrue(self.c11.getEdition() == ["osx"])
+        self.assertTrue(self.c11.get_edition() == ["osx"])
 
         # Version 2.2
-        self.c22.getVendor()
-        self.assertTrue(self.c22.getVendor() == ["mozilla"])
+        self.c22.get_vendor()
+        self.assertTrue(self.c22.get_vendor() == ["mozilla"])
 
         # Version 2.3 (with double quotes)
-        self.assertTrue(self.c23_wfn.getLanguage() == ['"es\\-es"'])
+        self.assertTrue(self.c23_wfn.get_language() == ['"es\\-es"'])
 
     def test_get_one_value_undefined(self):
         """
@@ -311,7 +311,7 @@ class GetAttributeValues(unittest.TestCase):
         """
 
         # Version 2.3
-        self.assertTrue(self.c23_uri.getLanguage() == [''])
+        self.assertTrue(self.c23_uri.get_language() == [''])
 
     def test_check_system_type(self):
         """
@@ -322,14 +322,14 @@ class GetAttributeValues(unittest.TestCase):
         """
 
         # Version 1.1
-        self.assertTrue(self.c11.isApplication())
-        self.assertTrue(self.c11_2e.isApplication())
-        self.assertTrue(self.c11_2e.isOperatingSystem())
-        self.assertTrue(self.c11_hw.isHardware())
+        self.assertTrue(self.c11.is_application())
+        self.assertTrue(self.c11_2e.is_application())
+        self.assertTrue(self.c11_2e.is_operating_system())
+        self.assertTrue(self.c11_hw.is_hardware())
 
         # Version 2.2
-        self.assertTrue(self.c22.isApplication())
-        self.assertFalse(self.c22.isOperatingSystem())
+        self.assertTrue(self.c22.is_application())
+        self.assertFalse(self.c22.is_operating_system())
 
     def test_get_many_values(self):
         """
@@ -339,8 +339,8 @@ class GetAttributeValues(unittest.TestCase):
         """
 
         # Version 1.1
-        self.assertTrue(self.c11_2e.getProduct() == ["sunos", "weblogic", "server"])
-        self.assertTrue(self.c11_or.getVersion() == ["xp!vista"])
+        self.assertTrue(self.c11_2e.get_product() == ["sunos", "weblogic", "server"])
+        self.assertTrue(self.c11_or.get_version() == ["xp!vista"])
 
 if __name__ == '__main__':
     unittest.main()

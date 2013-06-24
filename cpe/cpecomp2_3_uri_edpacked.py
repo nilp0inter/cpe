@@ -113,7 +113,8 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
 
         self._is_negated = False
         self._encoded_value = comp_str
-        self._standard_value = super(CPEComponent2_3_URI_edpacked, self)._decode()
+        self._standard_value = super(
+            CPEComponent2_3_URI_edpacked, self)._decode()
 
 if __name__ == "__main__":
     import doctest

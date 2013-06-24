@@ -179,7 +179,7 @@ class CPE2_2(CPE):
         else:
             system = parts_match.group(CPEComponent.ATT_PART)
 
-        self._createCPEParts(system, components)
+        self._create_cpe_parts(system, components)
 
         # Adds the undefined parts
         for sys in CPEComponent.SYSTEM_VALUES:
@@ -204,7 +204,7 @@ class CPE2_2(CPE):
         wfn.append(CPE2_3_WFN.CPE_PREFIX)
 
         for ck in CPEComponent.CPE_COMP_KEYS:
-            lc = self._getAttributeComponents(ck)
+            lc = self._get_attribute_components(ck)
 
             comp = lc[0]
 
@@ -235,7 +235,7 @@ class CPE2_2(CPE):
 
         return "".join(wfn)
 
-    def getAttributeValues(self, att_name):
+    def get_attribute_values(self, att_name):
         """
         Returns the values of attribute "att_name" of CPE name.
         By default a only element in each part.

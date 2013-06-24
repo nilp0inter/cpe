@@ -353,7 +353,7 @@ class CPE(dict):
 
         return "CPE v{0}: {1}".format(self.VERSION, self.cpe_str)
 
-    def _createCPEParts(self, system, components):
+    def _create_cpe_parts(self, system, components):
         """
         Create the structure to store the input type of system associated
         with components of CPE name (hardware, operating system and software).
@@ -377,7 +377,7 @@ class CPE(dict):
         pk = CPE.system_and_parts[system]
         self[pk] = elements
 
-    def _getAttributeComponents(self, att):
+    def _get_attribute_components(self, att):
         """
         Returns the component list of attribute "att".
 
@@ -401,32 +401,6 @@ class CPE(dict):
                 lc.append(elem.get(att))
 
         return lc
-
-    def _hasOneElement(self):
-        """
-        Returns True if CPE name has a only element with components.
-        """
-
-        return (self._numElements() == 1)
-
-    def _hasNoElement(self):
-        """
-        Returns True if CPE name has a only element with components.
-        """
-
-        return (self._numElements() == 0)
-
-    def _numElements(self):
-        """
-        Returns the count of elements of CPE name.
-        """
-
-        count = 0
-        for pk in CPE.CPE_PART_KEYS:
-            elements = self.get(pk)
-            count += len(elements)
-
-        return count
 
     def _pack_edition(self):
         """
@@ -454,7 +428,7 @@ class CPE(dict):
         packed_ed.append(separator)
 
         for ck in COMP_KEYS:
-            lc = self._getAttributeComponents(ck)
+            lc = self._get_attribute_components(ck)
             if len(lc) > 1:
                 # Incompatible version 1.1, there are two or more elements
                 # in CPE name
@@ -542,7 +516,7 @@ class CPE(dict):
 
         for i in range(0, len(ordered_comp_parts)):
             ck = ordered_comp_parts[i]
-            lc = self._getAttributeComponents(ck)
+            lc = self._get_attribute_components(ck)
 
             if len(lc) > 1:
                 # Incompatible version 1.1, there are two or more elements
@@ -617,7 +591,7 @@ class CPE(dict):
 
         for i in range(0, len(CPEComponent.ordered_comp_parts)):
             ck = CPEComponent.ordered_comp_parts[i]
-            lc = self._getAttributeComponents(ck)
+            lc = self._get_attribute_components(ck)
 
             if len(lc) > 1:
                 # Incompatible version 1.1, there are two or more elements
@@ -681,7 +655,7 @@ class CPE(dict):
 
         for i in range(0, len(CPEComponent.ordered_comp_parts)):
             ck = CPEComponent.ordered_comp_parts[i]
-            lc = self._getAttributeComponents(ck)
+            lc = self._get_attribute_components(ck)
 
             if len(lc) > 1:
                 # Incompatible version 1.1, there are two or more elements
@@ -715,97 +689,97 @@ class CPE(dict):
         # Return the formatted string
         return CPE._trim("".join(fs[:-1]))
 
-    def getEdition(self):
+    def get_edition(self):
         """
         Returns the edition of product of CPE name as a list.
         According to the CPE version,
         this list can contains one or more items.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_EDITION)
+        return self.get_attribute_values(CPEComponent.ATT_EDITION)
 
-    def getLanguage(self):
+    def get_language(self):
         """
         Returns the internationalization information of CPE name as a list.
         According to the CPE version, this list can contains one or more items.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_LANGUAGE)
+        return self.get_attribute_values(CPEComponent.ATT_LANGUAGE)
 
-    def getOther(self):
+    def get_other(self):
         """
         Returns the other information part of CPE name.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_OTHER)
+        return self.get_attribute_values(CPEComponent.ATT_OTHER)
 
-    def getPart(self):
+    def get_part(self):
         """
         Returns the part component of CPE name as a list.
         According to the CPE version,
         this list can contains one or more items.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_PART)
+        return self.get_attribute_values(CPEComponent.ATT_PART)
 
-    def getProduct(self):
+    def get_product(self):
         """
         Returns the product name of CPE name as a list.
         According to the CPE version,
         this list can contains one or more items.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_PRODUCT)
+        return self.get_attribute_values(CPEComponent.ATT_PRODUCT)
 
-    def getSoftwareEdition(self):
+    def get_software_edition(self):
         """
         Returns the software edition of CPE name.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_SW_EDITION)
+        return self.get_attribute_values(CPEComponent.ATT_SW_EDITION)
 
-    def getTargetHardware(self):
+    def get_target_hardware(self):
         """
         Returns the arquitecture of CPE name.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_TARGET_HW)
+        return self.get_attribute_values(CPEComponent.ATT_TARGET_HW)
 
-    def getTargetSoftware(self):
+    def get_target_software(self):
         """
         Returns the software computing environment of CPE name
         within which the product operates.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_TARGET_SW)
+        return self.get_attribute_values(CPEComponent.ATT_TARGET_SW)
 
-    def getUpdate(self):
+    def get_update(self):
         """
         Returns the update or service pack information of CPE name as a list.
         According to the CPE version, this list can contains one or more items.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_UPDATE)
+        return self.get_attribute_values(CPEComponent.ATT_UPDATE)
 
-    def getVendor(self):
+    def get_vendor(self):
         """
         Returns the vendor name of CPE name as a list.
         According to the CPE version,
         this list can contains one or more items.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_VENDOR)
+        return self.get_attribute_values(CPEComponent.ATT_VENDOR)
 
-    def getVersion(self):
+    def get_version(self):
         """
         Returns the version of product of CPE name as a list.
         According to the CPE version,
         this list can contains one or more items.
         """
 
-        return self.getAttributeValues(CPEComponent.ATT_VERSION)
+        return self.get_attribute_values(CPEComponent.ATT_VERSION)
 
-    def isApplication(self):
+    def is_application(self):
         """
         Returns True if CPE name corresponds to application elem.
         """
@@ -813,7 +787,7 @@ class CPE(dict):
         elements = self.get(CPE.KEY_APP)
         return len(elements) > 0
 
-    def isHardware(self):
+    def is_hardware(self):
         """
         Returns True if CPE name corresponds to hardware elem.
         """
@@ -821,7 +795,7 @@ class CPE(dict):
         elements = self.get(CPE.KEY_HW)
         return len(elements) > 0
 
-    def isOperatingSystem(self):
+    def is_operating_system(self):
         """
         Returns True if CPE name corresponds to operating system elem.
         """
