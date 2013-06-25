@@ -29,18 +29,18 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
-from cpecomp_single import CPEComponentSingle
+from cpecomp_simple import CPEComponentSimple
 
 import re
 
 
-class CPEComponent2_2(CPEComponentSingle):
+class CPEComponent2_2(CPEComponentSimple):
     """
     Represents a component of version 2.2 of CPE specification.
 
     TEST: simple value
     >>> value = "microsoft"
-    >>> comp = CPEComponent2_2(value, CPEComponentSingle.ATT_VENDOR)
+    >>> comp = CPEComponent2_2(value, CPEComponentSimple.ATT_VENDOR)
     """
 
     ###############
@@ -131,4 +131,4 @@ class CPEComponent2_2(CPEComponentSingle):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    doctest.testfile("tests/testfile_cpecomp2_2.txt")
+    doctest.testfile("../tests/testfile_cpecomp2_2.txt")

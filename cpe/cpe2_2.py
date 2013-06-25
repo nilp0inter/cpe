@@ -33,11 +33,11 @@ feedback about it, please contact:
 
 from cpe import CPE
 from cpe2_3_wfn import CPE2_3_WFN
-from cpecomp import CPEComponent
-from cpecomp2_2 import CPEComponent2_2
-from cpecomp2_3_wfn import CPEComponent2_3_WFN
-from cpecomp_empty import CPEComponentEmpty
-from cpecomp_undefined import CPEComponentUndefined
+from comp.cpecomp import CPEComponent
+from comp.cpecomp2_2 import CPEComponent2_2
+from comp.cpecomp2_3_wfn import CPEComponent2_3_WFN
+from comp.cpecomp_empty import CPEComponentEmpty
+from comp.cpecomp_undefined import CPEComponentUndefined
 
 import re
 
@@ -50,7 +50,7 @@ class CPE2_2(CPE):
     starting with the prefix (the URI scheme name) 'cpe:'.
 
     Each platform can be broken down into many distinct parts.
-    A CPE name specifies a single part and is used to identify
+    A CPE name specifies a simple part and is used to identify
     any platform that matches the description of that part.
     The distinct parts are:
 

@@ -29,12 +29,12 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
-from cpecomp_single import CPEComponentSingle
+from cpecomp_simple import CPEComponentSimple
 
 import re
 
 
-class CPEComponent2_3(CPEComponentSingle):
+class CPEComponent2_3(CPEComponentSimple):
     """
     Represents a component of version 2.3 of CPE specification.
     """

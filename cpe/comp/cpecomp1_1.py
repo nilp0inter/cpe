@@ -29,20 +29,20 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
-from cpecomp_single import CPEComponentSingle
+from cpecomp_simple import CPEComponentSimple
 from cpecomp_undefined import CPEComponentUndefined
 from cpecomp_empty import CPEComponentEmpty
 
 import re
 
 
-class CPEComponent1_1(CPEComponentSingle):
+class CPEComponent1_1(CPEComponentSimple):
     """
     Represents a component of version 1.1 of CPE specification.
 
     TEST: simple value
     >>> value = "microsoft"
-    >>> comp = CPEComponent1_1(value, CPEComponentSingle.ATT_VENDOR)
+    >>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
     """
 
     ###############
@@ -91,8 +91,8 @@ class CPEComponent1_1(CPEComponentSingle):
             - True if item is included in set of self
 
         TEST: two different simple values
-        >>> comp1 = CPEComponent1_1('5.0', CPEComponentSingle.ATT_VERSION)
-        >>> comp2 = CPEComponent1_1('9.0', CPEComponentSingle.ATT_VERSION)
+        >>> comp1 = CPEComponent1_1('5.0', CPEComponentSimple.ATT_VERSION)
+        >>> comp2 = CPEComponent1_1('9.0', CPEComponentSimple.ATT_VERSION)
         >>> comp1 in comp2
         False
         """
@@ -161,7 +161,7 @@ class CPEComponent1_1(CPEComponentSingle):
 
         TEST: OR operator
         >>> val ='microsoft'
-        >>> comp1 = CPEComponent1_1(val, CPEComponentSingle.ATT_VENDOR)
+        >>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VENDOR)
         >>> comp1._decode()
         >>> comp1._standard_value
         ['microsoft']
@@ -235,7 +235,7 @@ class CPEComponent1_1(CPEComponentSingle):
 
         - TEST
         >>> val = 'xp!vista'
-        >>> comp1 = CPEComponent1_1(val, CPEComponentSingle.ATT_VERSION)
+        >>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
         >>> comp1.as_fs()
         'xp\\!vista'
         """
@@ -285,12 +285,12 @@ class CPEComponent1_1(CPEComponentSingle):
 
         - TEST
         >>> val = '#nvidi@'
-        >>> comp1 = CPEComponent1_1(val, CPEComponentSingle.ATT_VENDOR)
+        >>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VENDOR)
         >>> comp1.as_uri_2_3()
         '%23nvidi%40'
         """
 
-        separator = CPEComponentSingle._pct_encode_uri("!")
+        separator = CPEComponentSimple._pct_encode_uri("!")
         result = []
 
         for s in self._standard_value:
@@ -299,7 +299,7 @@ class CPEComponent1_1(CPEComponentSingle):
                 thischar = s[idx]  # get the idx'th character of s
 
                 # alphanumerics (incl. underscore) pass untouched
-                if (CPEComponentSingle._is_alphanum(thischar)):
+                if (CPEComponentSimple._is_alphanum(thischar)):
                     result.append(thischar)
                     idx += 1
                     continue
@@ -308,7 +308,7 @@ class CPEComponent1_1(CPEComponentSingle):
                 if (thischar == "\\"):
                     idx += 1
                     nxtchar = s[idx]
-                    result.append(CPEComponentSingle._pct_encode_uri(nxtchar))
+                    result.append(CPEComponentSimple._pct_encode_uri(nxtchar))
                     idx += 1
                     continue
 
@@ -330,7 +330,7 @@ class CPEComponent1_1(CPEComponentSingle):
 
         - TEST
         >>> val = 'xp!vista'
-        >>> comp1 = CPEComponent1_1(val, CPEComponentSingle.ATT_VERSION)
+        >>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
         >>> comp1.as_wfn()
         'xp\\!vista'
         """
@@ -345,7 +345,7 @@ class CPEComponent1_1(CPEComponentSingle):
 
     def set_value(self, comp_str, comp_att):
         """
-        Set the value of component. By default, the component has a single
+        Set the value of component. By default, the component has a simple
         value.
 
         INPUT:
@@ -358,7 +358,7 @@ class CPEComponent1_1(CPEComponentSingle):
         - TEST
         >>> val = 'xp!vista'
         >>> val2 = 'sp2'
-        >>> att = CPEComponentSingle.ATT_VERSION
+        >>> att = CPEComponentSimple.ATT_VERSION
         >>> comp1 = CPEComponent1_1(val, att)
         >>> comp1.set_value(val2, att)
         >>> comp1.get_value()
@@ -371,4 +371,4 @@ class CPEComponent1_1(CPEComponentSingle):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    doctest.testfile("tests/testfile_cpecomp1_1.txt")
+    doctest.testfile("../tests/testfile_cpecomp1_1.txt")

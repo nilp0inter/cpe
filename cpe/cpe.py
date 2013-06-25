@@ -30,16 +30,16 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
-from cpecomp import CPEComponent
-from cpecomp2_3_uri import CPEComponent2_3_URI
-from cpecomp2_3_wfn import CPEComponent2_3_WFN
-from cpecomp2_3_fs import CPEComponent2_3_FS
-from cpecomp2_3_uri_edpacked import CPEComponent2_3_URI_edpacked
-from cpecomp_logical import CPEComponentLogical
-from cpecomp_empty import CPEComponentEmpty
-from cpecomp_anyvalue import CPEComponentAnyValue
-from cpecomp_undefined import CPEComponentUndefined
-from cpecomp_notapplicable import CPEComponentNotApplicable
+from comp.cpecomp import CPEComponent
+from comp.cpecomp2_3_uri import CPEComponent2_3_URI
+from comp.cpecomp2_3_wfn import CPEComponent2_3_WFN
+from comp.cpecomp2_3_fs import CPEComponent2_3_FS
+from comp.cpecomp2_3_uri_edpacked import CPEComponent2_3_URI_edpacked
+from comp.cpecomp_logical import CPEComponentLogical
+from comp.cpecomp_empty import CPEComponentEmpty
+from comp.cpecomp_anyvalue import CPEComponentAnyValue
+from comp.cpecomp_undefined import CPEComponentUndefined
+from comp.cpecomp_notapplicable import CPEComponentNotApplicable
 
 
 class CPE(dict):
@@ -404,7 +404,7 @@ class CPE(dict):
 
     def _pack_edition(self):
         """
-        Pack the values of the five arguments into the single edition
+        Pack the values of the five arguments into the simple edition
         component. If all the values are blank, just return a blank.
 
         INPUT:
@@ -474,7 +474,7 @@ class CPE(dict):
             # so don't do any packing, just return ed
             return ed
         else:
-            # Otherwise, pack the five values into a single string
+            # Otherwise, pack the five values into a simple string
             # prefixed and internally delimited with the tilde
             return packed_ed_str
 
@@ -622,7 +622,7 @@ class CPE(dict):
                     # Do not set the attribute
                     continue
                 else:
-                    # Get the single value of WFN of component
+                    # Get the simple value of WFN of component
                     v.append('"')
                     v.append(comp.as_wfn())
                     v.append('"')

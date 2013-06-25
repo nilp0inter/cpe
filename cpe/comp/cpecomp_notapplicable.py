@@ -4,7 +4,8 @@
 '''
 This file is part of cpe package.
 
-This module allows to create a component of CPE name that represents any value.
+This module allows to create a component of CPE name with a
+not applicable value.
 
 Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
@@ -31,19 +32,30 @@ feedback about it, please contact:
 from cpecomp_logical import CPEComponentLogical
 
 
-class CPEComponentAnyValue(CPEComponentLogical):
+class CPEComponentNotApplicable(CPEComponentLogical):
     """
-    Represents a component of CPE name without a particular value,
+    Represents a component of CPE name with a not applicable value,
     compatible with the components of all versions of CPE specification.
 
-    For example, in version 2.3 of CPE specification, an component "any value"
-    is other attribute in CPE name
-    cpe:2.3:a:microsft:windows:xp:*:*:*:*:*:*:*.
+    For example, in version 2.3 of CPE specification, an component "not
+    applicable" is update attribute in CPE name cpe:/a:microsft:windows:me:-.
     """
 
     ####################
     #  OBJECT METHODS  #
     ####################
+
+    def __contains__(self, item):
+        """
+        Returns True if item is included in set of values of self.
+
+        INPUT:
+            - item: component to find in self
+        OUTPUT:
+            - True if item is included in set of self
+        """
+
+        return (self == item)
 
     def __eq__(self, other):
         """
@@ -57,12 +69,7 @@ class CPEComponentAnyValue(CPEComponentLogical):
             True if other == self, False otherwise
         """
 
-        from cpecomp_empty import CPEComponentEmpty
-        from cpecomp_undefined import CPEComponentUndefined
-
-        return (isinstance(other, CPEComponentUndefined) or
-                isinstance(other, CPEComponentEmpty) or
-                isinstance(other, CPEComponentAnyValue))
+        return isinstance(other, CPEComponentNotApplicable)
 
     def __init__(self):
         """
@@ -74,8 +81,8 @@ class CPEComponentAnyValue(CPEComponentLogical):
             - None
         """
 
-        super(CPEComponentAnyValue, self).__init__(
-            CPEComponentLogical._VALUE_INT_ANY)
+        super(CPEComponentNotApplicable, self).__init__(
+            CPEComponentLogical._VALUE_INT_NA)
 
     def __str__(self):
         """
@@ -87,9 +94,9 @@ class CPEComponentAnyValue(CPEComponentLogical):
             - Representation of CPE component as string
         """
 
-        return "<ANY>"
+        return "<NA>"
 
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    doctest.testfile('tests/testfile_cpecomp_anyvalue.txt')
+    doctest.testfile('../tests/testfile_cpecomp_notapplicable.txt')

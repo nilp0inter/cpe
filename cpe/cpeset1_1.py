@@ -29,7 +29,7 @@ feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 '''
 
 from cpe import CPE
-from cpecomp import CPEComponent
+from comp.cpecomp import CPEComponent
 from cpeset import CPESet
 
 

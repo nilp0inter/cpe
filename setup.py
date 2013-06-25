@@ -2,13 +2,6 @@
 
 from setuptools import setup
 from setuptools import find_packages
-import sys
-import os
-
-
-# Utility function to read the README file.
-def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 version = '0.1'
 
@@ -20,7 +13,6 @@ setup(name='cpe',
       description="""\
               Package to create and operate with CPE names of 1.1, 2.2 and 2.3
               versions of CPE (Common Platform Enumeration) specification""",
-      long_description=read('README'),
       classifiers=[
           "Development Status :: 5 - Production/Stable",
           "Environment :: Console",

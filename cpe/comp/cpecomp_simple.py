@@ -34,7 +34,7 @@ from cpecomp import CPEComponent
 import re
 
 
-class CPEComponentSingle(CPEComponent):
+class CPEComponentSimple(CPEComponent):
     """
     Represents a generic string component of CPE name,
     compatible with the components of all versions of CPE specification.
@@ -107,11 +107,11 @@ class CPEComponentSingle(CPEComponent):
 
         TEST: a wrong character
         >>> c = "#"
-        >>> CPEComponentSingle._is_alphanum(c)
+        >>> CPEComponentSimple._is_alphanum(c)
         False
         """
 
-        alphanum_rxc = re.compile(CPEComponentSingle._ALPHANUM_PATTERN)
+        alphanum_rxc = re.compile(CPEComponentSimple._ALPHANUM_PATTERN)
         return (alphanum_rxc.match(c) is not None)
 
     @classmethod
@@ -127,19 +127,19 @@ class CPEComponentSingle(CPEComponent):
 
         TEST:
         >>> c = '.'
-        >>> CPEComponentSingle._pct_encode_uri(c)
+        >>> CPEComponentSimple._pct_encode_uri(c)
         '.'
 
         TEST:
         >>> c = '@'
-        >>> CPEComponentSingle._pct_encode_uri(c)
+        >>> CPEComponentSimple._pct_encode_uri(c)
         '%40'
         """
 
-        CPEComponentSingle.spechar_to_pce['-'] = c  # bound without encoding
-        CPEComponentSingle.spechar_to_pce['.'] = c  # bound without encoding
+        CPEComponentSimple.spechar_to_pce['-'] = c  # bound without encoding
+        CPEComponentSimple.spechar_to_pce['.'] = c  # bound without encoding
 
-        return CPEComponentSingle.spechar_to_pce[c]
+        return CPEComponentSimple.spechar_to_pce[c]
 
     ####################
     #  OBJECT METHODS  #
@@ -158,7 +158,7 @@ class CPEComponentSingle(CPEComponent):
             - ValueError: incorrect value of component
         """
 
-        super(CPEComponentSingle, self).__init__(comp_str)
+        super(CPEComponentSimple, self).__init__(comp_str)
         self._standard_value = self._standard_value
         self.set_value(comp_str, comp_att)
 
@@ -199,7 +199,7 @@ class CPEComponentSingle(CPEComponent):
         """
 
         comp_str = self._encoded_value.lower()
-        lang_rxc = re.compile(CPEComponentSingle._LANGTAG_PATTERN)
+        lang_rxc = re.compile(CPEComponentSimple._LANGTAG_PATTERN)
         return lang_rxc.match(comp_str) is not None
 
     def _is_valid_part(self):
@@ -214,7 +214,7 @@ class CPEComponentSingle(CPEComponent):
         """
 
         comp_str = self._encoded_value.lower()
-        part_rxc = re.compile(CPEComponentSingle._PART_PATTERN)
+        part_rxc = re.compile(CPEComponentSimple._PART_PATTERN)
         return part_rxc.match(comp_str) is not None
 
     def _is_valid_value(self):
@@ -256,17 +256,17 @@ class CPEComponentSingle(CPEComponent):
             comp_att, comp_str)
 
         # Check part (system type) value
-        if comp_att == CPEComponentSingle.ATT_PART:
+        if comp_att == CPEComponentSimple.ATT_PART:
             if not self._is_valid_part():
                 raise ValueError(errmsg)
 
         # Check language value
-        elif comp_att == CPEComponentSingle.ATT_LANGUAGE:
+        elif comp_att == CPEComponentSimple.ATT_LANGUAGE:
             if not self._is_valid_language():
                 raise ValueError(errmsg)
 
         # Check edition value
-        elif comp_att == CPEComponentSingle.ATT_EDITION:
+        elif comp_att == CPEComponentSimple.ATT_EDITION:
             if not self._is_valid_edition():
                 raise ValueError(errmsg)
 
@@ -337,7 +337,7 @@ class CPEComponentSingle(CPEComponent):
             thischar = s[idx]  # get the idx'th character of s
 
             # alphanumerics (incl. underscore) pass untouched
-            if (CPEComponentSingle._is_alphanum(thischar)):
+            if (CPEComponentSimple._is_alphanum(thischar)):
                 result.append(thischar)
                 idx += 1
                 continue
@@ -346,7 +346,7 @@ class CPEComponentSingle(CPEComponent):
             if (thischar == "\\"):
                 idx += 1
                 nxtchar = s[idx]
-                result.append(CPEComponentSingle._pct_encode_uri(nxtchar))
+                result.append(CPEComponentSimple._pct_encode_uri(nxtchar))
                 idx += 1
                 continue
 
@@ -389,7 +389,7 @@ class CPEComponentSingle(CPEComponent):
 
     def set_value(self, comp_str, comp_att):
         """
-        Set the value of component. By default, the component has a single
+        Set the value of component. By default, the component has a simple
         value.
 
         INPUT:
@@ -418,4 +418,4 @@ class CPEComponentSingle(CPEComponent):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    doctest.testfile('tests/testfile_cpecomp_single.txt')
+    doctest.testfile('../tests/testfile_cpecomp_simple.txt')

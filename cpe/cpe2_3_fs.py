@@ -33,11 +33,11 @@ feedback about it, please contact:
 
 from cpe import CPE
 from cpe2_3 import CPE2_3
-from cpecomp import CPEComponent
-from cpecomp_logical import CPEComponentLogical
-from cpecomp2_3_fs import CPEComponent2_3_FS
-from cpecomp_anyvalue import CPEComponentAnyValue
-from cpecomp_notapplicable import CPEComponentNotApplicable
+from comp.cpecomp import CPEComponent
+from comp.cpecomp_logical import CPEComponentLogical
+from comp.cpecomp2_3_fs import CPEComponent2_3_FS
+from comp.cpecomp_anyvalue import CPEComponentAnyValue
+from comp.cpecomp_notapplicable import CPEComponentNotApplicable
 
 import re
 
@@ -50,7 +50,7 @@ class CPE2_3_FS(CPE2_3):
     Each name starts with the prefix 'cpe:2.3:'.
 
     Each platform can be broken down into many distinct parts.
-    A CPE Name specifies a single part and is used to identify
+    A CPE Name specifies a simple part and is used to identify
     any platform that matches the description of that part.
     The distinct parts are:
 

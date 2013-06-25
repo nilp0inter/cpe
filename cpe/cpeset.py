@@ -31,7 +31,7 @@ feedback about it, please contact:
 '''
 
 from cpe import CPE
-from cpecomp import CPEComponent
+from comp.cpecomp import CPEComponent
 
 
 class CPESet(object):

@@ -32,7 +32,7 @@ feedback about it, please contact:
 
 from cpecomp2_3 import CPEComponent2_3
 from cpecomp2_3_wfn import CPEComponent2_3_WFN
-from cpecomp_single import CPEComponentSingle
+from cpecomp_simple import CPEComponentSimple
 
 import re
 
@@ -115,7 +115,7 @@ class CPEComponent2_3_FS(CPEComponent2_3):
             errmsg.append("'")
             errmsg_str = "".join(errmsg)
 
-            if (CPEComponentSingle._is_alphanum(c)):
+            if (CPEComponentSimple._is_alphanum(c)):
                 # Alphanumeric characters pass untouched
                 result.append(c)
                 idx += 1
@@ -182,4 +182,4 @@ class CPEComponent2_3_FS(CPEComponent2_3):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    doctest.testfile("tests/testfile_cpecomp2_3_fs.txt")
+    doctest.testfile("../tests/testfile_cpecomp2_3_fs.txt")

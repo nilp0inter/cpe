@@ -100,4 +100,4 @@ class CPEComponentUndefined(CPEComponentLogical):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    doctest.testfile('tests/testfile_cpecomp_undefined.txt')
+    doctest.testfile('../tests/testfile_cpecomp_undefined.txt')

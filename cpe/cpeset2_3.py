@@ -32,8 +32,8 @@ feedback about it, please contact:
 
 from cpe2_3 import CPE2_3
 from cpe2_3_wfn import CPE2_3_WFN
-from cpecomp import CPEComponent
-from cpecomp2_3_wfn import CPEComponent2_3_WFN
+from comp.cpecomp import CPEComponent
+from comp.cpecomp2_3_wfn import CPEComponent2_3_WFN
 from cpeset import CPESet
 
 

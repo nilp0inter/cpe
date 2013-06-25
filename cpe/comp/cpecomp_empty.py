@@ -92,4 +92,4 @@ class CPEComponentEmpty(CPEComponentLogical):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    doctest.testfile('tests/testfile_cpecomp_empty.txt')
+    doctest.testfile('../tests/testfile_cpecomp_empty.txt')

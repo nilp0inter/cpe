@@ -33,11 +33,11 @@ feedback about it, please contact:
 
 from cpe import CPE
 from cpe2_3_wfn import CPE2_3_WFN
-from cpecomp import CPEComponent
-from cpecomp1_1 import CPEComponent1_1
-from cpecomp2_3_wfn import CPEComponent2_3_WFN
-from cpecomp_empty import CPEComponentEmpty
-from cpecomp_undefined import CPEComponentUndefined
+from comp.cpecomp import CPEComponent
+from comp.cpecomp1_1 import CPEComponent1_1
+from comp.cpecomp2_3_wfn import CPEComponent2_3_WFN
+from comp.cpecomp_empty import CPEComponentEmpty
+from comp.cpecomp_undefined import CPEComponentUndefined
 
 import re
 

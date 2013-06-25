@@ -152,4 +152,4 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    doctest.testfile("tests/testfile_cpecomp2_3_wfn.txt")
+    doctest.testfile("../tests/testfile_cpecomp2_3_wfn.txt")

@@ -1,0 +1,31 @@
+# PynSource Version 1.1
+{'type':'meta', 'info1':'Lorem ipsum dolor sit amet, consectetur adipiscing elit is latin.'}
+{'type':'umlshape', 'id':'CPEComponent', 'x':22, 'y':391, 'width':186, 'height':589, 'attrs':'COMP_1_1|COMP_2_2|COMP_2_3_WFN|COMP_2_3_URI|COMP_2_3_FS|ATT_PART|ATT_VENDOR|ATT_PRODUCT|ATT_VERSION|ATT_UPDATE|ATT_EDITION|ATT_LANGUAGE|ATT_SW_EDITION|ATT_TARGET_SW|ATT_TARGET_HW|ATT_OTHER|CPE_COMP_KEYS|CPE_COMP_KEYS_EXTENDED|VALUE_PART_HW|VALUE_PART_OS|VALUE_PART_APP|VALUE_PART_UNDEFINED|SYSTEM_VALUES|ordered_comp_parts|_is_negated|_encoded_value|_standard_value', 'meths':'is_valid_attribute|__contains__|__eq__|__init__|__ne__|__repr__'}
+{'type':'umlshape', 'id':'object', 'x':77, 'y':280, 'width':76, 'height':31, 'attrs':'', 'meths':''}
+{'type':'umlshape', 'id':'CPEComponentAnyValue', 'x':550, 'y':276, 'width':230, 'height':99, 'attrs':'', 'meths':'__eq__|__init__|__str__'}
+{'type':'umlshape', 'id':'CPEComponentLogical', 'x':252, 'y':255, 'width':219, 'height':31, 'attrs':'', 'meths':''}
+{'type':'umlshape', 'id':'CPEComponentEmpty', 'x':552, 'y':161, 'width':197, 'height':99, 'attrs':'', 'meths':'__eq__|__init__|__str__'}
+{'type':'umlshape', 'id':'CPEComponentNotApplicable', 'x':512, 'y':17, 'width':285, 'height':115, 'attrs':'', 'meths':'__contains__|__eq__|__init__|__str__'}
+{'type':'umlshape', 'id':'CPEComponentSimple', 'x':256, 'y':659, 'width':208, 'height':381, 'attrs':'_ALPHANUM_PATTERN|_LANGTAG_PATTERN|_PART_PATTERN|spechar_to_pce|_standard_value|_encoded_value', 'meths':'_is_alphanum|_pct_encode_uri|__init__|__str__|_is_valid_edition|_is_valid_language|_is_valid_part|_is_valid_value|_parse|as_fs|as_uri_2_3|as_wfn|get_value|set_value'}
+{'type':'umlshape', 'id':'CPEComponentUndefined', 'x':540, 'y':403, 'width':241, 'height':115, 'attrs':'', 'meths':'__contains__|__eq__|__init__|__str__'}
+{'type':'umlshape', 'id':'CPEComponent1_1', 'x':533, 'y':582, 'width':175, 'height':317, 'attrs':'_ESCAPE_SEPARATOR|_STRING|SEPARATOR_COMP|NON_STANDARD_VALUES|VALUE_UNDEFINED|VALUE_EMPTY|_standard_value|_is_negated', 'meths':'__contains__|__repr__|_decode|_is_valid_value|as_fs|as_uri_2_3|as_wfn|set_value'}
+{'type':'umlshape', 'id':'CPEComponent2_2', 'x':533, 'y':930, 'width':175, 'height':221, 'attrs':'_VALUE_PATTERN|SEPARATOR_COMP|NON_STANDARD_VALUES|VALUE_UNDEFINED|VALUE_EMPTY|_value_rxc|_standard_value', 'meths':'__repr__|_decode|_is_valid_value'}
+{'type':'umlshape', 'id':'CPEComponent2_3', 'x':533, 'y':1341, 'width':175, 'height':99, 'attrs':'', 'meths':'__repr__|_is_valid_language|_is_valid_part'}
+{'type':'umlshape', 'id':'CPEComponent2_3_FS', 'x':891, 'y':409, 'width':208, 'height':381, 'attrs':'_UNRESERVED|_PUNC|SEPARATOR_COMP|SEPARATOR_LANG|VALUE_ANY|VALUE_NA|WILDCARD_MULTI|WILDCARD_ONE|_logical|_quest|_asterisk|_special|_spec_chrs|_quoted|_avstring|_value_string_pattern|_part_value_rxc|_standard_value', 'meths':'_decode|_is_valid_value'}
+{'type':'umlshape', 'id':'CPEComponent2_3_URI', 'x':880, 'y':1340, 'width':219, 'height':429, 'attrs':'_PCT_ENCODED|_SPEC_CHRS|_UNRESERVED|SEPARATOR_COMP|SEPARATOR_LANG|SEPARATOR_PACKED_EDITION|VALUE_ANY|VALUE_NA|VALUE_EMPTY|VALUE_UNDEFINED|WILDCARD_MULTI|WILDCARD_ONE|_str_w_special|_str_wo_special|_string|_value_pattern|_value_rxc|char_to_pce|pce_char_to_decode|_standard_value', 'meths':'_decode|_is_valid_edition|_is_valid_value'}
+{'type':'umlshape', 'id':'CPEComponent2_3_URI_edpacked', 'x':1141, 'y':1452, 'width':318, 'height':205, 'attrs':'SEPARATOR_COMP|_is_negated|_encoded_value|_standard_value', 'meths':'__init__|_decode|_is_valid_edition|_is_valid_value|set_value'}
+{'type':'umlshape', 'id':'CPEComponent2_3_WFN', 'x':890, 'y':831, 'width':219, 'height':477, 'attrs':'_ESCAPE|_PUNC_NO_DASH|SEPARATOR_COMP|SEPARATOR_PAIR|SEPARATOR_LANG|VALUE_ANY|VALUE_NA|WILDCARD_MULTI|WILDCARD_ONE|_spec1|_spec2|_spec_chrs|_special|_punc_w_dash|_quoted1|_quoted2|_body1|_body2|_body|_avstring_pattern|_value_rxc|_standard_value', 'meths':'_decode|_is_valid_value|get_value|set_value'}
+{'type':'edge', 'id':'CPEComponent_to_object', 'source':'CPEComponent', 'target':'object', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponentAnyValue_to_CPEComponentLogical', 'source':'CPEComponentAnyValue', 'target':'CPEComponentLogical', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponentEmpty_to_CPEComponentLogical', 'source':'CPEComponentEmpty', 'target':'CPEComponentLogical', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponentLogical_to_CPEComponent', 'source':'CPEComponentLogical', 'target':'CPEComponent', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponentNotApplicable_to_CPEComponentLogical', 'source':'CPEComponentNotApplicable', 'target':'CPEComponentLogical', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponentSimple_to_CPEComponent', 'source':'CPEComponentSimple', 'target':'CPEComponent', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponentUndefined_to_CPEComponentLogical', 'source':'CPEComponentUndefined', 'target':'CPEComponentLogical', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponent1_1_to_CPEComponentSimple', 'source':'CPEComponent1_1', 'target':'CPEComponentSimple', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponent2_2_to_CPEComponentSimple', 'source':'CPEComponent2_2', 'target':'CPEComponentSimple', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponent2_3_to_CPEComponentSimple', 'source':'CPEComponent2_3', 'target':'CPEComponentSimple', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponent2_3_FS_to_CPEComponent2_3', 'source':'CPEComponent2_3_FS', 'target':'CPEComponent2_3', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponent2_3_URI_to_CPEComponent2_3', 'source':'CPEComponent2_3_URI', 'target':'CPEComponent2_3', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponent2_3_URI_edpacked_to_CPEComponent2_3_URI', 'source':'CPEComponent2_3_URI_edpacked', 'target':'CPEComponent2_3_URI', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPEComponent2_3_WFN_to_CPEComponent2_3', 'source':'CPEComponent2_3_WFN', 'target':'CPEComponent2_3', 'uml_edge_type':'generalisation'}
