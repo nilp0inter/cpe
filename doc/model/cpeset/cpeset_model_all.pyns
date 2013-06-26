@@ -1,0 +1,17 @@
+# PynSource Version 1.1
+{'type':'meta', 'info1':'Lorem ipsum dolor sit amet, consectetur adipiscing elit is latin.'}
+{'type':'umlshape', 'id':'CPESet', 'x':181, 'y':79, 'width':98, 'height':173, 'attrs':'K', 'meths':'__getitem__|__init__|__len__|__str__|append|name_match'}
+{'type':'umlshape', 'id':'object', 'x':192, 'y':10, 'width':76, 'height':31, 'attrs':'', 'meths':''}
+{'type':'umlshape', 'id':'CPESet1_1', 'x':26, 'y':308, 'width':109, 'height':125, 'attrs':'VERSION|K', 'meths':'append|name_match'}
+{'type':'umlshape', 'id':'CPESet2_2', 'x':176, 'y':308, 'width':109, 'height':125, 'attrs':'VERSION|K', 'meths':'append|name_match'}
+{'type':'umlshape', 'id':'CPESet2_3', 'x':328, 'y':258, 'width':194, 'height':365, 'attrs':'LOGICAL_VALUE_SUPERSET|LOGICAL_VALUE_SUBSET|LOGICAL_VALUE_EQUAL|LOGICAL_VALUE_DISJOINT|LOGICAL_VALUE_UNDEFINED|VERSION|K', 'meths':'_compare|_compare_strings|_contains_wildcards|_is_even_wildcards|_is_string|compare_wfns|cpe_disjoint|cpe_equal|cpe_subset|cpe_superset|append|name_match'}
+{'type':'edge', 'id':'CPESet_to_object', 'source':'CPESet', 'target':'object', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPESet_to_object', 'source':'CPESet', 'target':'object', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPESet1_1_to_CPESet', 'source':'CPESet1_1', 'target':'CPESet', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPESet_to_object', 'source':'CPESet', 'target':'object', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPESet1_1_to_CPESet', 'source':'CPESet1_1', 'target':'CPESet', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPESet2_2_to_CPESet', 'source':'CPESet2_2', 'target':'CPESet', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPESet_to_object', 'source':'CPESet', 'target':'object', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPESet1_1_to_CPESet', 'source':'CPESet1_1', 'target':'CPESet', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPESet2_2_to_CPESet', 'source':'CPESet2_2', 'target':'CPESet', 'uml_edge_type':'generalisation'}
+{'type':'edge', 'id':'CPESet2_3_to_CPESet', 'source':'CPESet2_3', 'target':'CPESet', 'uml_edge_type':'generalisation'}

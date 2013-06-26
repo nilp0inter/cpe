@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0">
+	<cpe:platform>
+		<cpe:title>Windows with secedit.exe tool</cpe:title>
+		<cpe:logical-test operator="OR" negate="FALSE">
+			<cpe:fact-ref name="cpe:/o:microsoft:windows_server_2008" />
+			<cpe:fact-ref name="cpe:/o:microsoft:windows_7" />
+			<cpe:fact-ref name="cpe:/o:microsoft:windows_vista" />
+			<cpe:fact-ref name="cpe:/o:microsoft:windows_2003" />
+			<cpe:fact-ref name="cpe:/o:microsoft:windows_2003_server" />
+			<cpe:fact-ref name="cpe:/o:microsoft:windows_xp" />
+			<cpe:fact-ref name="cpe:/o:microsoft:windows_2000" />
+			<cpe:fact-ref name="cpe:/o:microsoft:windows_nt" />
+			<cpe:fact-ref name="cpe:/o:microsoft:windows-nt" />
+		</cpe:logical-test>
+	</cpe:platform>
+</cpe:platform-specification>

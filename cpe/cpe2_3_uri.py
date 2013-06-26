@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
 '''
 This file is part of cpe package.
 
@@ -10,7 +9,7 @@ of IT platforms (hardware, operating systems or applications of system)
 in accordance with binding style URI of version 2.3 of CPE
 (Common Platform Enumeration) specification.
 
-Copyright (C) 2013  Alejandro Galindo
+Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,10 +25,24 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
-feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
+feedback about it, please contact:
+
+- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 '''
 
+from cpe import CPE
 from cpe2_3 import CPE2_3
+from cpe2_3_wfn import CPE2_3_WFN
+from comp.cpecomp import CPEComponent
+from comp.cpecomp_logical import CPEComponentLogical
+from comp.cpecomp2_3_uri import CPEComponent2_3_URI
+from comp.cpecomp2_3_wfn import CPEComponent2_3_WFN
+from comp.cpecomp2_3_uri_edpacked import CPEComponent2_3_URI_edpacked
+from comp.cpecomp_anyvalue import CPEComponentAnyValue
+from comp.cpecomp_empty import CPEComponentEmpty
+from comp.cpecomp_undefined import CPEComponentUndefined
+from comp.cpecomp_notapplicable import CPEComponentNotApplicable
 
 import re
 
@@ -42,7 +55,7 @@ class CPE2_3_URI(CPE2_3):
     starting with the prefix (the URI scheme name) 'cpe:'.
 
     Each platform can be broken down into many distinct parts.
-    A CPE Name specifies a single part and is used to identify
+    A CPE Name specifies a simple part and is used to identify
     any platform that matches the description of that part.
     The distinct parts are:
 
@@ -55,538 +68,389 @@ class CPE2_3_URI(CPE2_3):
     CPE name syntax:
     cpe:/ {part} : {vendor} : {product} : {version} :
         {update} : {edition} : {language}
-
-    - TEST: bad URI
-    >>> uri = 'baduri'
-    >>> CPE2_3_URI(uri)
-    Traceback (most recent call last):
-    ValueError: Input identifier is not a valid CPE name: Error to split CPE name parts
-
-    - TEST: URI with whitespaces
-    >>> uri = 'cpe con espacios'
-    >>> CPE2_3_URI(uri)
-    Traceback (most recent call last):
-    ValueError: Malformed CPE, it must not have whitespaces
-
-    - TEST: an empty CPE.
-    >>> uri = 'cpe:/'
-    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3_URI object at 0x...>
-
-    - TEST: an empty CPE with five parts
-    >>> uri = 'cpe:/::::'
-    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3_URI object at 0x...>
-
-    - TEST: an empty CPE with bad part name
-    >>> uri = 'cpe:/b::::'
-    >>> CPE2_3_URI(uri)
-    Traceback (most recent call last):
-    ValueError: Input identifier is not a valid CPE name: Error to split CPE name parts
-
-    - TEST: an CPE with too many components
-    >>> uri = 'cpe:/a:1:2:3:4:5:6:7'
-    >>> CPE2_3_URI(uri)
-    Traceback (most recent call last):
-    ValueError: Input identifier is not a valid CPE name: Error to split CPE name parts
-
-    - TEST: an application CPE
-    >>> uri = 'cpe:/a:acme:product:1.0:update2:pro:en-us'
-    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3_URI object at 0x...>
-
-    - TEST: an operating system CPE
-    >>> uri = 'cpe:/o:microsoft:windows_xp:::pro'
-    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3_URI object at 0x...>
-
-    - TEST: an hardware CPE
-    >>> uri = 'cpe:/h:nvidia'
-    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3_URI object at 0x...>
-
-    - TEST: An unquoted question mark MAY be used at the beginning of
-    an attribute-value string
-    >>> uri = 'cpe:/h:%3Fnvidia'
-    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3_URI object at 0x...>
-
-    - TEST: An unquoted question mark MAY be used at the end of
-    an attribute-value string
-    >>> uri = 'cpe:/h:nvidia%3F'
-    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3_URI object at 0x...>
-
-    - TEST: An unquoted question mark MAY be used at the beginning
-    and/or the end of an attribute-value string
-    >>> uri = 'cpe:/h:%3Fnvidia%3F'
-    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3_URI object at 0x...>
-
-    - TEST: A contiguous sequence of unquoted question marks MAY appear
-     at the beginning and/or the end of an attribute-value string
-    >>> uri = 'cpe:/h:%3F%3Fnvidia%3F%3F'
-    >>> CPE2_3_URI(uri) # doctest: +ELLIPSIS
-    <__main__.CPE2_3_URI object at 0x...>
-
-    - TEST: an CPE with special characters
-    >>> uri = 'cpe:/h:nvidia.buena_2??pero_rara:11.0'
-    >>> CPE2_3_URI(uri)
-    Traceback (most recent call last):
-    ValueError: Malformed CPE, vendor value is invalid
     """
 
     ###############
     #  CONSTANTS  #
     ###############
 
-    # Separator of edition part components in CPE uri
-    PACKED_EDITION_SEPARATOR = "~"
+    # Style of CPE name
+    STYLE = CPE2_3.STYLE_URI
+
+    ###############
+    #  VARIABLES  #
+    ###############
+
+    # Compilation of regular expression associated with parts of CPE name
+    _typesys = "?P<{0}>(h|o|a)".format(CPEComponent.ATT_PART)
+    _vendor = "?P<{0}>[^:]+".format(CPEComponent.ATT_VENDOR)
+    _product = "?P<{0}>[^:]+".format(CPEComponent.ATT_PRODUCT)
+    _version = "?P<{0}>[^:]+".format(CPEComponent.ATT_VERSION)
+    _update = "?P<{0}>[^:]+".format(CPEComponent.ATT_UPDATE)
+    _edition = "?P<{0}>[^:]+".format(CPEComponent.ATT_EDITION)
+    _language = "?P<{0}>[^:]+".format(CPEComponent.ATT_LANGUAGE)
+
+    _parts_pattern = "^cpe:/({0})?(:({1})?)?(:({2})?)?(:({3})?)?(:({4})?)?(:({5})?)?(:({6})?)?$".format(
+        _typesys, _vendor, _product, _version, _update, _edition, _language)
+
+    _parts_rxc = re.compile(_parts_pattern, re.IGNORECASE)
+
+    ###################
+    #  CLASS METHODS  #
+    ###################
+
+    @classmethod
+    def _create_component(cls, att, value):
+        """
+        Returns a component with value "value".
+
+        INPUT:
+            - Value of component
+        OUTPUT:
+            - Component created
+        EXCEPTIONS:
+            - ValueError: invalid value of component
+        """
+
+        if value == CPEComponent2_3_URI.VALUE_UNDEFINED:
+            comp = CPEComponentUndefined()
+        elif (value == CPEComponent2_3_URI.VALUE_ANY or
+              value == CPEComponent2_3_URI.VALUE_EMPTY):
+            comp = CPEComponentAnyValue()
+        elif (value == CPEComponent2_3_URI.VALUE_NA):
+            comp = CPEComponentNotApplicable()
+        else:
+            comp = CPEComponentNotApplicable()
+            try:
+                comp = CPEComponent2_3_URI(value, att)
+            except ValueError:
+                errmsg = "Invalid value of attribute '{0}': {1} ".format(att,
+                                                                         value)
+                raise ValueError(errmsg)
+
+        return comp
+
+    @classmethod
+    def _unpack_edition(cls, value):
+        """
+        Unpack its elements and set the attributes in wfn accordingly.
+        Parse out the five elements.
+        ~ edition ~ software edition ~ target sw ~ target hw ~ other
+
+        INPUT:
+            - value: Value of edition component
+        OUTPUT:
+            - Dictionary with parts of edition component
+        EXCEPTIONS:
+            - ValueError: invalid value of edition component
+        """
+
+        components = value.split(CPEComponent2_3_URI.SEPARATOR_PACKED_EDITION)
+        d = dict()
+
+        ed = components[1]
+        sw_ed = components[2]
+        t_sw = components[3]
+        t_hw = components[4]
+        oth = components[5]
+
+        ck = CPEComponent.ATT_EDITION
+        d[ck] = CPE2_3_URI._create_component(ck, ed)
+        ck = CPEComponent.ATT_SW_EDITION
+        d[ck] = CPE2_3_URI._create_component(ck, sw_ed)
+        ck = CPEComponent.ATT_TARGET_SW
+        d[ck] = CPE2_3_URI._create_component(ck, t_sw)
+        ck = CPEComponent.ATT_TARGET_HW
+        d[ck] = CPE2_3_URI._create_component(ck, t_hw)
+        ck = CPEComponent.ATT_OTHER
+        d[ck] = CPE2_3_URI._create_component(ck, oth)
+
+        return d
 
     ####################
     #  OBJECT METHODS  #
     ####################
 
-    def __init__(self, cpe_str="cpe:/"):
+    def __getitem__(self, i):
         """
-        Checks that input CPE name string is valid according to binding
-        style URI and, if so, stores the component in a dictionary.
+        Returns the i'th component name of CPE name.
+
+        INPUT:
+            - i: component index to find
+        OUTPUT:
+            - component string found
+        EXCEPTIONS:
+            - IndexError: index not found in CPE name
         """
 
-        CPE2_3.__init__(self, cpe_str)
-        CPE2_3_URI.style = CPE2_3.STYLE_URI
-        self._validate()
+        count = 0
+        errmsg = "Component index of CPE name out of range"
+
+        packed_ed = self._pack_edition()
+
+        for pk in CPE.CPE_PART_KEYS:
+            elements = self.get(pk)
+            for elem in elements:
+                for ck in CPEComponent.CPE_COMP_KEYS:
+                    if (count == i):
+                        if ck == CPEComponent.ATT_EDITION:
+                            empty_ed = elem.get(ck) == CPEComponentUndefined()
+                            k = CPEComponent.ATT_SW_EDITION
+                            empty_sw_ed = elem.get(k) == CPEComponentUndefined()
+                            k = CPEComponent.ATT_TARGET_SW
+                            empty_tg_sw = elem.get(k) == CPEComponentUndefined()
+                            k = CPEComponent.ATT_TARGET_HW
+                            empty_tg_hw = elem.get(k) == CPEComponentUndefined()
+                            k = CPEComponent.ATT_OTHER
+                            empty_oth = elem.get(k) == CPEComponentUndefined()
+
+                            if (empty_ed and empty_sw_ed and empty_tg_sw and
+                               empty_tg_hw and empty_oth):
+
+                                # Edition component undefined
+                                raise IndexError(errmsg)
+                            else:
+                                # Some part of edition component defined.
+                                # Pack the edition component
+                                return CPEComponent2_3_URI_edpacked(packed_ed)
+                        else:
+                            comp = elem.get(ck)
+
+                            if not isinstance(comp, CPEComponentUndefined):
+                                return comp
+                            else:
+                                raise IndexError(errmsg)
+                    else:
+                        count += 1
+
+        raise IndexError(errmsg)
 
     def __len__(self):
         """
-        Returns the number of parts of CPE name.
-
-        - TEST: a CPE name without components
-        >>> uri = "cpe:/"
-        >>> c = CPE2_3_URI(uri)
-        >>> len(c)
-        0
-
-        - TEST: a CPE name with some elements
-        >>> uri = "cpe:/a:i4s:javas"
-        >>> c = CPE2_3_URI(uri)
-        >>> len(c)
-        3
-
-        - TEST: a CPE name with some elements
-        >>> uri = "cpe:/a:i4s:::javas"
-        >>> c = CPE2_3_URI(uri)
-        >>> len(c)
-        5
-
-        - TEST: a component with all subcomponents
-        >>> uri = "cpe:/a:acme:product:1.0:update2:-:en-us"
-        >>> c = CPE2_3_URI(uri)
-        >>> len(c)
-        7
+        Returns the number of components of CPE name.
         """
 
-        count = self.str.count(":")
-        if count == 1:
+        prefix = "cpe:/"
+        data = self.cpe_str[len(prefix):]
+
+        if data == "":
             return 0
-        else:
-            return count
 
-    def __getitem__(self, i):
+        count = data.count(CPEComponent2_3_URI.SEPARATOR_COMP)
+
+        return count + 1
+
+    def __new__(cls, cpe_str, *args, **kwargs):
         """
-        Returns the i'th component name of CPE name as a string.
-
-        - TEST: existing item
-        >>> uri = 'cpe:/h:nvidia.buena_2pero_rara:11.0'
-        >>> c = CPE2_3_URI(uri)
-        >>> c[2] == '11.0'
-        True
-
-        - TEST: existing empty item
-        >>> uri = 'cpe:/h:nvidia.buena_2pero_rara::sp2'
-        >>> c = CPE2_3_URI(uri)
-        >>> c[2] == ""
-        True
-
-        - TEST: not existing valid item
-        >>> uri = 'cpe:/h:nvidia.buena_2pero_rara::sp2'
-        >>> c = CPE2_3_URI(uri)
-        >>> c[5] == None
-        True
-
-        - TEST: not valid item
-        >>> uri = 'cpe:/h:nvidia.buena_2pero_rara:11.0'
-        >>> c = CPE2_3_URI(uri)
-        >>> c[11]
-        Traceback (most recent call last):
-          File "<stdin>", line 1, in <module>
-          File "cpe/CPE2_3/cpe2_3_uri.py", line 283, in __getitem__
-            raise KeyError(msg)
-        KeyError: 'index not exists. Possible values: 0-6'
+        Create a new CPE name of version 2.3 with URI style.
         """
 
-        keys = CPE2_3.uri_ordered_part_dict.keys()
-        if i not in keys:
-            max_index = len(keys) - 1
-            msg = "Index not exists. Possible values: 0-%s" % max_index
-            raise KeyError(msg)
+        return dict.__new__(cls)
 
-        part_key = CPE2_3.uri_ordered_part_dict[i]
-
-        return self._cpe_dict[part_key]
-
-    def __eq__(self, cpe):
+    def _parse(self):
         """
-        Return True if "cpe" is equal to self object.
+        Checks if CPE name is valid.
 
-        - TEST: equals
-        >>> uri = 'cpe:/a:mozilla:firefox:2.0.0.6::osx:es-es'
-        >>> c = CPE2_3_URI(uri)
-        >>> c == c
-        True
-
-        - TEST: not equals
-        >>> uri = 'cpe:/a:mozilla:firefox:2.0.0.6::osx:es-es'
-        >>> c = CPE2_3_URI(uri)
-        >>> uri2 = 'cpe:/a:mozilla'
-        >>> c2 = CPE2_3_URI(uri2)
-        >>> c == c2
-        False
-        """
-
-        eqPart = self.getType() == cpe.getType()
-        eqVendor = self.getVendor() == cpe.getVendor()
-        eqProduct = self.getProduct() == cpe.getProduct()
-        eqVersion = self.getVersion() == cpe.getVersion()
-        eqUpdate = self.getUpdate() == cpe.getUpdate()
-        eqEdition = self.getEdition() == cpe.getEdition()
-        eqLanguage = self.getLanguage() == cpe.getLanguage()
-
-        return (eqPart and eqVendor and eqProduct and eqVersion and
-                eqUpdate and eqEdition and eqLanguage)
-
-    def _validate(self):
-        """
-        Checks CPE name with URI style is valid.
+        INPUT:
+            - None
+        OUTPUT:
+            - None
+        EXCEPTIONS:
+            - ValueError: bad-formed CPE name
         """
 
         # CPE name must not have whitespaces
-        if (self.str.find(" ") != -1):
+        if (self._str.find(" ") != -1):
             msg = "Malformed CPE name: it must not have whitespaces"
             raise ValueError(msg)
 
-        # #####################
-        #  CHECK CPE NAME PARTS
-        # #####################
-
-        # Compilation of regular expression associated with parts of CPE name
-        typesys = "?P<%s>(h|o|a)" % CPE2_3.KEY_PART
-        vendor = "?P<%s>[^:]+" % CPE2_3.KEY_VENDOR
-        product = "?P<%s>[^:]+" % CPE2_3.KEY_PRODUCT
-        version = "?P<%s>[^:]+" % CPE2_3.KEY_VERSION
-        update = "?P<%s>[^:]+" % CPE2_3.KEY_UPDATE
-        edition = "?P<%s>[^:]+" % CPE2_3.KEY_EDITION
-        language = "?P<%s>[^:]+" % CPE2_3.KEY_LANGUAGE
-
-        parts_pattern = "^cpe:/"
-        parts_pattern += "(%s)?" % typesys
-        parts_pattern += "(:(%s)?)?" % vendor
-        parts_pattern += "(:(%s)?)?" % product
-        parts_pattern += "(:(%s)?)?" % version
-        parts_pattern += "(:(%s)?)?" % update
-        parts_pattern += "(:(%s)?)?" % edition
-        parts_pattern += "(:(%s)?)?$" % language
-        parts_rxc = re.compile(parts_pattern, re.IGNORECASE)
-
         # Partitioning of CPE name
-        parts_match = parts_rxc.match(self.str)
+        parts_match = CPE2_3_URI._parts_rxc.match(self._str)
 
         # Validation of CPE name parts
         if (parts_match is None):
             msg = "Malformed CPE name: validation of parts failed"
             raise ValueError(msg)
 
-        # Compilation of regular expression associated with value of CPE part
-        region = "([%s]{2}|[%s]{3})" % (CPE2_3._ALPHA, CPE2_3._DIGIT)
-        language = "[%s]{2,3}" % CPE2_3._ALPHA
-        LANGTAG = "%s(\-%s)?" % (language, region)
+        components = dict()
+        edition_parts = dict()
 
-        pct_encoded = "%21|%22|%23|%24|%25|%26|%27|%28|%29"
-        pct_encoded += "|%2a|%2b|%2c|%2f"
-        pct_encoded += "|%3a|%3b|%3c|%3d|%3e|%3f"
-        pct_encoded += "|%40|%5b|%5c|%5d|%5e"
-        pct_encoded += "|%60|%7b|%7c|%7d|%7e"
-        unreserved = "[%s%s\-\._]" % (CPE2_3._ALPHA, CPE2_3._DIGIT)
-        spec_chrs = "(%01+|%02)"
-        str_w_special = "(%s?(%s|%s)+%s?)" % (spec_chrs, unreserved,
-                                              pct_encoded, spec_chrs)
-        str_wo_special = "(%s|%s)*" % (unreserved, pct_encoded)
+        for ck in CPEComponent.CPE_COMP_KEYS:
+            value = parts_match.group(ck)
 
-        string = "(%s|%s)" % (str_wo_special, str_w_special)
-        value_string_pattern = "^%s$" % string
-        packed = "(%s%s){5}" % (CPE2_3_URI.PACKED_EDITION_SEPARATOR, string)
-
-        value_edition_pattern = "^(%s|%s)$" % (string, packed)
-        value_lang_pattern = "^%s?$" % LANGTAG
-
-        part_value_rxc = re.compile(value_string_pattern)
-        edition_value_rxc = re.compile(value_edition_pattern)
-        lang_value_rxc = re.compile(value_lang_pattern)
-
-        # Count of parts in CPE name
-        count = self.__len__()
-
-        for i, pk in enumerate(CPE2_3.uri_part_keys):
-            value = parts_match.group(pk)
-
-            if (value is None):
-                if (i < count):
-                    value = ""
+            try:
+                if (ck == CPEComponent.ATT_EDITION and value is not None):
+                    if value[0] == CPEComponent2_3_URI.SEPARATOR_PACKED_EDITION:
+                        # Unpack the edition part
+                        edition_parts = CPE2_3_URI._unpack_edition(value)
+                    else:
+                        comp = CPE2_3_URI._create_component(ck, value)
+                else:
+                    comp = CPE2_3_URI._create_component(ck, value)
+            except ValueError:
+                errmsg = "Malformed CPE name: not correct value '{0}'".format(
+                    value)
+                raise ValueError(errmsg)
             else:
-                if pk == CPE2_3.KEY_EDITION:
-                    if (edition_value_rxc.match(value) is None):
-                        msg = "Malformed CPE name: edition value '%s' is invalid" % value
-                        raise ValueError(msg)
+                components[ck] = comp
 
-                elif pk == CPE2_3.KEY_LANGUAGE:
-                    if (lang_value_rxc.match(value) is None):
-                        msg = "Malformed CPE name: language value '%s' is invalid" % value
-                        raise ValueError(msg)
+        components = dict(components, **edition_parts)
+
+        # Adds the components of version 2.3 of CPE not defined in version 2.2
+        for ck2 in CPEComponent.CPE_COMP_KEYS_EXTENDED:
+            if ck2 not in components.keys():
+                components[ck2] = CPEComponentUndefined()
+
+        # Exchange the undefined values in middle attributes of CPE name for
+        # logical value ANY
+        check_change = True
+
+        # Start in the last attribute specififed in CPE name
+        for ck in CPEComponent.CPE_COMP_KEYS[::-1]:
+            if ck in components:
+                comp = components[ck]
+                if check_change:
+                    check_change = ((ck != CPEComponent.ATT_EDITION) and
+                                   (comp == CPEComponentUndefined()) or
+                                   (ck == CPEComponent.ATT_EDITION and
+                                   (len(edition_parts) == 0)))
+                elif comp == CPEComponentUndefined():
+                    comp = CPEComponentAnyValue()
+
+                components[ck] = comp
+
+        #  Storage of CPE name
+        part_comp = components[CPEComponent.ATT_PART]
+        if isinstance(part_comp, CPEComponentLogical):
+            elements = []
+            elements.append(components)
+            self[CPE.KEY_UNDEFINED] = elements
+        else:
+            # Create internal structure of CPE name in parts:
+            # one of them is filled with identified components,
+            # the rest are empty
+            system = parts_match.group(CPEComponent.ATT_PART)
+            if system in CPEComponent.SYSTEM_VALUES:
+                self._create_cpe_parts(system, components)
+            else:
+                self._create_cpe_parts(CPEComponent.VALUE_PART_UNDEFINED,
+                                       components)
+
+        # Fills the empty parts of internal structure of CPE name
+        for pk in CPE.CPE_PART_KEYS:
+            if pk not in self.keys():
+                # Empty part
+                self[pk] = []
+
+    def as_wfn(self):
+        """
+        Returns the CPE name as WFN string of version 2.3.
+        If edition component is not packed, only shows the first seven
+        components, otherwise shows all.
+
+        INPUT:
+            - None
+        OUTPUT:
+            - None
+        EXCEPTIONS:
+            - TypeError: incompatible version
+        """
+
+        if self._str.find(CPEComponent2_3_URI.SEPARATOR_PACKED_EDITION) == -1:
+            # Edition unpacked, only show the first seven components
+
+            wfn = []
+            wfn.append(CPE2_3_WFN.CPE_PREFIX)
+
+            for ck in CPEComponent.CPE_COMP_KEYS:
+                lc = self._get_attribute_components(ck)
+
+                if len(lc) > 1:
+                    # Incompatible version 1.1, there are two or more elements
+                    # in CPE name
+                    errmsg = "Incompatible version {0} with WFN".format(
+                        self.VERSION)
+                    raise TypeError(errmsg)
 
                 else:
-                    if (part_value_rxc.match(value) is None):
-                        msg = "Malformed CPE name: value '%s' is invalid " % value
-                        raise ValueError(msg)
+                    comp = lc[0]
 
-            self._cpe_dict[pk] = value
+                    v = []
+                    v.append(ck)
+                    v.append("=")
 
-        return self._cpe_dict
+                    if (isinstance(comp, CPEComponentUndefined) or
+                       isinstance(comp, CPEComponentEmpty)):
 
-    def isHardware(self):
+                        # Do not set the attribute
+                        continue
+
+                    elif isinstance(comp, CPEComponentAnyValue):
+
+                        # Logical value any
+                        v.append(CPEComponent2_3_WFN.VALUE_ANY)
+
+                    elif isinstance(comp, CPEComponentNotApplicable):
+
+                        # Logical value not applicable
+                        v.append(CPEComponent2_3_WFN.VALUE_NA)
+
+                    else:
+                        # Get the value of WFN of component
+                        v.append('"')
+                        v.append(comp.as_wfn())
+                        v.append('"')
+
+                    # Append v to the WFN and add a separator
+                    wfn.append("".join(v))
+                    wfn.append(CPEComponent2_3_WFN.SEPARATOR_COMP)
+
+            # Del the last separator
+            wfn = wfn[:-1]
+
+            # Return the WFN string
+            wfn.append("]")
+
+            return "".join(wfn)
+
+        else:
+            # Shows all components
+            return super(CPE2_3_URI, self).as_wfn()
+
+    def get_attribute_values(self, att_name):
         """
-        Returns True if CPE name corresponds to hardware elem.
+        Returns the values of attribute "att_name" of CPE name.
+        By default a only element in each part.
 
-        - TEST: is HW
-        >>> uri = 'cpe:/h:nvidia:nvidia.buena_2pero_rara:11.0'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isHardware() == True
-        True
-
-        - TEST: is not HW
-        >>> uri = 'cpe:/o:microsoft:windows:xp'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isHardware() == False
-        True
-
-        - TEST: is not HW
-        >>> uri = 'cpe:/a:microsoft:ie:10'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isHardware() == False
-        True
-        """
-
-        # Value of part type of CPE name
-        type_value = self._cpe_dict[CPE2_3.KEY_PART]
-
-        isHW = type_value == CPE2_3.VALUE_PART_HW
-        isEmpty = type_value == ""
-
-        return (isHW or isEmpty)
-
-    def isOperatingSystem(self):
-        """
-        Returns True if CPE name corresponds to operating system elem.
-
-        - TEST: is not OS
-        >>> uri = 'cpe:/h:nvidia:nvidia.buena_2pero_rara:11.0'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isOperatingSystem() == False
-        True
-
-        - TEST: is OS
-        >>> uri = 'cpe:/o:microsoft:windows:xp'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isOperatingSystem() == True
-        True
-
-        - TEST: is not OS
-        >>> uri = 'cpe:/a:microsoft:ie:10'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isOperatingSystem() == False
-        True
+        INPUT:
+            - att_name: Attribute name to get
+        OUTPUT:
+            - List of attribute values
         """
 
-        # Value of part type of CPE name
-        type_value = self._cpe_dict[CPE2_3.KEY_PART]
+        lc = []
 
-        isOS = type_value == CPE2_3.VALUE_PART_OS
-        isEmpty = type_value == ""
+        if not CPEComponent.is_valid_attribute(att_name):
+            errmsg = "Invalid attribute name '{0}'".format(att_name)
+            raise ValueError(errmsg)
 
-        return (isOS or isEmpty)
+        for pk in CPE.CPE_PART_KEYS:
+            elements = self.get(pk)
+            for elem in elements:
+                comp = elem.get(att_name)
 
-    def isApplication(self):
-        """
-        Returns True if CPE name corresponds to application elem.
+                if (isinstance(comp, CPEComponentAnyValue) or
+                   isinstance(comp, CPEComponentUndefined)):
+                    value = CPEComponent2_3_URI.VALUE_ANY
+                elif isinstance(comp, CPEComponentNotApplicable):
+                    value = CPEComponent2_3_URI.VALUE_NA
+                else:
+                    value = comp.get_value()
 
-        - TEST: is not application
-        >>> uri = 'cpe:/h:nvidia:nvidia.buena_2pero_rara:11.0'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isApplication() == False
-        True
-
-        - TEST: is not application
-        >>> uri = 'cpe:/o:microsoft:windows:xp'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isApplication() == False
-        True
-
-        - TEST: is application
-        >>> uri = 'cpe:/a:microsoft:ie:10'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isApplication() == True
-        True
-        """
-
-        # Value of part type of CPE name
-        type_value = self._cpe_dict[CPE2_3.KEY_PART]
-
-        isApp = type_value == CPE2_3.VALUE_PART_APP
-        isEmpty = (type_value == "") or (type_value is None)
-
-        return (isApp or isEmpty)
-
-    def getType(self):
-        """
-        Returns the part type of CPE name.
-
-        - TEST: is application
-        >>> uri = 'cpe:/a:microsoft:ie:10'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.getType()
-        'a'
-
-        - TEST: is operating system
-        >>> uri = 'cpe:/o:microsoft:xp'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.getType()
-        'o'
-
-        - TEST: is hardware
-        >>> uri = 'cpe:/h:cisco'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.getType()
-        'h'
-        """
-
-        return self._cpe_dict[CPE2_3.KEY_PART]
-
-    def getVendor(self):
-        """
-        Returns the vendor name of CPE name.
-
-        - TEST: is application
-        >>> uri = 'cpe:/a:microsoft:ie:10'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.getVendor()
-        'microsoft'
-        """
-
-        return self._cpe_dict[CPE2_3.KEY_VENDOR]
-
-    def getProduct(self):
-        """
-        Returns the product name of CPE name.
-
-        - TEST: is application
-        >>> uri = 'cpe:/a:microsoft:ie:10'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.getProduct()
-        'ie'
-        """
-
-        return self._cpe_dict[CPE2_3.KEY_PRODUCT]
-
-    def getVersion(self):
-        """
-        Returns the version of product of CPE name.
-
-        - TEST: is application
-        >>> uri = 'cpe:/a:microsoft:ie:10'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.getVersion()
-        '10'
-        """
-
-        return self._cpe_dict[CPE2_3.KEY_VERSION]
-
-    def getUpdate(self):
-        """
-        Returns the update or service pack information of CPE name.
-
-        - TEST: is operating system
-        >>> uri = 'cpe:/o:microsoft:windows_xp::sp2:pro'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.getUpdate()
-        'sp2'
-        """
-
-        return self._cpe_dict[CPE2_3.KEY_UPDATE]
-
-    def getEdition(self):
-        """
-        Returns the edition of product of CPE name.
-
-        - TEST: is operating system
-        >>> uri = 'cpe:/o:microsoft:windows_xp::sp2:pro'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.getEdition()
-        'pro'
-        """
-
-        return self._cpe_dict[CPE2_3.KEY_EDITION]
-
-    def isEditionPacked(self):
-        """
-        Returns TRUE if edition part contains several elements packed.
-
-        - TEST: packed
-        >>> uri = 'cpe:/o:microsoft:windows_xp::sp2:~1~2~3~4~5'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isEditionPacked()
-        True
-
-        - TEST: not packed
-        >>> uri = 'cpe:/o:microsoft:windows_xp::sp2:pro'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.isEditionPacked()
-        False
-        """
-
-        return self.getEdition().find(CPE2_3_URI.PACKED_EDITION_SEPARATOR) > -1
-
-    def getEditionElements(self):
-        """
-        Return a list with elements packed in edition part.
-        If there are not elements packed
-        it returns a list with a element.
-        """
-
-        return self.getEdition().split(CPE2_3_URI.PACKED_EDITION_SEPARATOR)
-
-    def getLanguage(self):
-        """
-        Returns the internationalization information of CPE name.
-
-        - TEST: is application
-        >>> uri = 'cpe:/a:mozilla:firefox:2.0.0.6::osx:es-es'
-        >>> c = CPE2_3_URI(uri)
-        >>> c.getLanguage()
-        'es-es'
-        """
-
-        return self._cpe_dict[CPE2_3.KEY_LANGUAGE]
-
+                lc.append(value)
+        return lc
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod(optionflags=doctest.IGNORE_EXCEPTION_DETAIL)
+    doctest.testmod()
+    doctest.testfile("tests/testfile_cpe2_3_uri.txt")

@@ -4,3 +4,4 @@
 *.bak*
 *.py.*
 *.oxps
+docs/_build/
