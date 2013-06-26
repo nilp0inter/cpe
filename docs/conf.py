@@ -16,7 +16,7 @@ import sys, os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-#sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('../cpe'))
 
 # -- General configuration -----------------------------------------------------
 
@@ -41,7 +41,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'CPE'
-copyright = u'2013, Alejandro Galindo, Roberto Abdelkader Martínez Pérez'
+copyright = u'2013, Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -187,7 +187,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'CPE.tex', u'CPE Documentation',
-   u'Alejandro Galindo, Roberto Abdelkader Martínez Pérez', 'manual'),
+   u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -217,7 +217,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'cpe', u'CPE Documentation',
-     [u'Alejandro Galindo, Roberto Abdelkader Martínez Pérez'], 1)
+     [u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -231,8 +231,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'CPE', u'CPE Documentation',
-   u'Alejandro Galindo, Roberto Abdelkader Martínez Pérez', 'CPE', 'One line description of project.',
-   'Miscellaneous'),
+   u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez', 'CPE', 'Package to create and operate with CPE names of 1.1, 2.2 and 2.3 versions of CPE (Common Platform Enumeration) specification.', 'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
