@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module contains the common characteristics of
@@ -28,7 +28,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from comp.cpecomp import CPEComponent
 from comp.cpecomp2_3_uri import CPEComponent2_3_URI
@@ -59,38 +59,45 @@ class CPE(dict):
     #  CONSTANTS  #
     ###############
 
-    # included in CPE specification
+    # Constants used to paint the representation of CPE name
+    _PREFIX_ELEM = "   ["
+    _PREFIX_ELEMENTS = " ["
+    _SUFFIX_ELEM = "   ]"
+    _SUFFIX_ELEMENTS = " ]"
+
+    # Type of systems included in CPE specification
+
+    #: Type of system "application"
     KEY_APP = "app"
+    #: Type of system "hardware"
     KEY_HW = "hw"
+    #: Type of system "operating system"
     KEY_OS = "os"
+    #: Undefined type of system
     KEY_UNDEFINED = "undef"
 
-    # List of keys associated with the three types of system
-    # included in CPE specification
+    #: List of keys associated with the types of system included in CPE specification
     CPE_PART_KEYS = (KEY_HW, KEY_OS, KEY_APP, KEY_UNDEFINED)
 
-    # Constants used to paint the representation of CPE name
-    PREFIX_ELEM = "   ["
-    PREFIX_ELEMENTS = " ["
-    SUFFIX_ELEM = "   ]"
-    SUFFIX_ELEMENTS = " ]"
-
     # Constants of possible versions of CPE specification
+
+    #: Version 1.1 of CPE specification
     VERSION_1_1 = "1.1"
+    #: Version 2.2 of CPE specification
     VERSION_2_2 = "2.2"
+    #: Version 2.3 of CPE specification
     VERSION_2_3 = "2.3"
+    #: Version not set
     VERSION_UNDEFINED = "undefined"
 
-    # Version of CPE name
+    #: Version of CPE Name
     VERSION = VERSION_UNDEFINED
 
     ###############
     #  VARIABLES  #
     ###############
 
-    # Dictionary keys associated with the three types of system
-    # Relation between the values of "part" component and the part name in
-    # internal structure of CPE name
+    #: Dictionary with the relation between the values of "part" component and the part name in internal structure of CPE name
     system_and_parts = {
         CPEComponent.VALUE_PART_HW: KEY_HW,
         CPEComponent.VALUE_PART_OS: KEY_OS,
