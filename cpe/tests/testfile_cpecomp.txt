@@ -1,0 +1,80 @@
+>>> from cpe.comp.cpecomp import CPEComponent
+
+-------------------------------------------
+Test for is_valid_attribute(cls, att_name)
+-------------------------------------------
+
+TEST: a right attribute
+>>> att = CPEComponent.ATT_PRODUCT
+>>> CPEComponent.is_valid_attribute(att)
+True
+
+TEST: a wrong attribute
+>>> att = "n@nexist"
+>>> CPEComponent.is_valid_attribute(att)
+False
+
+
+-------------------------------------------
+Test for __init__(self, comp_str)
+-------------------------------------------
+
+TEST: a right attribute
+>>> value = "example"
+>>> c = CPEComponent(att)
+
+
+-------------------------------------------
+Test for __eq__(self, comp_str)
+-------------------------------------------
+
+TEST: two equal components
+>>> value = "microsoft"
+>>> c = CPEComponent(value)
+>>> c == c
+True
+
+
+TEST: two equal components
+>>> value = "microsoft"
+>>> c = CPEComponent(value)
+>>> c2 = CPEComponent(value)
+>>> c == c2
+True
+
+
+TEST: two not equal components
+>>> value = "microsoft"
+>>> c = CPEComponent(value)
+>>> value2 = "linux"
+>>> c2 = CPEComponent(value2)
+>>> c == c2
+False
+
+
+-------------------------------------------
+Test for __ne__(self, comp_str)
+-------------------------------------------
+
+TEST: two equal components
+>>> value = "microsoft"
+>>> c = CPEComponent(value)
+>>> c != c
+False
+
+
+TEST: two equal components
+>>> value = "microsoft"
+>>> c = CPEComponent(value)
+>>> c2 = CPEComponent(value)
+>>> c != c2
+False
+
+
+TEST: two not equal components
+>>> value = "microsoft"
+>>> c = CPEComponent(value)
+>>> value2 = "linux"
+>>> c2 = CPEComponent(value2)
+>>> c != c2
+True

@@ -1,0 +1,189 @@
+>>> from cpe2_3_uri import CPE2_3_URI
+>>> from comp.cpecomp_simple import CPEComponentSimple
+
+----------------------------------
+Test for _get_attribute_values(self)
+----------------------------------
+
+TEST:
+>>> str = 'cpe:/a:microsoft::8.%2a:sp%3f'
+>>> c = CPE2_3_URI(str)
+>>> att = CPEComponentSimple.ATT_VENDOR
+>>> c.get_attribute_values(att)
+['microsoft']
+>>> att = CPEComponentSimple.ATT_VERSION
+>>> c.get_attribute_values(att) # it is not wildcard
+['8.%2a']
+>>> att = CPEComponentSimple.ATT_UPDATE
+>>> c.get_attribute_values(att)  # it is not wildcard
+['sp%3f']
+
+
+-----------------------------------------------
+Test for __getitem__(self, i)
+-----------------------------------------------
+
+- TEST: good index
+>>> str = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
+>>> c = CPE2_3_URI(str)
+>>> c[2]
+CPEComponent2_3_URI(insight_diagnostics)
+
+- TEST: good index
+>>> str = 'cpe:/a:hp:insight_diagnostics:8::~~online~win2003~x64~'
+>>> c = CPE2_3_URI(str)
+>>> c[4]
+CPEComponentAnyValue()
+
+- TEST: good index
+>>> str = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
+>>> c = CPE2_3_URI(str)
+>>> c[5]
+CPEComponent2_3_URI_edpacked(~~online~win2003~x64~)
+
+- TEST: bad index
+>>> str = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
+>>> c = CPE2_3_URI(str)
+>>> c[14]  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+IndexError: Component index of CPE name out of range
+
+
+-----------------------------------------------
+Test for __new__(cls, cpe_str, *args, **kwargs)
+-----------------------------------------------
+
+- TEST: bad URI
+>>> uri = 'baduri'
+>>> c = CPE2_3_URI(uri)  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE name: validation of parts failed
+
+- TEST: URI with whitespaces
+>>> uri = 'cpe con espacios'
+>>> c = CPE2_3_URI(uri)  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE name: it must not have whitespaces
+
+- TEST: an empty CPE.
+>>> uri = 'cpe:/'
+>>> c = CPE2_3_URI(uri)
+
+- TEST: an empty CPE with five parts
+>>> uri = 'cpe:/::::'
+>>> c = CPE2_3_URI(uri)
+
+- TEST: an empty CPE with bad part name
+>>> uri = 'cpe:/b::::'
+>>> c = CPE2_3_URI(uri) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE name: validation of parts failed
+
+- TEST: an CPE with too many components
+>>> uri = 'cpe:/a:1:2:3:4:5:6:7'
+>>> c = CPE2_3_URI(uri) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE name: validation of parts failed
+
+- TEST: an application CPE
+>>> uri = 'cpe:/a:acme:product:1.0:update2:pro:en-us'
+>>> c = CPE2_3_URI(uri)
+
+- TEST: an operating system CPE
+>>> uri = 'cpe:/o:microsoft:windows_xp:::pro'
+>>> c = CPE2_3_URI(uri)
+
+- TEST: an hardware CPE
+>>> uri = 'cpe:/h:nvidia'
+>>> c = CPE2_3_URI(uri)
+
+- TEST: An unquoted question mark MAY be used at the beginning of
+an attribute-value string
+>>> uri = 'cpe:/h:%3Fnvidia'
+>>> c = CPE2_3_URI(uri)
+
+- TEST: An unquoted question mark MAY be used at the end of
+an attribute-value string
+>>> uri = 'cpe:/h:nvidia%3F'
+>>> c = CPE2_3_URI(uri)
+
+- TEST: An unquoted question mark MAY be used at the beginning
+and/or the end of an attribute-value string
+>>> uri = 'cpe:/h:%3Fnvidia%3F'
+>>> c = CPE2_3_URI(uri)
+
+- TEST: A contiguous sequence of unquoted question marks MAY appear
+ at the beginning and/or the end of an attribute-value string
+>>> uri = 'cpe:/h:%3F%3Fnvidia%3F%3F'
+>>> c = CPE2_3_URI(uri)
+
+- TEST: an CPE with special characters
+>>> uri = 'cpe:/h:nvidia.buena_2??pero_rara:11.0'
+>>> c = CPE2_3_URI(uri) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE name: not correct value 'nvidia.buena_2??pero_rara'
+
+- TEST:
+>>> uri = 'cpe:/a:foo~bar:big%7emoney_2010'
+>>> c = CPE2_3_URI(uri) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE name: not correct value 'foo~bar'
+
+----------------------------------
+Test for __len__(self)
+----------------------------------
+
+- TEST: a CPE name without components
+>>> str = "cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~"
+>>> c = CPE2_3_URI(str)
+>>> len(c)
+6
+
+----------------------------------
+Test for __str__(self)
+----------------------------------
+
+TEST: not negate components
+>>> str = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
+>>> c = CPE2_3_URI(str)
+>>> print c
+CPE v2.3 (URI): cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~
+
+
+----------------------------------
+Test for as_uri_2_3(self)
+----------------------------------
+
+- TEST:
+>>> uri = 'cpe:/a:hp:openview_network_manager:7.51:-:~~~linux~~'
+>>> c1 = CPE2_3_URI(uri)
+>>> c1.as_uri_2_3()
+'cpe:/a:hp:openview_network_manager:7.51:-:~~~linux~~'
+
+
+----------------------------------
+Test for as_wfn(self)
+----------------------------------
+
+- TEST:
+>>> uri = 'cpe:/a:hp:openview_network_manager:7.51:-:~~~linux~~'
+>>> c1 = CPE2_3_URI(uri)
+>>> c1.as_wfn()
+'wfn:[part="a", vendor="hp", product="openview_network_manager", version="7\\.51", update=NA, edition=ANY, sw_edition=ANY, target_sw="linux", target_hw=ANY, other=ANY]'
+
+- TEST:
+>>> uri = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
+>>> c3 = CPE2_3_URI(uri)
+>>> c3.as_wfn()
+'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\\.4\\.0\\.1570", update=ANY, edition=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY]'
+
+
+----------------------------------
+Test for as_fs(self)
+----------------------------------
+
+- TEST:
+>>> uri = 'cpe:/a:hp:openview_network_manager:7.51:-:~~~linux~~'
+>>> c1 = CPE2_3_URI(uri)
+>>> c1.as_fs()
+'cpe:2.3:a:hp:openview_network_manager:7.51:-:*:*:*:linux:*:*'

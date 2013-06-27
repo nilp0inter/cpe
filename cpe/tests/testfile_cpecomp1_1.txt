@@ -1,0 +1,394 @@
+>>> from cpe.comp.cpecomp1_1 import CPEComponent1_1
+>>> from cpe.comp.cpecomp_simple import CPEComponentSimple
+>>> from cpe.comp.cpecomp_empty import CPEComponentEmpty
+
+----------------------------------
+Test for __contains__(self, item)
+----------------------------------
+
+TEST: two simple values
+>>> val = 'XP'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp2 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp1 in comp2
+True
+
+TEST: two values with OR operator
+>>> val = 'xp!VISTA'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp2 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp1 in comp2
+True
+
+TEST: two different simple values
+>>> comp1 = CPEComponent1_1('xp', CPEComponentSimple.ATT_VERSION)
+>>> comp2 = CPEComponent1_1('vista', CPEComponentSimple.ATT_VERSION)
+>>> comp1 in comp2
+False
+
+TEST: a value with negation and another with OR operator
+>>> comp1 = CPEComponent1_1('~xp', CPEComponentSimple.ATT_VERSION)
+>>> comp2 = CPEComponent1_1('xp!vista', CPEComponentSimple.ATT_VERSION)
+>>> comp1 in comp2
+False
+>>> comp2 in comp1
+False
+
+TEST: a simple value and a value with OR operator
+>>> comp1 = CPEComponent1_1('xp', CPEComponentSimple.ATT_VERSION)
+>>> comp2 = CPEComponent1_1('xp!vista', CPEComponentSimple.ATT_VERSION)
+>>> comp1 in comp2
+True
+>>> comp2 in comp1
+False
+
+TEST: an empty value and simple value
+>>> from cpecomp_empty import CPEComponentEmpty
+>>> comp1 = CPEComponent1_1('xp', CPEComponentSimple.ATT_VERSION)
+>>> comp2 = CPEComponentEmpty()
+>>> comp1 in comp2
+True
+
+TEST: a negate value and simple value
+>>> comp1 = CPEComponent1_1('~xp', CPEComponentSimple.ATT_VERSION)
+>>> comp2 = CPEComponent1_1('vista', CPEComponentSimple.ATT_VERSION)
+>>> comp1 in comp2
+False
+>>> comp2 in comp1
+True
+
+
+----------------------------------
+Test for __eq__(self, other)
+----------------------------------
+
+TEST: equal components
+>>> value = "hp"
+>>> comp1 = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
+>>> comp1 == comp1
+True
+
+TEST: distinct components
+>>> value2 = "microsoft"
+>>> comp2 = CPEComponent1_1(value2, CPEComponentSimple.ATT_VENDOR)
+>>> comp1 == comp2
+False
+
+TEST: distinct components
+>>> value2 = "~hp"
+>>> comp2 = CPEComponent1_1(value2, CPEComponentSimple.ATT_VENDOR)
+>>> comp1 == comp2
+False
+
+
+----------------------------------
+Test for __init__(self, item)
+----------------------------------
+
+TEST: simple value
+>>> value = "j"
+>>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_PART) # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'part': 'j'
+
+TEST: simple value
+>>> value = "microsoft"
+>>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
+
+TEST: value with negation
+>>> value = "~microsoft"
+>>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
+
+TEST: value with OR operation
+>>> value = "xp!vista"
+>>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VERSION)
+
+TEST: NOT and OR operators cannot be together
+>>> value = "~xp!vista"
+>>> comp = CPEComponent1_1(value, 'version') # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value '~xp!vista'. Only alphanumeric and the following characters: '.', '_', '-', ',', '(', ')', '@', '#'
+
+
+----------------------------------
+Test for __ne__(self, other)
+----------------------------------
+
+TEST: equal components
+>>> value = "hp"
+>>> comp1 = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
+>>> comp1 != comp1
+False
+
+TEST: distinct components
+>>> value2 = "microsoft"
+>>> comp2 = CPEComponent1_1(value2, CPEComponentSimple.ATT_VENDOR)
+>>> comp1 != comp2
+True
+
+TEST: distinct components
+>>> value2 = "~hp"
+>>> comp2 = CPEComponent1_1(value2, CPEComponentSimple.ATT_VENDOR)
+>>> comp1 != comp2
+True
+
+
+----------------------------------
+Test for __repr__(self)
+----------------------------------
+
+TEST: simple value
+>>> value = "hp"
+>>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
+>>> comp
+CPEComponent1_1(hp)
+
+TEST: negate value
+>>> value = "~microsoft"
+>>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
+>>> comp
+NOT CPEComponent1_1(microsoft)
+
+
+----------------------------------
+Test for __str__(self)
+----------------------------------
+
+TEST: simple value
+>>> value = "hp"
+>>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
+>>> print comp
+hp
+
+TEST: negate value
+>>> value = "~microsoft"
+>>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
+>>> print comp
+~microsoft
+
+
+----------------------------------
+Test for _decode(self)
+----------------------------------
+
+TEST: OR operator
+>>> val ='microsoft'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VENDOR)
+>>> comp1._standard_value
+['microsoft']
+
+TEST: negation operator
+>>> val ='~xp'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp1._standard_value
+['xp']
+
+TEST: OR operator
+>>> val ='xp!vista'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp1._standard_value
+['xp', 'vista']
+
+TEST: OR operator
+>>> val ='lin@x'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_PRODUCT)
+>>> comp1._standard_value
+['lin\\@x']
+
+TEST: OR operator
+>>> val ='8.0.6001'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp1._standard_value
+['8\\.0\\.6001']
+
+----------------------------------
+Test for _is_valid_edition(self)
+----------------------------------
+
+>>> att = CPEComponentSimple.ATT_EDITION
+
+TEST: a simple value
+>>> val ='microsoft'
+>>> comp1 = CPEComponent1_1(val, att)
+
+TEST: a simple value
+>>> val ='micro$oft'
+>>> comp1 = CPEComponent1_1(val, att)
+
+----------------------------------
+Test for _is_valid_language(self)
+----------------------------------
+
+>>> att = CPEComponentSimple.ATT_LANGUAGE
+
+- TEST
+>>> val = 'es-ES'
+>>> comp1 = CPEComponent1_1(val, att)
+
+- TEST
+>>> val = 'es-noesES'
+>>> comp1 = CPEComponent1_1(val, att) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'language': es-noesES
+
+- TEST
+>>> val = 'esES'
+>>> comp1 = CPEComponent1_1(val, att) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'language': esES
+
+
+----------------------------------
+Test for _is_valid_part(self)
+----------------------------------
+
+>>> att = CPEComponentSimple.ATT_PART
+
+- TEST
+>>> val = 'a'
+>>> comp1 = CPEComponent1_1(val, att)
+
+- TEST
+>>> val = 'j'
+>>> comp1 = CPEComponent1_1(val, att) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'part': j
+
+
+----------------------------------
+Test for _is_valid_value(self)
+----------------------------------
+
+- TEST
+>>> val = 'lin@x'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_PRODUCT)
+
+- TEST
+>>> val = 'sp2'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_UPDATE)
+
+- TEST
+>>> val = 'bad||ven~~dor'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VENDOR) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'vendor': bad||ven~~dor
+
+----------------------------------
+Test for _parse(self)
+----------------------------------
+
+- TEST
+>>> val = 'microsoft'
+>>> comp1 = CPEComponent1_1(val, "badkey") #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid attribute 'badkey'
+
+
+----------------------------------
+Test for as_fs(self)
+----------------------------------
+
+- TEST
+>>> val = 'sp2'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_UPDATE)
+>>> comp1.as_fs()
+'sp2'
+
+- TEST
+>>> val = 'xp!vista'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp1.as_fs()
+'xp\\!vista'
+
+- TEST
+>>> val = '8.0'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp1.as_fs()
+'8.0'
+
+
+----------------------------------
+Test for as_uri_2_3(self)
+----------------------------------
+
+- TEST
+>>> val = 'sp2'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_UPDATE)
+>>> comp1.as_uri_2_3()
+'sp2'
+
+- TEST
+>>> val = '#nvidi@'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VENDOR)
+>>> comp1.as_uri_2_3()
+'%23nvidi%40'
+
+----------------------------------
+Test for as_wfn(self)
+----------------------------------
+
+- TEST
+>>> val = 'sp2'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_UPDATE)
+>>> comp1.as_wfn()
+'sp2'
+
+- TEST
+>>> val = 'xp!vista'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp1.as_wfn()
+'xp\\!vista'
+
+- TEST
+>>> val = '8.0'
+>>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
+>>> comp1.as_wfn()
+'8\\.0'
+
+
+----------------------------------
+Test for get_value(self)
+----------------------------------
+
+TEST:
+>>> val = "hp"
+>>> att = CPEComponentSimple.ATT_VENDOR
+>>> comp1 = CPEComponent1_1(val, att)
+>>> comp1.get_value()
+'hp'
+
+
+----------------------------------
+Test for set_value(self)
+----------------------------------
+
+- TEST
+>>> val = 'sp2'
+>>> val2 = 'xp!vista'
+>>> att = CPEComponentSimple.ATT_UPDATE
+>>> comp1 = CPEComponent1_1(val, att)
+>>> comp1.set_value(val2, att)
+>>> comp1.get_value()
+'xp!vista'
+
+- TEST
+>>> val = 'xp!vista'
+>>> val2 = 'sp2'
+>>> att = CPEComponentSimple.ATT_VERSION
+>>> comp1 = CPEComponent1_1(val, att)
+>>> comp1.set_value(val2, att)
+>>> comp1.get_value()
+'sp2'
+>>> comp1._is_negated
+False
+
+- TEST
+>>> val = 'xp!vista'
+>>> val2 = '~win7'
+>>> att = CPEComponentSimple.ATT_VERSION
+>>> comp1 = CPEComponent1_1(val, att)
+>>> comp1.set_value(val2, att)
+>>> comp1._standard_value
+['win7']
+>>> comp1._is_negated
+True

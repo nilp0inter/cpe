@@ -1,0 +1,320 @@
+>>> from cpe.comp.cpecomp2_3 import CPEComponent2_3
+>>> from cpe.comp.cpecomp2_3_uri import CPEComponent2_3_URI
+>>> from cpe.comp.cpecomp_empty import CPEComponentEmpty
+>>> from cpe.comp.cpecomp_anyvalue import CPEComponentAnyValue
+>>> from cpe.comp.cpecomp_undefined import CPEComponentUndefined
+
+----------------------------------
+Test for __contains__(self, item)
+----------------------------------
+
+- TEST: a any value with a simple value
+>>> comp1 = CPEComponent2_3_URI('xp', CPEComponent2_3.ATT_VERSION)
+>>> comp2 = CPEComponentAnyValue()
+>>> comp1 in comp2
+True
+>>> comp2 in comp1
+False
+
+- TEST: a any value with a simple value
+>>> comp1 = CPEComponent2_3_URI('xp', CPEComponent2_3.ATT_VERSION)
+>>> comp2 = CPEComponentUndefined()
+>>> comp1 in comp2
+True
+>>> comp2 in comp1
+False
+
+- TEST: a not applicable value with a simple value
+>>> comp1 = CPEComponentEmpty()
+>>> comp2 = CPEComponent2_3_URI('xp', CPEComponent2_3.ATT_VERSION)
+>>> comp1 in comp2
+False
+>>> comp2 in comp1
+True
+
+- TEST: two simple equal values
+>>> att = CPEComponent2_3.ATT_VERSION
+>>> val = '7.4.0'
+>>> comp1 = CPEComponent2_3_URI(val, att)
+>>> comp2 = CPEComponent2_3_URI(val, att)
+>>> comp1 in comp2
+True
+
+- TEST: two simple different values
+>>> att = CPEComponent2_3.ATT_VERSION
+>>> comp1 = CPEComponent2_3_URI('vista', att)
+>>> comp2 = CPEComponent2_3_URI('xp', att)
+>>> comp1 in comp2
+False
+
+- TEST: a simple value and logical value
+>>> comp1 = CPEComponent2_3_URI('xp', CPEComponent2_3.ATT_VERSION)
+>>> comp2 = CPEComponentAnyValue()
+>>> comp1 in comp2
+True
+
+
+----------------------------------
+Test for __eq__(self, other)
+----------------------------------
+
+----------------------------------
+Test for __init__(self, item)
+----------------------------------
+
+TEST: simple value
+>>> value = 'j'
+>>> comp = CPEComponent2_3_URI(value, CPEComponent2_3.ATT_PART) # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'part': 'j'
+
+TEST: simple value with escape
+>>> value = 'foo%5cbar'
+>>> comp = CPEComponent2_3_URI(value, CPEComponent2_3.ATT_VENDOR)
+
+TEST: simple value without escape
+>>> value = '"xp!vista"'
+>>> comp = CPEComponent2_3_URI(value, 'version') # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'version': xp!vista
+
+
+----------------------------------
+Test for __ne__(self, other)
+----------------------------------
+
+
+----------------------------------
+Test for __repr__(self)
+----------------------------------
+
+TEST:
+>>> value = 'hp'
+>>> comp = CPEComponent2_3_URI(value, CPEComponent2_3.ATT_VENDOR)
+>>> comp
+CPEComponent2_3_URI(hp)
+
+----------------------------------
+Test for __str__(self)
+----------------------------------
+
+TEST: simple value
+>>> value = 'hp'
+>>> comp = CPEComponent2_3_URI(value, CPEComponent2_3.ATT_VENDOR)
+>>> print comp
+hp
+
+
+----------------------------------
+Test for _decode(self)
+----------------------------------
+
+TEST:
+>>> val = 'microsoft'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_VENDOR)
+>>> comp1._standard_value
+'microsoft'
+
+TEST:
+>>> val = 'xp%24vista'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_VERSION)
+>>> comp1._standard_value
+'xp\\$vista'
+
+TEST:
+>>> val = '8.%01'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_VERSION)
+>>> comp1._standard_value
+'8\\.?'
+
+----------------------------------
+Test for _is_valid_edition(self)
+----------------------------------
+
+>>> att = CPEComponent2_3.ATT_EDITION
+
+TEST: a simple value
+>>> val = 'microsoft'
+>>> comp1 = CPEComponent2_3_URI(val, att)
+
+TEST: a simple value
+>>> val = 'pro%01'
+>>> comp1 = CPEComponent2_3_URI(val, att)
+
+----------------------------------
+Test for _is_valid_language(self)
+----------------------------------
+
+>>> att = CPEComponent2_3.ATT_LANGUAGE
+
+- TEST
+>>> val = 'es-ES'
+>>> comp1 = CPEComponent2_3_URI(val, att)
+
+- TEST
+>>> val = 'es-e%02'
+>>> comp1 = CPEComponent2_3_URI(val, att)
+
+- TEST
+>>> val = 'es-e%01'
+>>> comp1 = CPEComponent2_3_URI(val, att)
+
+
+- TEST
+>>> val = 'es%02'
+>>> comp1 = CPEComponent2_3_URI(val, att)
+
+- TEST
+>>> val = 'es-noesES'
+>>> comp1 = CPEComponent2_3_URI(val, att) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'language': es-noesES
+
+- TEST
+>>> val = 'esES'
+>>> comp1 = CPEComponent2_3_URI(val, att) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'language': esES
+
+
+----------------------------------
+Test for _is_valid_part(self)
+----------------------------------
+
+>>> att = CPEComponent2_3.ATT_PART
+
+- TEST
+>>> val = 'a'
+>>> comp1 = CPEComponent2_3_URI(val, att)
+
+- TEST
+>>> val = '%01'
+>>> comp1 = CPEComponent2_3_URI(val, att)
+
+- TEST
+>>> val = 'j'
+>>> comp1 = CPEComponent2_3_URI(val, att) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'part': j
+
+----------------------------------
+Test for _is_valid_value(self)
+----------------------------------
+
+- TEST
+>>> val = '%01firefox%01'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_PRODUCT)
+
+- TEST
+>>> val = 'sp2'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_UPDATE)
+
+- TEST
+>>> val = 'bad||ven~~dor'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_VENDOR) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'vendor': bad||ven~~dor
+
+----------------------------------
+Test for _parse(self)
+----------------------------------
+
+- TEST
+>>> val = 'microsoft'
+>>> comp1 = CPEComponent2_3_URI(val, "badkey") #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid attribute 'badkey'
+
+
+----------------------------------
+Test for as_fs(self)
+----------------------------------
+
+- TEST
+>>> val = '%01firefox%01'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_UPDATE)
+>>> comp1.as_fs()
+'?firefox?'
+
+- TEST
+>>> val = 'vista'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_VERSION)
+>>> comp1.as_fs()
+'vista'
+
+- TEST
+>>> val = '8.%02'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_VERSION)
+>>> comp1.as_fs()
+'8.*'
+
+
+----------------------------------
+Test for as_uri_2_3(self)
+----------------------------------
+
+- TEST
+>>> val = 'windows_xp'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_UPDATE)
+>>> comp1.as_uri_2_3()
+'windows_xp'
+
+- TEST
+>>> val = '%24nvidia'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_VENDOR)
+>>> comp1.as_uri_2_3()
+'%24nvidia'
+
+- TEST
+>>> val = '8.0'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_VENDOR)
+>>> comp1.as_uri_2_3()
+'8.0'
+
+- TEST
+>>> val = 'sp%01'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_UPDATE)
+>>> comp1.as_uri_2_3()
+'sp%01'
+
+----------------------------------
+Test for as_wfn(self)
+----------------------------------
+
+- TEST
+>>> val = 'sp%01'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_UPDATE)
+>>> comp1.as_wfn()
+'sp?'
+
+- TEST
+>>> val = 'big%24money_manager_2010'
+>>> comp1 = CPEComponent2_3_URI(val, CPEComponent2_3.ATT_VERSION)
+>>> comp1.as_wfn()
+'big\\$money_manager_2010'
+
+
+----------------------------------
+Test for get_value(self)
+----------------------------------
+
+TEST:
+>>> val = 'hp'
+>>> att = CPEComponent2_3.ATT_VENDOR
+>>> comp1 = CPEComponent2_3_URI(val, att)
+>>> comp1.get_value()
+'hp'
+
+
+----------------------------------
+Test for set_value(self)
+----------------------------------
+
+- TEST
+>>> val = 'sp2'
+>>> val2 = 'firefox'
+>>> att = CPEComponent2_3.ATT_UPDATE
+>>> comp1 = CPEComponent2_3_URI(val, att)
+>>> comp1.set_value(val2, att)
+>>> comp1.get_value()
+'firefox'

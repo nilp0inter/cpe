@@ -1,0 +1,526 @@
+>>> from cpe import CPE
+>>> from cpe1_1 import CPE1_1
+>>> from cpe2_3 import CPE2_3
+>>> from cpe2_3_wfn import CPE2_3_WFN
+>>> from cpe2_3_uri import CPE2_3_URI
+>>> from cpe2_3_fs import CPE2_3_FS
+
+
+-----------------------------------------------
+Test for __getitem__(self, i)
+-----------------------------------------------
+
+- TEST: (version 1.1) good index
+>>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
+>>> c = CPE(str)
+>>> c[1]
+CPEComponent1_1(sun@os)
+
+- TEST: (version 1.1) bad index
+>>> str = 'cpe://'
+>>> c = CPE(str)
+>>> c[6] #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+IndexError: Component index of CPE name out of range
+
+
+----------------------------------
+Test for __len__(self)
+----------------------------------
+
+- TEST: (version 1.1) a CPE name with empty parts
+>>> str = "cpe:///"
+>>> c = CPE(str)
+>>> len(c)
+0
+
+- TEST: (version 1.1) a CPE name with two parts (hw and os) and
+some elements empty and with values
+>>> str = "cpe:/cisco::3825/cisco:ios:12.3:enterprise"
+>>> c = CPE(str)
+>>> len(c)
+7
+
+- TEST: (version 1.1) a CPE name with a application part and
+a component with two subcomponents
+>>> str = "cpe:///adobe:acrobat:6.0:std!pro"
+>>> c = CPE(str)
+>>> len(c)
+4
+
+-------------------------------------------------------------
+Test for __new__(cls, cpe_str, version=None, *args, **kwargs)
+-------------------------------------------------------------
+
+- TEST: (version 1.1) an empty hardware part, and no OS or application part.
+>>> str = 'cpe:/'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) an empty hardware part, and no OS or application part.
+>>> str = 'cpe:/'
+>>> c = CPE(str, CPE.VERSION_1_1)
+
+- TEST: (version 1.1) an OS platform with hardware part empty.
+The example name below refers to the Microsoft Windows 2000 operating system,
+all editions and update levels.
+>>> str = 'cpe://microsoft:windows:2000'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) an OS and a server application
+The example name below refers to RedHat Linux Application Server 3,
+running the Apache Foundation HTTP server version 2.0.52.
+>>> str = 'cpe://redhat:enterprise_linux:3:as/apache:httpd:2.0.52'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The CPE Name for a network device might include both
+a hardware part and an OS part.
+The example name below refers to a Cisco model 3825 integrated services router 
+running Internet Operating System (IOS) version 12.3, enterprise edition.
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) A CPE Name may be used for an application alone;
+in that case the hardware and OS parts will be empty.
+The example name below refers to a particular web browser, regardless of any 
+hardware or particular OS on which it is running.
+>>> str = 'cpe:///microsoft:ie:6.0'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) A CPE Name can specify multiple alternative constituents
+inside a component by using the exclamation point (the OR operator). 
+The example below specifies a platform with an OS of either Microsoft 
+Windows XP or Vista.
+>>> str = 'cpe://microsoft:windows:xp!vista'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) It is also possible to use the tilde character ~'
+to designate every constituent except the one specified (the NOT operator).
+For example, the following CPE Name identifies every Microsoft Windows system 
+except those running XP.
+>>> str = 'cpe://microsoft:windows:~xp'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) Each part of a CPE Name may include multiple name
+elements, separated by semicolons. The order of elements in a name part 
+is not significant; elements may appear in any order.
+The example name below refers to a Sun Solaris 9 system with both
+a database manager and a web application server installed.
+>>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The CPE Name below designates all editions of Microsoft
+Windows 2000, with service pack 4 installed.
+>>> str = 'cpe://microsoft:windows:2000::sp4'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The Zone Labs ZoneAlarm Internet Security Suite
+version 7.0 where it replaced spaces with underscores.
+>>> str = 'cpe:///zonelabs:zonealarm_internet_security_suite:7.0'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The example name below identifies a particular laptop
+computer hardware platform. The supplier is Dell Computer, the product line
+name is "Inspiron", and the model number is 8500.
+>>> str = 'cpe:/dell:inspiron:8500'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) Multiple hardware elements may be used when multiple
+distinct hardware items are relevant.
+The example CPE Name below identifies a network router with a cryptographic
+accelerator module.
+>>> str = 'cpe:/juniper:m-series:m7i;juniper:es-pic'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) Hardware elements may also be used to identify virtual
+hardware, in the context where the virtual hardware platform serves the same
+role as a similar real hardware platform. In such cases, the software version
+number of the virtual hardware system may be used as the model designation.
+The CPE Name below shows an example for a virtual hardware platform.
+>>> str = 'cpe:/emc:vmware:esx:2.5'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The example CPE Name below identifies Microsof's 
+Windows XP operating system, Professional Edition, update level
+"Service Pack 2".
+>>> str = 'cpe://microsoft:windows:xp:pro:sp2'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The example name below identifies Apple's "Tiger"
+MacOS X release 4.
+>>> str = 'cpe://apple:macos:10.4'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The example name below identifies the Fedora Project
+"Fedora Core" Linux distribution, release 6.
+>>> str = 'cpe://fedoraproject:fedora_core:6'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The example name below identifies any edition of
+Microsoft Windows 2000, but with the update level of "Service Pack 4".
+>>> str = 'cpe://microsoft:windows:2000::sp4'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The example name below identifies the JBoss 4.0.4
+application server.
+>>> str = 'cpe:///jboss:jboss:4.0.4'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The example name below identifies the Oracle Database
+server 10g, release 2.
+>>> str = 'cpe:///oracle:database:10g:r2'
+>>> c = CPE(str)
+
+- TEST: (version 1.1) The example name below identifies the Adobe Acrobat
+version 6.0 document generation application, Standard edition or
+Professional edition.
+>>> str = 'cpe:///adobe:acrobat:6.0:std!pro'
+>>> c = CPE(str)
+
+----------------------------------
+Test for __str__(self)
+----------------------------------
+
+TEST: (version 1.1) not negate components
+>>> str = 'cpe:///microsoft:ie:6.0'
+>>> c = CPE(str)
+>>> print c
+CPE v1.1: cpe:///microsoft:ie:6.0
+
+
+----------------------------------
+Test for as_uri_2_3(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:///microsoft:ie:6.0'
+>>> c = CPE(str)
+>>> c.as_uri_2_3()
+'cpe:/a:microsoft:ie:6.0'
+
+TEST: (version 1.1) CPE Name with multiple parts and elements
+>>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+>>> c = CPE(str)
+>>> c.as_uri_2_3() #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+TypeError: Incompatible version 1.1 with URI
+
+----------------------------------
+Test for as_wfn(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:///microsoft:ie:6.0'
+>>> c = CPE(str)
+>>> c.as_wfn()
+'wfn:[part="a", vendor="microsoft", product="ie", version="6\\.0"]'
+
+TEST: (version 1.1) CPE Name with multiple parts and elements
+>>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+>>> c = CPE(str)
+>>> c.as_wfn() #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+TypeError: Incompatible version 1.1 with WFN
+
+TEST:
+>>> str = 'cpe:/a:sun:sunos:5.9'
+>>> c = CPE(str, CPE.VERSION_2_2)
+>>> c.as_wfn()
+'wfn:[part="a", vendor="sun", product="sunos", version="5\\.9"]'
+
+----------------------------------
+Test for as_fs(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:///microsoft:ie:6.0'
+>>> c = CPE(str)
+>>> c.as_fs()
+'cpe:2.3:a:microsoft:ie:6.0:*:*:*:*:*:*:*'
+
+TEST: (version 1.1) CPE Name with multiple parts and elements
+>>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+>>> c = CPE(str)
+>>> c.as_fs() #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+TypeError: Incompatible version 1.1 with formatted string
+
+
+----------------------------------
+Test for get_edition(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4'
+>>> c = CPE(str)
+>>> c.get_edition()
+['sp4']
+
+TEST: (version 1.1)
+>>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+>>> c = CPE(str)
+>>> c.get_edition()
+['', '', '']
+
+
+----------------------------------
+Test for is_application(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.is_application()
+False
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4'
+>>> c = CPE(str)
+>>> c.is_application()
+False
+
+TEST: (version 1.1)
+>>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+>>> c = CPE(str)
+>>> c.is_application()
+True
+
+
+----------------------------------
+Test for is_hardware(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.is_hardware()
+True
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4'
+>>> c = CPE(str)
+>>> c.is_hardware()
+False
+
+TEST: (version 1.1)
+>>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+>>> c = CPE(str)
+>>> c.is_hardware()
+False
+
+
+----------------------------------
+Test for is_operating_system(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.is_operating_system()
+True
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4'
+>>> c = CPE(str)
+>>> c.is_operating_system()
+True
+
+TEST: (version 1.1)
+>>> str = 'cpe://sun:sunos:5.9/bea:weblogic:8.1;mysql:server:5.0'
+>>> c = CPE(str)
+>>> c.is_operating_system()
+True
+
+
+----------------------------------
+Test for get_language(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_language()
+['', '']
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4:es-ES'
+>>> c = CPE(str)
+>>> c.get_language()
+['es-ES']
+
+
+----------------------------------
+Test for get_other(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_other()
+['', '']
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4:es-ES'
+>>> c = CPE(str)
+>>> c.get_other()
+['']
+
+
+----------------------------------
+Test for get_part(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_part()
+['h', 'o']
+
+TEST: (version 1.1)
+>>> str = 'cpe:///microsoft:ie:6.0'
+>>> c = CPE(str)
+>>> c.get_part()
+['a']
+
+
+----------------------------------
+Test for get_product(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_product()
+['', 'ios']
+
+TEST: (version 1.1)
+>>> str = 'cpe:///microsoft:ie:6.0'
+>>> c = CPE(str)
+>>> c.get_product()
+['ie']
+
+
+----------------------------------
+Test for get_software_edition(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_software_edition()
+['', '']
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4:es-ES'
+>>> c = CPE(str)
+>>> c.get_software_edition()
+['']
+
+
+----------------------------------
+Test for get_target_hardware(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_target_hardware()
+['', '']
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4:es-ES'
+>>> c = CPE(str)
+>>> c.get_target_hardware()
+['']
+
+
+----------------------------------
+Test for get_target_software(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_target_software()
+['', '']
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4:es-ES'
+>>> c = CPE(str)
+>>> c.get_target_software()
+['']
+
+
+----------------------------------
+Test for get_update(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_update()
+['', 'enterprise']
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4:es-ES'
+>>> c = CPE(str)
+>>> c.get_update()
+['']
+
+
+----------------------------------
+Test for get_vendor(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_vendor()
+['cisco', 'cisco']
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4:es-ES'
+>>> c = CPE(str)
+>>> c.get_vendor()
+['microsoft']
+
+
+----------------------------------
+Test for get_version(self)
+----------------------------------
+
+TEST: (version 1.1)
+>>> str = 'cpe:/cisco::3825/cisco:ios:12.3:enterprise'
+>>> c = CPE(str)
+>>> c.get_version()
+['3825', '12.3']
+
+TEST: (version 1.1)
+>>> str = 'cpe://microsoft:windows:2000::sp4:es-ES'
+>>> c = CPE(str)
+>>> c.get_version()
+['2000']
+
+
+--------------------
+Test comparations
+--------------------
+
+- TEST: WFN
+>>> str = r'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8\.0"]'
+>>> c = CPE(str)
+>>> isinstance(c, CPE2_3_WFN)
+True
+
+- TEST: formatted string
+>>> fs = 'cpe:2.3:a:hp:insight_diagnostics:8.0:*:*:*:*:*:*:*'
+>>> c = CPE(fs)
+>>> isinstance(c, CPE2_3_FS)
+True
+
+- TEST: URI
+>>> str = 'cpe:/a:hp:insight_diagnostics:8.0'
+>>> c = CPE(str)
+>>> isinstance(c, CPE2_3_URI)
+True
+>>> isinstance(c, CPE2_3)
+True

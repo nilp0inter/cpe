@@ -1,0 +1,99 @@
+>>> from cpe2_2 import CPE2_2
+>>> from cpeset2_2 import CPESet2_2
+>>> from cpelang2_2 import CPELanguage2_2
+
+-----------------------------------------------------
+Test for __init__(self, expression, isFile=False)
+-----------------------------------------------------
+
+- TEST: matching with no file
+>>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform id="123"><cpe:title>Sun Solaris 5.8 or 5.9 with BEA Weblogic 8.1 installed</cpe:title><cpe:logical-test operator="AND" negate="FALSE"><cpe:logical-test operator="OR" negate="FALSE"><cpe:fact-ref name="cpe:/o:sun:solaris:5.8" /><cpe:fact-ref name="cpe:/o:sun:solaris:5.9" /></cpe:logical-test><cpe:fact-ref name="cpe:/a:bea:weblogic:8.1" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
+
+>>> c1 = CPE2_2('cpe:/o:sun:solaris:5.9:::en-us')
+>>> c2 = CPE2_2('cpe:/a:bea:weblogic:8.1')
+
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+
+>>> l = CPELanguage2_2(document)
+
+- TEST: matching with XML file
+>>> document = "tests/expression2_2.xml"
+
+>>> c1 = CPE2_2('cpe:/o:sun:solaris:5.9:::en-us')
+>>> c2 = CPE2_2('cpe:/a:bea:weblogic:8.1')
+
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+
+>>> isFile = True
+>>> l = CPELanguage2_2(document, isFile)
+
+
+-----------------------------------------------------
+Test for language_match(self, cpeset, cpel_dom=None)
+-----------------------------------------------------
+
+- TEST: matching
+>>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform id="123"><cpe:title>Sun Solaris 5.8 or 5.9 with BEA Weblogic 8.1 installed</cpe:title><cpe:logical-test operator="AND" negate="FALSE"><cpe:logical-test operator="OR" negate="FALSE"><cpe:fact-ref name="cpe:/o:sun:solaris:5.8" /><cpe:fact-ref name="cpe:/o:sun:solaris:5.9" /></cpe:logical-test><cpe:fact-ref name="cpe:/a:bea:weblogic:8.1" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
+
+>>> c1 = CPE2_2('cpe:/o:sun:solaris:5.9:::en-us')
+>>> c2 = CPE2_2('cpe:/a:bea:weblogic:8.1')
+
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+
+>>> l = CPELanguage2_2(document)
+>>> l.language_match(s)
+True
+
+- TEST: matching
+>>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform><cpe:title>Windows with secedit.exe tool </cpe:title><cpe:logical-test operator="OR" negate="FALSE"><cpe:fact-ref name="cpe:/o:microsoft:windows_server_2008" /><cpe:fact-ref name="cpe:/o:microsoft:windows_7" /><cpe:fact-ref name="cpe:/o:microsoft:windows_vista" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2003" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2003_server" /><cpe:fact-ref name="cpe:/o:microsoft:windows_xp" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2000" /><cpe:fact-ref name="cpe:/o:microsoft:windows_nt" /><cpe:fact-ref name="cpe:/o:microsoft:windows-nt" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
+
+>>> c1 = CPE2_2('cpe:/o:microsoft:windows_2000::pro')
+>>> c2 = CPE2_2('cpe:/a:microsoft:office:2007')
+>>> c3 = CPE2_2('cpe:/o:sun:solaris:5')
+
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.append(c3)
+
+>>> l = CPELanguage2_2(document)
+>>> l.language_match(s)
+True
+
+- TEST: matching (negate)
+>>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform><cpe:title>Windows with secedit.exe tool </cpe:title><cpe:logical-test operator="AND" negate="TRUE"><cpe:fact-ref name="cpe:/o:microsoft:windows_server_2008" /><cpe:fact-ref name="cpe:/o:microsoft:windows_xp" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2000" /><cpe:fact-ref name="cpe:/o:microsoft:windows_nt" /><cpe:fact-ref name="cpe:/o:microsoft:windows-nt" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
+
+>>> c1 = CPE2_2('cpe:/o:microsoft:windows_2000::pro')
+>>> c2 = CPE2_2('cpe:/a:microsoft:office:2007')
+>>> c3 = CPE2_2('cpe:/o:sun:solaris:5')
+
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.append(c3)
+
+>>> l = CPELanguage2_2(document)
+>>> l.language_match(s)
+True
+
+- TEST: not matching
+>>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform><cpe:title>Windows with secedit.exe tool </cpe:title><cpe:logical-test operator="AND" negate="FALSE"><cpe:fact-ref name="cpe:/o:microsoft:windows_server_2008" /><cpe:fact-ref name="cpe:/o:microsoft:windows_xp" /><cpe:fact-ref name="cpe:/o:microsoft:windows_2000" /><cpe:fact-ref name="cpe:/o:microsoft:windows_nt" /><cpe:fact-ref name="cpe:/o:microsoft:windows-nt" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
+
+>>> c1 = CPE2_2('cpe:/o:microsoft:windows_2000::pro')
+>>> c2 = CPE2_2('cpe:/a:microsoft:office:2007')
+>>> c3 = CPE2_2('cpe:/o:sun:solaris:5')
+
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.append(c3)
+
+>>> l = CPELanguage2_2(document)
+>>> l.language_match(s)
+False

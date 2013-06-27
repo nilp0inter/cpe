@@ -1,0 +1,153 @@
+>>> from cpeset2_2 import CPESet2_2
+>>> from cpe2_2 import CPE2_2
+
+-----------------------------------------------
+Test for __getitem__(self, i)
+-----------------------------------------------
+
+- TEST: empty set
+>>> s = CPESet2_2()
+>>> s[0] # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+IndexError: list index out of range
+
+- TEST: set with two CPE names
+>>> uri1 = 'cpe:/a:acme:product:1.0:update2::en-us'
+>>> uri2 = 'cpe:/o:redhat:enterprise_linux:4:ga'
+>>> c1 = CPE2_2(uri1)
+>>> c2 = CPE2_2(uri2)
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> c22 = s[1]
+>>> c22 == c2
+True
+>>> c22 == c1
+False
+
+----------------------------------
+Test for __len__(self)
+----------------------------------
+
+- TEST: empty set
+>>> s = CPESet2_2()
+>>> len(s)
+0
+
+- TEST: set with two CPE names
+>>> uri1 = 'cpe:/a:acme:product:1.0:update2::en-us'
+>>> uri2 = 'cpe:/o:redhat:enterprise_linux:4:ga'
+>>> c1 = CPE2_2(uri1)
+>>> c2 = CPE2_2(uri2)
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> len(s)
+2
+
+- TEST: set with three CPE names and one repeated
+>>> uri1 = 'cpe:/a:acme:product:1.0:update2::en-us'
+>>> uri2 = 'cpe:/o:redhat:enterprise_linux:4:ga'
+>>> c1 = CPE2_2(uri1)
+>>> c2 = CPE2_2(uri2)
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.append(c2)
+>>> len(s)
+2
+
+- TEST: set with three CPE names and one repeated
+>>> uri1 = 'cpe:/a:acme:product:1.0:update2::en-us'
+>>> uri2 = 'cpe:/o:redhat:enterprise_linux:4:ga'
+>>> c1 = CPE2_2(uri1)
+>>> c2 = CPE2_2(uri2)
+>>> c3 = CPE2_2(uri2)
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.append(c3)
+>>> len(s)
+2
+
+
+----------------------------------
+Test for append(self, cpe)
+----------------------------------
+
+- TEST: set with invalid CPE name
+>>> from cpe1_1 import CPE1_1
+>>> uri = 'cpe://microsoft:windows:xp!vista'
+>>> c = CPE1_1(uri)
+>>> s = CPESet2_2()
+>>> s.append(c)  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: CPE name version 1.1 not valid, version 2.2 expected
+
+
+----------------------------------
+Test for name_match(self, cpe):
+----------------------------------
+
+- TEST: matching with identical CPE in set
+>>> uri1 = 'cpe:/o:microsoft:windows_2000::sp3:pro'
+>>> uri2 = 'cpe:/a:microsoft:ie:5.5'
+>>> c1 = CPE2_2(uri1)
+>>> c2 = CPE2_2(uri2)
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.name_match(c2)
+True
+
+- TEST: matching with ANY values implicit
+>>> uri1 = 'cpe:/o:microsoft:windows_2000::sp3:pro'
+>>> uri2 = 'cpe:/a:microsoft:ie:5.5'
+>>> c1 = CPE2_2(uri1)
+>>> c2 = CPE2_2(uri2)
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe:/o:microsoft:windows_2000'
+>>> c3 = CPE2_2(uri3)
+>>> s.name_match(c3)
+True
+
+- TEST: matching with empty CPE name
+>>> uri1 = 'cpe:/o:microsoft:windows_2000::sp3:pro'
+>>> uri2 = 'cpe:/a:microsoft:ie:5.5'
+>>> c1 = CPE2_2(uri1)
+>>> c2 = CPE2_2(uri2)
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe:/'
+>>> c3 = CPE2_2(uri3)
+>>> s.name_match(c3)
+True
+
+- TEST: not matching with CPE name
+>>> uri1 = 'cpe:/o:microsoft:windows_2000::sp3:pro'
+>>> uri2 = 'cpe:/a:microsoft:ie:5.5'
+>>> c1 = CPE2_2(uri1)
+>>> c2 = CPE2_2(uri2)
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe:/o:redhat:enterprise_linux:4:ga'
+>>> c3 = CPE2_2(uri3)
+>>> s.name_match(c3)
+False
+
+- TEST: matching with ANY values explicit
+>>> uri1 = 'cpe:/o:microsoft:windows:vista'
+>>> uri2 = 'cpe:/o:cisco:ios:12.3:enterprise'
+>>> c1 = CPE2_2(uri1)
+>>> c2 = CPE2_2(uri2)
+>>> s = CPESet2_2()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe:/o:microsoft::vista'
+>>> c3 = CPE2_2(uri3)
+>>> s.name_match(c3)
+True

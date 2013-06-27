@@ -1,7 +1,4 @@
 *.pyc
 *.swp
-*.txt
-*.bak*
 *.py.*
-*.oxps
 docs/_build/
