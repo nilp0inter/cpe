@@ -1,0 +1,62 @@
+>>> from cpe.comp.cpecomp import CPEComponent
+>>> from cpe.comp.cpecomp_simple import CPEComponentSimple
+
+----------------------------------
+Test for _is_alphanum(cls, c)
+----------------------------------
+
+TEST: a lower letter
+>>> c = "j"
+>>> CPEComponentSimple._is_alphanum(c)
+True
+
+TEST: a upper letter
+>>> c = "A"
+>>> CPEComponentSimple._is_alphanum(c)
+True
+
+TEST: a number
+>>> c = "9"
+>>> CPEComponentSimple._is_alphanum(c)
+True
+
+TEST: a underscore
+>>> c = "_"
+>>> CPEComponentSimple._is_alphanum(c)
+True
+
+TEST: a wrong character
+>>> c = "#"
+>>> CPEComponentSimple._is_alphanum(c)
+False
+
+
+-------------------------------------------
+Test for _pct_encode_uri(cls, c)
+-------------------------------------------
+
+TEST:
+>>> c = '-'
+>>> CPEComponentSimple._pct_encode_uri(c)
+'-'
+
+TEST:
+>>> c = '.'
+>>> CPEComponentSimple._pct_encode_uri(c)
+'.'
+
+TEST:
+>>> c = ';'
+>>> CPEComponentSimple._pct_encode_uri(c)
+'%3b'
+
+-------------------------------------------
+Test for __init__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> value = "linux"
+>>> att = CPEComponent.ATT_PRODUCT
+>>> c = CPEComponentSimple(value, att) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+NotImplementedError: Class method not implemented. Use the method of some child class

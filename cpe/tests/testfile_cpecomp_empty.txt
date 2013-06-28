@@ -1,0 +1,47 @@
+>>> from cpe.comp.cpecomp import CPEComponent
+>>> from cpe.comp.cpecomp_empty import CPEComponentEmpty
+
+-------------------------------------------
+Test for __init__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> c = CPEComponentEmpty()
+
+
+-------------------------------------------
+Test for __eq__(self, comp_str)
+-------------------------------------------
+
+TEST: two equal components
+>>> c = CPEComponentEmpty()
+>>> c == c
+True
+
+
+TEST: two equal components
+>>> value = "microsoft"
+>>> c = CPEComponent(value)
+>>> c2 = CPEComponentEmpty()
+>>> c == c2
+False
+
+
+-------------------------------------------
+Test for __repr__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> c = CPEComponentEmpty()
+>>> c
+CPEComponentEmpty()
+
+
+-------------------------------------------
+Test for __str__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> c = CPEComponentEmpty()
+>>> print c
+<EMPTY>

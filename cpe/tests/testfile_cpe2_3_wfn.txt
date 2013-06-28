@@ -1,0 +1,156 @@
+>>> from cpe2_3_wfn import CPE2_3_WFN
+>>> from comp.cpecomp_simple import CPEComponentSimple
+
+----------------------------------
+Test for _get_attribute_values(self)
+----------------------------------
+
+TEST:
+>>> str = r'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
+>>> c = CPE2_3_WFN(str)
+>>> att = CPEComponentSimple.ATT_VENDOR
+>>> c.get_attribute_values(att)
+['"microsoft"']
+>>> att = CPEComponentSimple.ATT_VERSION
+>>> c.get_attribute_values(att)
+['"8\\.0\\.6001"']
+
+
+-----------------------------------------------
+Test for __getitem__(self, i)
+-----------------------------------------------
+
+- TEST: good index
+>>> str = r'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
+>>> c = CPE2_3_WFN(str)
+>>> c[2]
+CPEComponent2_3_WFN("internet_explorer")
+
+- TEST: bad index
+>>> str = r'wfn:[part="a", vendor="foo\\bar", product="big\$money", version="2010", update=ANY, edition=ANY, language=ANY, sw_edition="special", target_sw="ipod_touch", target_hw="80gb", other=ANY]'
+>>> c = CPE2_3_WFN(str)
+>>> c[14]  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+IndexError: Component index of CPE name out of range
+
+
+-----------------------------------------------
+Test for __new__(cls, cpe_str, *args, **kwargs)
+-----------------------------------------------
+
+- TEST: bad WFN
+>>> wfn = 'baduri'
+>>> c = CPE2_3_WFN(wfn) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE name: WFN prefix not found
+
+- TEST: an empty CPE.
+>>> wfn = 'wfn:[]'
+>>> c = CPE2_3_WFN(wfn)
+
+- TEST: an empty CPE with bad part name
+>>> wfn = 'wfn:[bad="hw"]'
+>>> c = CPE2_3_WFN(wfn) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE name: invalid attribute name 'bad'
+
+- TEST: an operating system CPE
+>>> wfn = r'wfn:[part="o", vendor="acme", product="producto", version="1\.0", update="update2", edition="pro", language="en\-us"]'
+>>> c = CPE2_3_WFN(wfn)
+
+- TEST: an application CPE
+>>> wfn = r'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\.444\.0\.1570", sw_edition="online", target_sw="windows_2003", target_hw="x64", language=ANY, other=NA]'
+>>> c = CPE2_3_WFN(wfn)
+
+- TEST: an application CPE
+>>> wfn = r'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+>>> c = CPE2_3_WFN(wfn)
+
+- TEST: an CPE with special characters
+>>> wfn = r'wfn:[part="h", vendor="hp", product="insight\diagnostics", version="8.0~"]'
+>>> c = CPE2_3_WFN(wfn) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'product': insight\_diagnostics
+
+- TEST: An unquoted question mark MAY be used at the beginning
+and/or the end of an attribute-value string
+>>> wfn = r'wfn:[part="a", vendor="hp", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+>>> c = CPE2_3_WFN(wfn)
+
+- TEST: A contiguous sequence of unquoted question marks MAY appear
+ at the beginning and/or the end of an attribute-value string
+>>> wfn = r'wfn:[part="a", vendor="???hp???", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+>>> c = CPE2_3_WFN(wfn)
+
+- TEST: Unquoted question marks and asterisks MAY appear
+in the same attribute-value string
+>>> wfn = r'wfn:[part="a", vendor="???hp*", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+>>> c = CPE2_3_WFN(wfn)
+
+- TEST: An unquoted question mark SHALL NOT be used
+in any other place in an attribute-value string
+>>> wfn = r'wfn:[part="a", vendor="h??p", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+>>> c = CPE2_3_WFN(wfn) #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Invalid value of attribute 'vendor': h??p
+
+
+----------------------------------
+Test for __len__(self)
+----------------------------------
+
+- TEST: a CPE name without components
+>>> str = r'wfn:[part="a", vendor="hp", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+>>> c = CPE2_3_WFN(str)
+>>> len(c)
+7
+
+- TEST: an empty CPE.
+>>> str = 'wfn:[]'
+>>> c = CPE2_3_WFN(str)
+>>> len(c)
+0
+
+
+----------------------------------
+Test for __str__(self)
+----------------------------------
+
+TEST: not negate components
+>>> str = r'wfn:[part="a", vendor="hp", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+>>> c = CPE2_3_WFN(str)
+>>> print c
+CPE v2.3 (WFN): wfn:[part="a", vendor="hp", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]
+
+
+----------------------------------
+Test for as_uri_2_3(self)
+----------------------------------
+
+- TEST:
+>>> str = 'wfn:[part="a", vendor="hp", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
+>>> c1 = CPE2_3_WFN(str)
+>>> c1.as_uri_2_3()
+'cpe:/a:hp:%01insight_diagnostics%01:8.%02::~~%01~~x32~'
+
+
+----------------------------------
+Test for as_wfn(self)
+----------------------------------
+
+- TEST:
+>>> str = r'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6001", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
+>>> c1 = CPE2_3_WFN(str)
+>>> c1.as_wfn()
+'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\\.0\\.6001", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
+
+
+----------------------------------
+Test for as_fs(self)
+----------------------------------
+
+- TEST:
+>>> str = 'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\\.0\\.6001", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
+>>> c = CPE2_3_WFN(str)
+>>> c.as_fs()
+'cpe:2.3:a:microsoft:internet_explorer:8.0.6001:beta:*:*:*:*:*:*'

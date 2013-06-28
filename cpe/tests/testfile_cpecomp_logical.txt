@@ -1,0 +1,69 @@
+>>> from cpe.comp.cpecomp_logical import CPEComponentLogical
+>>> from cpe.comp.cpecomp_anyvalue import CPEComponentAnyValue
+>>> from cpe.comp.cpecomp_empty import CPEComponentEmpty
+>>> from cpe.comp.cpecomp_undefined import CPEComponentUndefined
+>>> from cpe.comp.cpecomp_notapplicable import CPEComponentNotApplicable
+
+-------------------------------------------
+Test for __contains__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> a = CPEComponentAnyValue()
+>>> a in a
+True
+
+TEST:
+>>> u = CPEComponentUndefined()
+>>> a = CPEComponentAnyValue()
+>>> u in a
+True
+>>> a in u
+True
+
+TEST:
+>>> e = CPEComponentEmpty()
+>>> a = CPEComponentAnyValue()
+>>> e in a
+True
+>>> a in e
+True
+
+TEST:
+>>> n = CPEComponentNotApplicable()
+>>> a = CPEComponentAnyValue()
+>>> n in a
+True
+>>> a in n
+False
+
+-------------------------------------------
+Test for __eq__(self, comp_str)
+-------------------------------------------
+
+TEST: two equal components
+>>> c = CPEComponentLogical(1)
+>>> c == c  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+NotImplementedError: Class method not implemented. Use the method of some child class
+
+
+-------------------------------------------
+Test for __repr__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> c = CPEComponentLogical(1)
+>>> c
+CPEComponentLogical()
+
+
+-------------------------------------------
+Test for __str__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> c = CPEComponentLogical(1)
+>>> print c #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+NotImplementedError: Class method not implemented. Use the method of some child class

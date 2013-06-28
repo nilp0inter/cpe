@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from setuptools import setup
 from setuptools import find_packages
 
-VERSION = '1.0.0'
-AUTHORS = 'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'
+VERSION = '1.0.1'
+AUTHORS = u'Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez'
 EMAILS = 'galindo.garcia.alejandro@gmail.com, robertomartinezp@gmail.com'
 
 setup(name='cpe',
@@ -30,6 +30,7 @@ setup(name='cpe',
       maintainer=AUTHORS,
       maintainer_email=EMAILS,
       license='GPLv3',
+      url="https://github.com/galindale/cpe",
       packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
       include_package_data=True,
       zip_safe=False,

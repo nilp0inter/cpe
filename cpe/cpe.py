@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module contains the common characteristics of
-any type of CPE name, associated with a version of Common Platform
+any type of CPE Name, associated with a version of Common Platform
 Enumeration (CPE) specification.
 
 Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
@@ -28,7 +28,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from comp.cpecomp import CPEComponent
 from comp.cpecomp2_3_uri import CPEComponent2_3_URI
@@ -44,54 +44,63 @@ from comp.cpecomp_notapplicable import CPEComponentNotApplicable
 
 class CPE(dict):
     """
-    Represents a generic CPE name compatible with
+    Represents a generic CPE Name compatible with
     all versions of CPE specification.
 
     Parts of CPE are stored in a dictionary.
 
     CPE structure (dictionary):
-        |- part {hw, os, sw, undefined}
-            |- element list (list)
-                |- component list (dictionary)
+        └─ part {hw, os, sw, undefined}
+            └─ element list (list)
+                └─ component list (dictionary)
     """
 
     ###############
     #  CONSTANTS  #
     ###############
 
-    # included in CPE specification
+    # Constants used to paint the representation of CPE Name
+    _PREFIX_ELEM = "   ["
+    _PREFIX_ELEMENTS = " ["
+    _SUFFIX_ELEM = "   ]"
+    _SUFFIX_ELEMENTS = " ]"
+
+    # Type of systems included in CPE specification
+
+    #: Type of system "application"
     KEY_APP = "app"
+    #: Type of system "hardware"
     KEY_HW = "hw"
+    #: Type of system "operating system"
     KEY_OS = "os"
+    #: Undefined type of system
     KEY_UNDEFINED = "undef"
 
-    # List of keys associated with the three types of system
-    # included in CPE specification
+    #: List of keys associated with the types of system
+    #: included in CPE specification
     CPE_PART_KEYS = (KEY_HW, KEY_OS, KEY_APP, KEY_UNDEFINED)
 
-    # Constants used to paint the representation of CPE name
-    PREFIX_ELEM = "   ["
-    PREFIX_ELEMENTS = " ["
-    SUFFIX_ELEM = "   ]"
-    SUFFIX_ELEMENTS = " ]"
-
     # Constants of possible versions of CPE specification
+
+    #: Version 1.1 of CPE specification
     VERSION_1_1 = "1.1"
+    #: Version 2.2 of CPE specification
     VERSION_2_2 = "2.2"
+    #: Version 2.3 of CPE specification
     VERSION_2_3 = "2.3"
+    #: Version not set
     VERSION_UNDEFINED = "undefined"
 
-    # Version of CPE name
+    #: Version of CPE Name
     VERSION = VERSION_UNDEFINED
 
     ###############
     #  VARIABLES  #
     ###############
 
-    # Dictionary keys associated with the three types of system
-    # Relation between the values of "part" component and the part name in
-    # internal structure of CPE name
-    system_and_parts = {
+    #: Dictionary with the relation between the values of "part"
+    #: component and the part name in internal structure of CPE Name
+    _system_and_parts = {
         CPEComponent.VALUE_PART_HW: KEY_HW,
         CPEComponent.VALUE_PART_OS: KEY_OS,
         CPEComponent.VALUE_PART_APP: KEY_APP,
@@ -106,12 +115,18 @@ class CPE(dict):
         """
         Remove trailing colons from the URI back to the first non-colon.
 
+        :param string s: input URI string
+        :returns: URI string with trailing colons removed
+        :rtype: string
+
         - TEST: trailing colons necessary
+
         >>> s = '1:2::::'
         >>> CPE._trim(s)
         '1:2'
 
         - TEST: trailing colons not necessary
+
         >>> s = '1:2:3:4:5:6'
         >>> CPE._trim(s)
         '1:2:3:4:5:6'
@@ -136,13 +151,12 @@ class CPE(dict):
     def __eq__(self, other):
         """
         Returns True if other (first element of operation) and
-        self (second element of operation) are equal CPE names,
+        self (second element of operation) are equal CPE Names,
         false otherwise.
 
-        INPUT:
-            - other: CPE name to compare
-        OUTPUT:
-            True if other == self, False otherwise
+        :param CPE other: CPE Name to compare
+        :returns: True if other == self, False otherwise
+        :rtype: boolean
         """
 
         for part in CPE.CPE_PART_KEYS:
@@ -165,18 +179,16 @@ class CPE(dict):
 
     def __getitem__(self, i):
         """
-        Returns the i'th component name of CPE name.
+        Returns the i'th component name of CPE Name.
 
-        INPUT:
-            - i: component index to find
-        OUTPUT:
-            - component string found
-        EXCEPTIONS:
-            - IndexError: index not found in CPE name
+        :param int i: component index to find
+        :returns: component string found
+        :rtype: Component
+        :exception: IndexError - index not found in CPE Name
         """
 
         count = 0
-        errmsg = "Component index of CPE name out of range"
+        errmsg = "Component index of CPE Name out of range"
 
         for pk in CPE.CPE_PART_KEYS:
             elements = self.get(pk)
@@ -195,29 +207,30 @@ class CPE(dict):
 
     def __init__(self, cpe_str, *args, **kwargs):
         """
-        Store the CPE name.
+        Store the CPE Name.
 
-        INPUT:
-            - cpe_str: CPE name as string
-        OUPUT:
-            - None
+        :param string cpe_str: CPE Name
+        :returns: None
         """
 
-        # The original CPE name as string
+        # The original CPE Name as string
         self.cpe_str = cpe_str
 
-        # Store CPE name in lower-case letters:
-        # CPE names are case-insensitive.
+        # Store CPE Name in lower-case letters:
+        # CPE Names are case-insensitive.
         # To reduce potential for confusion,
         # all CPE Names should be written in lowercase.
         self._str = cpe_str.lower()
 
-        # Check if CPE name is correct
+        # Check if CPE Name is correct
         self._parse()
 
     def __len__(self):
         """
-        Returns the number of components of CPE name.
+        Returns the number of components of CPE Name.
+
+        :returns: count of components of CPE Name
+        :rtype: int
         """
 
         count = 0
@@ -234,16 +247,14 @@ class CPE(dict):
 
     def __new__(cls, cpe_str, version=None, *args, **kwargs):
         """
-        Generator of CPE names.
+        Generator of CPE Names.
 
-        INPUT:
-            - cpe_str: CPE name string
-            - version: version of CPE specification of CPE name
-        OUTPUT:
-            - CPE object with version of CPE detected correctly.
-        EXCEPTIONS:
-            - NotImplementedError: Incorrect CPE name or
-                version of CPE not implemented
+        :param string cpe_str: CPE Name string
+        :param string version: version of CPE specification of CPE Name
+        :returns: CPE object with version of CPE detected correctly.
+        :rtype: CPE
+        :exception: NotImplementedError - incorrect CPE Name or
+            version of CPE not implemented
 
         This class implements the factory pattern, that is,
         this class centralizes the creation of objects of a particular
@@ -254,7 +265,7 @@ class CPE(dict):
         from cpe2_2 import CPE2_2
         from cpe2_3 import CPE2_3
 
-        # List of implemented versions of CPE names
+        # List of implemented versions of CPE Names
         _CPE_VERSIONS = {
             CPE.VERSION_1_1: CPE1_1,
             CPE.VERSION_2_2: CPE2_2,
@@ -263,10 +274,10 @@ class CPE(dict):
         errmsg = 'Version of CPE not implemented'
 
         if version is None:
-            # Detect CPE version of input CPE name
+            # Detect CPE version of input CPE Name
             for v in _CPE_VERSIONS:
                 try:
-                    # Validate CPE name
+                    # Validate CPE Name
                     c = _CPE_VERSIONS[v](cpe_str)
                 except ValueError:
                     # Test another version
@@ -281,7 +292,7 @@ class CPE(dict):
             raise NotImplementedError(errmsg)
 
         elif version in _CPE_VERSIONS:
-            # Correct input version, validate CPE name
+            # Correct input version, validate CPE Name
             return _CPE_VERSIONS[version](cpe_str)
         else:
             # Invalid CPE version
@@ -291,10 +302,8 @@ class CPE(dict):
         """
         Returns a unambiguous representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         txtParts = []
@@ -303,17 +312,19 @@ class CPE(dict):
             txtParts.append(pk)
 
             txtElements = []
-            txtElements.append(CPE.PREFIX_ELEMENTS)
+            txtElements.append(CPE._PREFIX_ELEMENTS)
 
             elements = self.get(pk)
 
             for elem in elements:
-                txtComp = []
-                txtComp.append(CPE.PREFIX_ELEM)
+                txtElem = []
+                txtElem.append(CPE._PREFIX_ELEM)
 
                 for i in range(0, len(CPEComponent.CPE_COMP_KEYS_EXTENDED)):
+                    txtComp = []
                     ck = CPEComponent.ordered_comp_parts.get(i)
                     comp = elem.get(ck)
+
                     if isinstance(comp, CPEComponentLogical):
                         value = comp.__str__()
                     else:
@@ -324,31 +335,34 @@ class CPE(dict):
                     txtComp.append(" = ")
                     txtComp.append(value)
 
-                if len(txtComp) == 1:
+                    txtElem.append("".join(txtComp))
+
+                if len(txtElem) == 1:
                     # There are no components
-                    txtElements = []
-                    txtElements.append(" []")
+                    txtElem = []
+                    txtElem.append(" []")
                 else:
-                    txtElements.append(CPE.SUFFIX_ELEM)
-                txtElements = "\n".join(txtComp)
+                    txtElem.append(CPE._SUFFIX_ELEM)
+
+                txtElements.append("\n".join(txtElem))
 
             if len(txtElements) == 1:
-                    # There are no elements
-                    txtParts = []
-                    txtParts.append(" []")
+                # There are no elements
+                txtElements = []
+                txtElements.append(" []")
             else:
-                txtParts = "\n".join(txtElements)
+                txtElements.append(CPE._SUFFIX_ELEMENTS)
 
-        return "".join(txtParts)
+            txtParts.append("\n".join(txtElements))
+
+        return "\n".join(txtParts)
 
     def __str__(self):
         """
-        Returns a human-readable representation of CPE name.
+        Returns a human-readable representation of CPE Name.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         return "CPE v{0}: {1}".format(self.VERSION, self.cpe_str)
@@ -356,15 +370,12 @@ class CPE(dict):
     def _create_cpe_parts(self, system, components):
         """
         Create the structure to store the input type of system associated
-        with components of CPE name (hardware, operating system and software).
+        with components of CPE Name (hardware, operating system and software).
 
-        INPUT:
-            - system: type of system associated with CPE name
-            - components: CPE name components to store
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - KeyError: incorrect system
+        :param string system: type of system associated with CPE Name
+        :param dict components: CPE Name components to store
+        :returns: None
+        :exception: KeyError - incorrect system
         """
 
         if system not in CPEComponent.SYSTEM_VALUES:
@@ -374,19 +385,17 @@ class CPE(dict):
         elements = []
         elements.append(components)
 
-        pk = CPE.system_and_parts[system]
+        pk = CPE._system_and_parts[system]
         self[pk] = elements
 
     def _get_attribute_components(self, att):
         """
-        Returns the component list of attribute "att".
+        Returns the component list of input attribute.
 
-        INPUT:
-            - att: Attribute name to get
-        OUTPUT:
-            - The component list of the attribute in CPE name
-        EXCEPTIONS:
-            - ValueError: invalid attribute name
+        :param string att: Attribute name to get
+        :returns: List of Component objects of the attribute in CPE Name
+        :rtype: list
+        :exception: ValueError - invalid attribute name
         """
 
         lc = []
@@ -407,13 +416,10 @@ class CPE(dict):
         Pack the values of the five arguments into the simple edition
         component. If all the values are blank, just return a blank.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - "edition", "sw_edition", "target_sw", "target_hw" and "other"
+        :returns: "edition", "sw_edition", "target_sw", "target_hw" and "other"
             attributes packed in a only value
-        EXCEPTIONS:
-            TypeError: incompatible version with pack operation
+        :rtype: string
+        :exception: TypeError - incompatible version with pack operation
         """
 
         COMP_KEYS = (CPEComponent.ATT_EDITION,
@@ -431,7 +437,7 @@ class CPE(dict):
             lc = self._get_attribute_components(ck)
             if len(lc) > 1:
                 # Incompatible version 1.1, there are two or more elements
-                # in CPE name
+                # in CPE Name
                 errmsg = "Incompatible version {0} with URI".format(
                     self.VERSION)
                 raise TypeError(errmsg)
@@ -480,21 +486,21 @@ class CPE(dict):
 
     def as_dict(self):
         """
-        Returns the CPE name dict as string.
+        Returns the CPE Name dict as string.
+
+        :returns: CPE Name dict as string
+        :rtype: string
         """
 
-        return self.__str__()
+        return super(CPE, self).__str__()
 
     def as_uri_2_3(self):
         """
-        Returns the CPE name as URI string of version 2.3.
+        Returns the CPE Name as URI string of version 2.3.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - TypeError: incompatible version
+        :returns: CPE Name as URI string of version 2.3
+        :rtype: string
+        :exception: TypeError - incompatible version
         """
 
         uri = []
@@ -520,7 +526,7 @@ class CPE(dict):
 
             if len(lc) > 1:
                 # Incompatible version 1.1, there are two or more elements
-                # in CPE name
+                # in CPE Name
                 errmsg = "Incompatible version {0} with URI".format(
                     self.VERSION)
                 raise TypeError(errmsg)
@@ -574,14 +580,11 @@ class CPE(dict):
 
     def as_wfn(self):
         """
-        Returns the CPE name as WFN string of version 2.3.
+        Returns the CPE Name as Well-Formed Name string of version 2.3.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - TypeError: incompatible version
+        :return: CPE Name as WFN string
+        :rtype: string
+        :exception: TypeError - incompatible version
         """
 
         from cpe2_3_wfn import CPE2_3_WFN
@@ -595,7 +598,7 @@ class CPE(dict):
 
             if len(lc) > 1:
                 # Incompatible version 1.1, there are two or more elements
-                # in CPE name
+                # in CPE Name
                 errmsg = "Incompatible version {0} with WFN".format(
                     self.VERSION)
                 raise TypeError(errmsg)
@@ -641,13 +644,11 @@ class CPE(dict):
 
     def as_fs(self):
         """
-        Returns the CPE name as formatted string of version 2.3.
-        INPUT:
-            - None
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - TypeError: incompatible version
+        Returns the CPE Name as formatted string of version 2.3.
+
+        :returns: CPE Name as formatted string
+        :rtype: string
+        :exception: TypeError - incompatible version
         """
 
         fs = []
@@ -659,7 +660,7 @@ class CPE(dict):
 
             if len(lc) > 1:
                 # Incompatible version 1.1, there are two or more elements
-                # in CPE name
+                # in CPE Name
                 errmsg = "Incompatible version {0} with formatted string".format(
                     self.VERSION)
                 raise TypeError(errmsg)
@@ -691,97 +692,134 @@ class CPE(dict):
 
     def get_edition(self):
         """
-        Returns the edition of product of CPE name as a list.
+        Returns the edition of product of CPE Name as a list.
         According to the CPE version,
         this list can contains one or more items.
+
+        :returns: Value of edition attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_EDITION)
 
     def get_language(self):
         """
-        Returns the internationalization information of CPE name as a list.
+        Returns the internationalization information of CPE Name as a list.
         According to the CPE version, this list can contains one or more items.
+
+        :returns: Value of language attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_LANGUAGE)
 
     def get_other(self):
         """
-        Returns the other information part of CPE name.
+        Returns the other information part of CPE Name.
+
+        :returns: Value of other attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_OTHER)
 
     def get_part(self):
         """
-        Returns the part component of CPE name as a list.
+        Returns the part component of CPE Name as a list.
         According to the CPE version,
         this list can contains one or more items.
+
+        :returns: Value of part attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_PART)
 
     def get_product(self):
         """
-        Returns the product name of CPE name as a list.
+        Returns the product name of CPE Name as a list.
         According to the CPE version,
         this list can contains one or more items.
+
+        :returns: Value of product attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_PRODUCT)
 
     def get_software_edition(self):
         """
-        Returns the software edition of CPE name.
+        Returns the software edition of CPE Name.
+
+        :returns: Value of sw_edition attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_SW_EDITION)
 
     def get_target_hardware(self):
         """
-        Returns the arquitecture of CPE name.
+        Returns the arquitecture of CPE Name.
+
+        :returns: Value of target_hw attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_TARGET_HW)
 
     def get_target_software(self):
         """
-        Returns the software computing environment of CPE name
+        Returns the software computing environment of CPE Name
         within which the product operates.
+
+        :returns: Value of target_sw attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_TARGET_SW)
 
     def get_update(self):
         """
-        Returns the update or service pack information of CPE name as a list.
+        Returns the update or service pack information of CPE Name as a list.
         According to the CPE version, this list can contains one or more items.
+
+        :returns: Value of update attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_UPDATE)
 
     def get_vendor(self):
         """
-        Returns the vendor name of CPE name as a list.
+        Returns the vendor name of CPE Name as a list.
         According to the CPE version,
         this list can contains one or more items.
+
+        :returns: Value of vendor attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_VENDOR)
 
     def get_version(self):
         """
-        Returns the version of product of CPE name as a list.
+        Returns the version of product of CPE Name as a list.
         According to the CPE version,
         this list can contains one or more items.
+
+        :returns: Value of version attribute as string list.
+        :rtype: list
         """
 
         return self.get_attribute_values(CPEComponent.ATT_VERSION)
 
     def is_application(self):
         """
-        Returns True if CPE name corresponds to application elem.
+        Returns True if CPE Name corresponds to application elem.
+
+        :returns: True if CPE Name corresponds to application elem, False
+            otherwise.
+        :rtype: boolean
         """
 
         elements = self.get(CPE.KEY_APP)
@@ -789,7 +827,11 @@ class CPE(dict):
 
     def is_hardware(self):
         """
-        Returns True if CPE name corresponds to hardware elem.
+        Returns True if CPE Name corresponds to hardware elem.
+
+        :returns: True if CPE Name corresponds to hardware elem, False
+            otherwise.
+        :rtype: boolean
         """
 
         elements = self.get(CPE.KEY_HW)
@@ -797,7 +839,11 @@ class CPE(dict):
 
     def is_operating_system(self):
         """
-        Returns True if CPE name corresponds to operating system elem.
+        Returns True if CPE Name corresponds to operating system elem.
+
+        :returns: True if CPE Name corresponds to operating system elem, False
+            otherwise.
+        :rtype: boolean
         """
 
         elements = self.get(CPE.KEY_OS)

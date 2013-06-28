@@ -1,0 +1,198 @@
+>>> from cpeset1_1 import CPESet1_1
+>>> from cpe1_1 import CPE1_1
+
+-----------------------------------------------
+Test for __getitem__(self, i)
+-----------------------------------------------
+
+- TEST: empty set
+>>> s = CPESet1_1()
+>>> s[0] # doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+IndexError: list index out of range
+
+- TEST: set with two CPE names
+>>> uri1 = 'cpe://microsoft:windows:xp!vista'
+>>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> c22 = s[1]
+>>> c22 == c2
+True
+>>> c22 == c1
+False
+
+----------------------------------
+Test for __len__(self)
+----------------------------------
+
+- TEST: empty set
+>>> s = CPESet1_1()
+>>> len(s)
+0
+
+- TEST: set with two CPE names
+>>> uri1 = 'cpe://microsoft:windows:xp!vista'
+>>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> len(s)
+2
+
+- TEST: set with three CPE names and one repeated
+>>> uri1 = 'cpe://microsoft:windows:xp!vista'
+>>> uri2 = 'cpe:/cisco::3825;cisco:2:44'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.append(c2)
+>>> len(s)
+2
+
+- TEST: set with three CPE names and one repeated
+>>> uri1 = 'cpe://microsoft:windows:xp!vista'
+>>> uri2 = 'cpe:/cisco::3825;cisco:2:44'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> c3 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.append(c3)
+>>> len(s)
+2
+
+
+----------------------------------
+Test for append(self, cpe)
+----------------------------------
+
+- TEST: set with invalid CPE name
+>>> from cpe2_2 import CPE2_2
+>>> uri = 'cpe:/a:microsoft'
+>>> c = CPE2_2(uri)
+>>> s = CPESet1_1()
+>>> s.append(c)  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: CPE name version 2.2 not valid, version 1.1 expected
+		
+----------------------------------
+Test for name_match(self, cpe):
+----------------------------------
+
+- TEST: matching with identical CPE in set
+>>> uri1 = 'cpe://microsoft:windows:xp!vista'
+>>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.name_match(c2)
+True
+
+- TEST: matching with ANY values implicit
+>>> uri1 = 'cpe://microsoft:windows:xp!vista'
+>>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe:/cisco'
+>>> c3 = CPE1_1(uri3)
+>>> s.name_match(c3)
+True
+
+- TEST: matching with empty CPE name
+>>> uri1 = 'cpe://microsoft:windows:xp!vista'
+>>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe:/'
+>>> c3 = CPE1_1(uri3)
+>>> s.name_match(c3)
+True
+
+- TEST: not matching with CPE name
+>>> uri1 = 'cpe://microsoft:windows:xp!vista'
+>>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe://noexists'
+>>> c3 = CPE1_1(uri3)
+>>> s.name_match(c3)
+False
+
+- TEST: matching with ANY values explicit
+>>> uri1 = 'cpe://microsoft:windows:xp!vista'
+>>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe://microsoft:::'
+>>> c3 = CPE1_1(uri3)
+>>> s.name_match(c3)
+True
+
+- TEST: matching with NOT
+>>> uri1 = 'cpe://microsoft:windows:~xp'
+>>> c1 = CPE1_1(uri1)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> uri2 = 'cpe://microsoft:windows:vista'
+>>> c2 = CPE1_1(uri2)
+>>> s.name_match(c2)
+False
+
+- TEST: matching with NOT
+>>> uri1 = 'cpe://microsoft:windows:xp'
+>>> c1 = CPE1_1(uri1)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> uri2 = 'cpe://microsoft:windows:~vista'
+>>> c2 = CPE1_1(uri2)
+>>> s.name_match(c2)
+True
+
+- TEST: matching with OR
+>>> uri1 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+>>> uri2 = 'cpe://microsoft:windows:xp!vista'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe://microsoft:windows:vista'
+>>> c3 = CPE1_1(uri3)
+>>> s.name_match(c3)
+False
+
+- TEST: matching with OR
+>>> uri1 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
+>>> uri2 = 'cpe://microsoft:windows:vista'
+>>> c1 = CPE1_1(uri1)
+>>> c2 = CPE1_1(uri2)
+>>> s = CPESet1_1()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> uri3 = 'cpe://microsoft:windows:xp!vista'
+>>> c3 = CPE1_1(uri3)
+>>> s.name_match(c3)
+True

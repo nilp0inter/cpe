@@ -1,0 +1,17 @@
+>>> from cpe2_3 import CPE2_3
+
+-------------------------------------------------------------
+Test for __new__(cls, cpe_str, *args, **kwargs):
+-------------------------------------------------------------
+
+- TEST: WFN
+>>> str = r'wfn:[part="a", vendor="foo\\bar", product="big\$money", version="2010", update=ANY, edition=ANY, language=ANY, sw_edition="special", target_sw="ipod_touch", target_hw="80gb", other=ANY]'
+>>> c = CPE2_3(str)
+
+- TEST: formatted string
+>>> fs = 'cpe:2.3:a:hp:insight_diagnostics:8.*:es?:*:-:-:x32:*:*'
+>>> c = CPE2_3(fs)
+
+- TEST: URI
+>>> str = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
+>>> c = CPE2_3(str)

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module is an implementation of name matching
@@ -28,7 +28,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpe2_3 import CPE2_3
 from cpe2_3_wfn import CPE2_3_WFN

@@ -1,0 +1,66 @@
+>>> from cpe.comp.cpecomp import CPEComponent
+>>> from cpe.comp.cpecomp_notapplicable import CPEComponentNotApplicable
+
+-------------------------------------------
+Test for __contains__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> c = CPEComponentNotApplicable()
+>>> c in c
+True
+
+TEST:
+>>> value = "microsoft"
+>>> c = CPEComponent(value)
+>>> c2 = CPEComponentNotApplicable()
+>>> c in c2
+False
+>>> c2 in c
+False
+
+
+-------------------------------------------
+Test for __eq__(self, comp_str)
+-------------------------------------------
+
+TEST: two equal components
+>>> c = CPEComponentNotApplicable()
+>>> c == c
+True
+
+
+TEST: two not equal components
+>>> value = "microsoft"
+>>> c = CPEComponent(value)
+>>> c2 = CPEComponentNotApplicable()
+>>> c == c2
+False
+
+
+-------------------------------------------
+Test for __init__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> c = CPEComponentNotApplicable()
+
+
+-------------------------------------------
+Test for __repr__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> c = CPEComponentNotApplicable()
+>>> c
+CPEComponentNotApplicable()
+
+
+-------------------------------------------
+Test for __str__(self, comp_str)
+-------------------------------------------
+
+TEST:
+>>> c = CPEComponentNotApplicable()
+>>> print c
+<NA>

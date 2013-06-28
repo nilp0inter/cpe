@@ -1,0 +1,167 @@
+>>> from cpe2_3_fs import CPE2_3_FS
+>>> from comp.cpecomp_simple import CPEComponentSimple
+
+----------------------------------
+Test for _get_attribute_values(self)
+----------------------------------
+
+TEST:
+>>> str = 'cpe:2.3:a:microsoft:internet_explorer:8.0.6001:beta:*:*:*:*:*:*'
+>>> c = CPE2_3_FS(str)
+>>> att = CPEComponentSimple.ATT_VENDOR
+>>> c.get_attribute_values(att)
+['microsoft']
+>>> att = CPEComponentSimple.ATT_VERSION
+>>> c.get_attribute_values(att)
+['8.0.6001']
+
+
+-----------------------------------------------
+Test for __getitem__(self, i)
+-----------------------------------------------
+
+- TEST: good index
+>>> str = 'cpe:2.3:a:microsoft:internet_explorer:8.*:sp?:*:*:*:*:*:*'
+>>> c = CPE2_3_FS(str)
+>>> c[1]
+CPEComponent2_3_FS(microsoft)
+
+- TEST: bad index
+>>> str = 'cpe:2.3:a:microsoft:internet_explorer:8.\*:sp?:*:*:*:*:*:*'
+>>> c = CPE2_3_FS(str)
+>>> c[14]  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+IndexError: Component index of CPE name out of range
+
+
+-----------------------------------------------
+Test for __new__(cls, cpe_str, *args, **kwargs)
+-----------------------------------------------
+
+- TEST: bad WFN
+>>> fs = 'baduri'
+>>> c = CPE2_3_FS(fs)  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE name: validation of parts failed
+
+- TEST: an empty CPE.
+>>> fs = 'cpe:2.3:*:*:*:*:*:*:*:*:*:*:*'
+>>> c = CPE2_3_FS(fs)
+
+- TEST: an operating system CPE
+>>> fs = 'cpe:2.3:o:acme:producto:1.0:update2:pro:en-us:*:*:*:*'
+>>> c = CPE2_3_FS(fs)
+
+- TEST: an application CPE
+>>> fs = 'cpe:2.3:a:hp:insight_diagnostics:7.4.0.1570:-:online:-:windows_2003:x64:*:*'
+>>> c = CPE2_3_FS(fs)
+
+- TEST: an application CPE
+>>> fs = 'cpe:2.3:a:hp:insight_diagnostics:8.*:es?:*:-:-:x32:*:*'
+>>> c = CPE2_3_FS(fs)
+
+- TEST: an CPE with special characters
+>>> fs = 'cpe:2.3:a:hp:insight_diagnostics:8.*:es?:*:-:-:x32\~:*:*'
+>>> c = CPE2_3_FS(fs)
+
+- TEST: An unquoted question mark MAY be used at the beginning
+and/or the end of an attribute-value string
+>>> fs = 'cpe:2.3:a:hp:insight_diagnostics:*8.*:?es?:*:-:-:x32\~:*:*'
+>>> c = CPE2_3_FS(fs)
+
+- TEST: A contiguous sequence of unquoted question marks MAY appear at the
+beginning and/or the end of an attribute-value string
+>>> fs = 'cpe:2.3:a:???hp**:insight_diagnostics:8.*:es:*:-:-:x32\~:*:*'
+>>> c = CPE2_3_FS(fs)  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE, vendor value is invalid
+
+- TEST: A contiguous sequence of unquoted question marks MAY appear at the
+beginning and/or the end of an attribute-value string
+>>> fs = 'cpe:2.3:a:???hp*:insight_diagnostics:8.*:es:*:-:-:x32\~:*:*'
+>>> c = CPE2_3_FS(fs)
+
+- TEST: Unquoted question marks and asterisks MAY appear
+in the same attribute-value string
+>>> fs = 'cpe:2.3:a:hp:insight_?diagnostics:8.*:es:*:-:-:x32\~:*:*'
+>>> c = CPE2_3_FS(fs)  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE, product value is invalid
+
+- TEST: An unquoted question mark SHALL NOT be used
+in any other place in an attribute-value string
+>>> uri = 'cpe:2.3:h:?*nvidia:*:*:*:*:*:*:*:*:*'
+>>> c = CPE2_3_FS(uri)  #doctest: +IGNORE_EXCEPTION_DETAIL
+Traceback (most recent call last):
+ValueError: Malformed CPE, vendor value is invalid
+
+
+----------------------------------
+Test for __len__(self)
+----------------------------------
+
+- TEST: a CPE name without components
+>>> str = "cpe:2.3:a:hp:openview_network_manager:7.51:*:*:*:*:linux:*:*"
+>>> c = CPE2_3_FS(str)
+>>> len(c)
+11
+
+----------------------------------
+Test for __str__(self)
+----------------------------------
+
+TEST: not negate components
+>>> str = r'cpe:2.3:a:foo\\bar:big\$money_2010:*:*:*:*:special:ipod_touch:80gb:*'
+>>> c = CPE2_3_FS(str)
+>>> print c
+CPE v2.3 (FS): cpe:2.3:a:foo\\bar:big\$money_2010:*:*:*:*:special:ipod_touch:80gb:*
+
+
+----------------------------------
+Test for as_uri_2_3(self)
+----------------------------------
+
+- TEST:
+>>> fs1 = 'cpe:2.3:a:microsoft:internet_explorer:8.0.6001:beta:*:*:*:*:*:*'
+>>> c1 = CPE2_3_FS(fs1)
+>>> c1.as_uri_2_3()
+'cpe:/a:microsoft:internet_explorer:8.0.6001:beta'
+
+
+----------------------------------
+Test for as_wfn(self)
+----------------------------------
+
+- TEST:
+>>> fs1 = 'cpe:2.3:a:microsoft:internet_explorer:8.0.6001:beta:*:*:*:*:*:*'
+>>> c1 = CPE2_3_FS(fs1)
+>>> c1.as_wfn()
+'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\\.0\\.6001", update="beta", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
+
+- TEST:
+>>> fs2 = 'cpe:2.3:a:microsoft:internet_explorer:8.*:sp?:*:*:*:*:*:*'
+>>> c2 = CPE2_3_FS(fs2)
+>>> c2.as_wfn()
+'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\\.*", update="sp?", edition=ANY, language=ANY, sw_edition=ANY, target_sw=ANY, target_hw=ANY, other=ANY]'
+
+- TEST:
+>>> fs3 = 'cpe:2.3:a:hp:insight_diagnostics:7.4.0.1570:-:*:*:online:win2003:x64:*'
+>>> c3 = CPE2_3_FS(fs3)
+>>> c3.as_wfn()
+'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\\.4\\.0\\.1570", update=NA, edition=ANY, language=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY]'
+
+- TEST:
+>>> fs4 = r'cpe:2.3:a:foo\\bar:big\$money:2010:*:*:*:special:ipod_touch:80gb:*'
+>>> c4 = CPE2_3_FS(fs4)
+>>> c4.as_wfn()
+'wfn:[part="a", vendor="foo\\\\bar", product="big\\$money", version="2010", update=ANY, edition=ANY, language=ANY, sw_edition="special", target_sw="ipod_touch", target_hw="80gb", other=ANY]'
+
+----------------------------------
+Test for as_fs(self)
+----------------------------------
+
+- TEST:
+>>> fs1 = 'cpe:2.3:a:microsoft:internet_explorer:8.0.6001:beta:*:*:*:*:*:*'
+>>> c1 = CPE2_3_FS(fs1)
+>>> c1.as_fs()
+'cpe:2.3:a:microsoft:internet_explorer:8.0.6001:beta:*:*:*:*:*:*'

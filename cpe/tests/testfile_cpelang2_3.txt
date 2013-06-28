@@ -1,0 +1,74 @@
+>>> from cpe2_3 import CPE2_3
+>>> from cpe2_3_fs import CPE2_3_FS
+>>> from cpe2_3_wfn import CPE2_3_WFN
+>>> from cpeset2_3 import CPESet2_3
+>>> from cpelang2_3 import CPELanguage2_3
+
+-----------------------------------------------------
+Test for language_match(self, cpeset, cpel_dom=None)
+-----------------------------------------------------
+
+- TEST: not matching (there are undefined values)
+>>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform id="123"><cpe:title>Sun Solaris 5.8 or 5.9 with BEA Weblogic 8.1 installed</cpe:title><cpe:logical-test operator="AND" negate="FALSE"><cpe:logical-test operator="OR" negate="FALSE"><cpe:fact-ref name="cpe:2.3:o:sun:solaris:5.8:*:*:*:*:*:*:*" /><cpe:fact-ref name="cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*" /></cpe:logical-test><cpe:fact-ref name="cpe:2.3:a:bea:weblogic:8.1:*:*:*:*:*:*:*" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
+
+>>> c1 = CPE2_3_FS('cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*')
+>>> c2 = CPE2_3_FS('cpe:2.3:a:bea:weblogic:8.*:*:*:*:*:*:*:*')
+
+>>> s = CPESet2_3()
+>>> s.append(c1)
+>>> s.append(c2)
+
+>>> l = CPELanguage2_3(document)
+>>> l.language_match(s)
+False
+
+- TEST: matching
+>>> document = '''<?xml version="1.0" encoding="UTF-8"?><cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0"><cpe:platform id="123"><cpe:title>Sun Solaris 5.8</cpe:title><cpe:logical-test operator="AND" negate="FALSE"><cpe:fact-ref name="cpe:2.3:a:bea:weblogic:8.*:*:*:*:*:*:*:*" /></cpe:logical-test></cpe:platform></cpe:platform-specification>'''
+
+>>> c1 = CPE2_3_FS('cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*')
+>>> c2 = CPE2_3_FS('cpe:2.3:a:bea:weblogic:8.1:*:*:*:*:*:*:*')
+
+>>> s = CPESet2_3()
+>>> s.append(c1)
+>>> s.append(c2)
+
+>>> l = CPELanguage2_3(document)
+>>> l.language_match(s)
+True
+
+
+- TEST: matching
+>>> path = "tests/expression2_3.xml"
+
+>>> c1 = CPE2_3_FS('cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*')
+>>> c2 = CPE2_3_FS('cpe:2.3:a:bea:weblogic:8.*:*:*:*:*:*:*:*')
+
+>>> s = CPESet2_3()
+>>> s.append(c1)
+>>> s.append(c2)
+
+>>> isFile = True
+>>> l = CPELanguage2_3(path, isFile)
+>>> l.language_match(s)
+False
+
+-----------------------------------------------------
+Test for _unbind(cls, boundname)
+-----------------------------------------------------
+
+- TEST: Formatted string to WFN
+>>> fs = 'cpe:2.3:a:hp:insight_diagnostics:7.4.0.1570:-:*:*:online:win2003:x64:*'
+>>> c = CPELanguage2_3._unbind(fs)
+>>> wfn = 'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="7\\.4\\.0\\.1570", update=NA, edition=ANY, language=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY]'
+>>> c2 = CPE2_3_WFN(wfn)
+>>> c == c2
+True
+
+
+- TEST: URI to WFN
+>>> uri = 'cpe:/a:hp:openview_network_manager:7.51:-:~~~linux~~'
+>>> c = CPELanguage2_3._unbind(uri)
+>>> wfn = 'wfn:[part="a", vendor="hp", product="openview_network_manager", version="7\\.51", update=NA, edition=ANY, language=ANY, sw_edition=ANY, target_sw="linux", target_hw=ANY, other=ANY]'
+>>> c2 = CPE2_3_WFN(wfn)
+>>> c == c2
+True
