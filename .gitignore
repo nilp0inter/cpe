@@ -1,4 +1,5 @@
 *.py[cod]
+*.swp
 
 # C extensions
 *.so
@@ -34,5 +35,4 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
-
 docs/_build/
