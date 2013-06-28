@@ -3,7 +3,7 @@
 from setuptools import setup
 from setuptools import find_packages
 
-VERSION = '1.0.0'
+VERSION = '1.0.1'
 AUTHORS = u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'
 EMAILS = 'galindo.garcia.alejandro@gmail.com, robertomartinezp@gmail.com'
 
