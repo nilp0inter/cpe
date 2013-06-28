@@ -121,18 +121,22 @@ In the following example, an expression of CPE Language of version 2.2 is create
     >>> K.append(c1)
     >>> K.append(c2)
 
-* Creates the expression in XML of candidate CPE Language statement::
+* Creates the expression in XML of candidate CPE Language statement:
 
-    X = <cpe:platform id="123">
-            <cpe:title>Sun Solaris 5.8 or 5.9 with BEA Weblogic 8.1 installed</cpe:title>  
-            <cpe:logical-test operator="AND" negate="FALSE">
-                <cpe:logical-test operator="OR" negate="FALSE">
-                    <cpe:fact-ref name="cpe:/o:sun:solaris:5.8" />
-                    <cpe:fact-ref name="cpe:/o:sun:solaris:5.9" />
-                </cpe:logical-test>
-                <cpe:fact-ref name="cpe:/a:bea:weblogic:8.1" />
-            </cpe:logical-test>
-        </cpe:platform>
+  X = <cpe:platform id="123">
+          <cpe:title>Sun Solaris 5.8 or 5.9 with BEA Weblogic 8.1 installed</cpe:title>  
+    
+          <cpe:logical-test operator="AND" negate="FALSE">
+
+              <cpe:logical-test operator="OR" negate="FALSE">
+
+                  <cpe:fact-ref name="cpe:/o:sun:solaris:5.8" />
+    
+                  <cpe:fact-ref name="cpe:/o:sun:solaris:5.9" />
+              </cpe:logical-test>
+              <cpe:fact-ref name="cpe:/a:bea:weblogic:8.1" />
+          </cpe:logical-test>
+      </cpe:platform>
 
   ::
 

@@ -1,5 +1,5 @@
 CPELanguage2_2 class
 ====================
 
-.. autoclass:: cpe.CPELanguage2_2
+.. autoclass:: cpelang2_2.CPELanguage2_2
    :members:

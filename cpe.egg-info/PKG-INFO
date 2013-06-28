@@ -1,17 +1,17 @@
 Metadata-Version: 1.1
 Name: cpe
-Version: 0.1dev
+Version: 1.0.0
 Summary:               Package to create and operate with CPE names of 1.1, 2.2 and 2.3
               versions of CPE (Common Platform Enumeration) specification
 Home-page: UNKNOWN
-Author: Alejandro Galindo
-Author-email: galindo.garcia.alejandro@gmail.com
+Author: Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Author-email: galindo.garcia.alejandro@gmail.com, robertomartinezp@gmail.com
 License: GPLv3
 Description: UNKNOWN
-Keywords: cpe identification naming matching standard specification
+Keywords: cpe identification naming matching standard specification mitre nist
 Platform: UNKNOWN
-Classifier: Development Status :: 5 - Production/Stable
-Classifier: Environment :: Console
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
 Classifier: Intended Audience :: Information Technology
 Classifier: Intended Audience :: System Administrators
 Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)

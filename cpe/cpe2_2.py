@@ -184,7 +184,7 @@ class CPE2_2(CPE):
         # Adds the undefined parts
         for sys in CPEComponent.SYSTEM_VALUES:
             if sys != system:
-                pk = CPE.system_and_parts[sys]
+                pk = CPE._system_and_parts[sys]
                 self[pk] = []
 
     def as_wfn(self):

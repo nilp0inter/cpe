@@ -1,5 +1,5 @@
 CPE1_1 class
 ============
 
-.. autoclass:: cpe.CPE1_1
+.. autoclass:: cpe1_1.CPE1_1
    :members:

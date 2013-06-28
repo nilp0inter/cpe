@@ -1,5 +1,5 @@
 CPESet1_1 class
 ===============
 
-.. autoclass:: cpe.CPESet1_1
+.. autoclass:: cpeset1_1.CPESet1_1
    :members:
