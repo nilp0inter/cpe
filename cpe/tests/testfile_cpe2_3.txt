@@ -1,4 +1,4 @@
->>> from cpe2_3 import CPE2_3
+>>> from cpe.cpe2_3 import CPE2_3
 
 -------------------------------------------------------------
 Test for __new__(cls, cpe_str, *args, **kwargs):

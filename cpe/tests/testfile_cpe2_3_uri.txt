@@ -1,5 +1,5 @@
->>> from cpe2_3_uri import CPE2_3_URI
->>> from comp.cpecomp_simple import CPEComponentSimple
+>>> from cpe.cpe2_3_uri import CPE2_3_URI
+>>> from cpe.comp.cpecomp_simple import CPEComponentSimple
 
 ----------------------------------
 Test for _get_attribute_values(self)

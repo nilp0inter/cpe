@@ -43,7 +43,7 @@ True
 False
 
 TEST: an empty value and simple value
->>> from cpecomp_empty import CPEComponentEmpty
+>>> from cpe.comp.cpecomp_empty import CPEComponentEmpty
 >>> comp1 = CPEComponent1_1('xp', CPEComponentSimple.ATT_VERSION)
 >>> comp2 = CPEComponentEmpty()
 >>> comp1 in comp2

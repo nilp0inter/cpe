@@ -1,6 +1,6 @@
->>> from cpe import CPE
->>> from cpe2_2 import CPE2_2
->>> from comp.cpecomp import CPEComponent
+>>> from cpe.cpe import CPE
+>>> from cpe.cpe2_2 import CPE2_2
+>>> from cpe.comp.cpecomp import CPEComponent
 
 ----------------------------------
 Test for _get_attribute_values(self)

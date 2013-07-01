@@ -711,7 +711,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_EDITION)
+        return self.get_attribute_values(CPEComponent.ATT_EDITION)
 
     def get_language(self):
         """
@@ -722,7 +722,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_LANGUAGE)
+        return self.get_attribute_values(CPEComponent.ATT_LANGUAGE)
 
     def get_other(self):
         """
@@ -732,7 +732,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_OTHER)
+        return self.get_attribute_values(CPEComponent.ATT_OTHER)
 
     def get_part(self):
         """
@@ -744,7 +744,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_PART)
+        return self.get_attribute_values(CPEComponent.ATT_PART)
 
     def get_product(self):
         """
@@ -756,7 +756,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_PRODUCT)
+        return self.get_attribute_values(CPEComponent.ATT_PRODUCT)
 
     def get_software_edition(self):
         """
@@ -766,7 +766,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_SW_EDITION)
+        return self.get_attribute_values(CPEComponent.ATT_SW_EDITION)
 
     def get_target_hardware(self):
         """
@@ -776,7 +776,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_TARGET_HW)
+        return self.get_attribute_values(CPEComponent.ATT_TARGET_HW)
 
     def get_target_software(self):
         """
@@ -787,7 +787,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_TARGET_SW)
+        return self.get_attribute_values(CPEComponent.ATT_TARGET_SW)
 
     def get_update(self):
         """
@@ -798,7 +798,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_UPDATE)
+        return self.get_attribute_values(CPEComponent.ATT_UPDATE)
 
     def get_vendor(self):
         """
@@ -810,7 +810,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_VENDOR)
+        return self.get_attribute_values(CPEComponent.ATT_VENDOR)
 
     def get_version(self):
         """
@@ -822,7 +822,7 @@ class CPE(dict):
         :rtype: list
         """
 
-        return self._get_attribute_values(CPEComponent.ATT_VERSION)
+        return self.get_attribute_values(CPEComponent.ATT_VERSION)
 
     def is_application(self):
         """
