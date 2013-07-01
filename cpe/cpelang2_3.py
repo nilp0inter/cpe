@@ -1,14 +1,14 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module is an implementation of CPE language matching
 algorithm in accordance with version 2.3 of CPE (Common Platform
 Enumeration) specification.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
+"""
 
 from cpeset2_3 import CPESet2_3
 from cpelang import CPELanguage
@@ -51,7 +51,7 @@ class CPELanguage2_3(CPELanguage):
     #  CONSTANTS  #
     ###############
 
-    # Version of CPE Language
+    #: Version of CPE Language
     VERSION = "2.3"
 
     ###################
@@ -61,11 +61,13 @@ class CPELanguage2_3(CPELanguage):
     @classmethod
     def _fact_ref_eval(cls, cpeset, wfn):
         """
-        Input argument wfn is WFN.
-        Input argument cpeset is a list of CPE bound names.
-
         Returns True if wfn is a non-proper superset (True superset
         or equal to) any of the names in cpeset, otherwise False.
+
+        :param CPESet cpeset: list of CPE bound Names.
+        :param CPE2_3_WFN wfn: WFN CPE Name.
+        :returns: True if wfn is a non-proper superset any of the names in cpeset, otherwise False
+        :rtype: boolean
         """
 
         for n in cpeset:
@@ -77,6 +79,16 @@ class CPELanguage2_3(CPELanguage):
 
     @classmethod
     def _check_fact_ref_eval(cls, cpel_dom):
+        """
+        Returns the result (True, False, Error) of performing the specified
+        check, unless the check isnÂ’t supported, in which case it returns
+        False. Error is a catch-all for all results other than True and
+        False.
+
+        :param string cpel_dom: XML infoset for the check_fact_ref element.
+        :returns: result of performing the specified check
+        :rtype: boolean or error
+        """
 
         CHECK_SYSTEM = "check-system"
         CHECK_LOCATION = "check-location"
@@ -87,27 +99,56 @@ class CPELanguage2_3(CPELanguage):
             # Perform an OVAL check.
             # First attribute is the URI of an OVAL definitions file.
             # Second attribute is an OVAL definition ID.
-            return CPELanguage2_3.ovalcheck(cpel_dom.getAttribute(CHECK_LOCATION),
-                                            cpel_dom.getAttribute(CHECK_ID))
+            return CPELanguage2_3._ovalcheck(cpel_dom.getAttribute(CHECK_LOCATION),
+                                             cpel_dom.getAttribute(CHECK_ID))
 
         if (checksystemID == "http://scap.nist.gov/schema/ocil/2"):
             # Perform an OCIL check.
             # First attribute is the URI of an OCIL questionnaire file.
             # Second attribute is OCIL questionnaire ID.
-            return CPELanguage2_3.ocilcheck(cpel_dom.getAttribute(CHECK_LOCATION),
-                                            cpel_dom.getAttribute(CHECK_ID))
+            return CPELanguage2_3._ocilcheck(cpel_dom.getAttribute(CHECK_LOCATION),
+                                             cpel_dom.getAttribute(CHECK_ID))
 
         # Can add additional check systems here, with each returning a
         # True, False, or Error value
         return False
 
     @classmethod
+    def _ocilcheck(location, ocil_id):
+        """
+        Perform an OCIL check.
+
+        :param string location: URI of an OCIL questionnaire file
+        :param string ocil_id: OCIL questionnaire ID
+        :rtype: boolean
+        :exception: NotImplementedError - Method not implemented
+        """
+
+        errmsg = "Method not implemented"
+        raise NotImplementedError(errmsg)
+
+    @classmethod
+    def _ovalcheck(location, oval_id):
+        """
+        Perform an OVAL check.
+
+        :param string location: URI of an OVAL definitions file
+        :param string oval_id: OVAL definition ID
+        :rtype: boolean
+        :exception: NotImplementedError - Method not implemented
+        """
+
+        errmsg = "Method not implemented"
+        raise NotImplementedError(errmsg)
+
+    @classmethod
     def _unbind(cls, boundname):
         """
         Unbinds a bound form to a WFN.
 
-        Input is a CPE name as string
-        Output WFN object associated with boundname.
+        :param string boundname: CPE name
+        :returns: WFN object associated with boundname.
+        :rtype: CPE2_3_WFN
         """
 
         try:
@@ -131,20 +172,17 @@ class CPELanguage2_3(CPELanguage):
     def language_match(self, cpeset, cpel_dom=None):
         """
         Accepts a set of known CPE Names and an expression in the CPE language,
-        and delivers the answer 'true' if the expression matches with the set.
-        Otherwise, it returns 'false'.
+        and delivers the answer True if the expression matches with the set.
+        Otherwise, it returns False.
 
-        Inputs:
-            - self: An expression in the CPE Applicability Language,
-                    represented as the XML infoset for the platform element.
-            - cpeset: CPE set object to match with self expression.
-            - cpel_dom: An expression in the CPE Applicability Language,
-                        represented as DOM tree.
-        Output:
-            - True if self expression can be satisfied by language matching
-              against cpeset, False otherwise.
-
-
+        :param CPELanguage self: An expression in the CPE Applicability
+            Language, represented as the XML infoset for the platform element.
+        :param CPESet cpeset: CPE set object to match with self expression.
+        :param string cpel_dom: An expression in the CPE Applicability
+            Language, represented as DOM tree.
+        :returns: True if self expression can be satisfied by language matching
+            against cpeset, False otherwise.
+        :rtype: boolean
         """
 
         # Root element tag
@@ -237,12 +275,6 @@ class CPELanguage2_3(CPELanguage):
             return answer
         else:
             return False
-
-    def ovalcheck(location, oval_id):
-        pass
-
-    def ocilcheck(location, ocil_id):
-        pass
 
 if __name__ == "__main__":
     import doctest

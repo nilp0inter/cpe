@@ -1,14 +1,14 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module contains the common characteristics of
 any CPE language matching algorithm, associated with a version of
 Common Platform Enumeration (CPE) specification.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
+"""
 
 from xml.dom import minidom
 
@@ -39,7 +39,7 @@ class CPELanguage(object):
 
     This class allows match a CPE element against an expression
     in the CPE Language, that is, a XML document format for
-    binding descriptive prose and diagnostic test to a CPE name
+    binding descriptive prose and diagnostic test to a CPE Name
     (CPE Description Format).
     """
 
@@ -53,12 +53,10 @@ class CPELanguage(object):
         the CPE Language (a set of CPE Names) and
         the DOM tree asociated with expression.
 
-        INPUT:
-            - expression: XML content in string or a path to XML file
-            - isFile: indicates whether expression is a XML file or
-                      XML content string
-        OUPUT:
-            - None
+        :param string expression: XML content in string or a path to XML file
+        :param strint isFile: indicates whether expression is a XML file or
+            XML content string
+        :returns: None
         """
 
         if isFile:
@@ -76,12 +74,10 @@ class CPELanguage(object):
 
     def __str__(self):
         """
-        Returns a human-readable representation of CPE name.
+        Returns a human-readable representation of CPE Language expression.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE Language expression as string
+        :rtype: string
         """
 
         return "Expression of CPE language version {0}:\n{1}".format(
@@ -90,19 +86,19 @@ class CPELanguage(object):
     def language_match(self, cpeset, cpel_dom=None):
         """
         Accepts a set of known CPE Names and an expression in the CPE language,
-        and delivers the answer 'true' if the expression matches with the set.
-        Otherwise, it returns 'false'.
+        and delivers the answer True if the expression matches with the set.
+        Otherwise, it returns False.
 
-        INPUT:
-            - self: An expression in the CPE Language, represented as
-                the XML infoset for the platform element.
-            - cpeset: CPE set object to match with self expression.
-            - cpel_dom: An expression in the CPE Language, represented as
-                DOM tree.
-        OUTPUT:
-            - True if self expression can be satisfied by language matching
-              against cpeset, False otherwise.
+        :param CPELanguage self: An expression in the CPE Language,
+            represented as the XML infoset for the platform element.
+        :param CPESet cpeset: CPE set object to match with self expression.
+        :param string cpel_dom: An expression in the CPE Language,
+            represented as DOM tree.
+        :returns: True if self expression can be satisfied by language matching
+            against cpeset, False otherwise.
+        :rtype: boolean
+        :exception: NotImplementedError - Method not implemented
         """
 
-        errmsg = "Class method not implemented. Use the method of some child class"
+        errmsg = "Method not implemented. Use the method of some child class"
         raise NotImplementedError(errmsg)

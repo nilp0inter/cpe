@@ -133,9 +133,13 @@ In the following example, an expression of CPE Language of version 2.2 is create
                   <cpe:fact-ref name="cpe:/o:sun:solaris:5.8" />
     
                   <cpe:fact-ref name="cpe:/o:sun:solaris:5.9" />
+
               </cpe:logical-test>
+
               <cpe:fact-ref name="cpe:/a:bea:weblogic:8.1" />
+
           </cpe:logical-test>
+
       </cpe:platform>
 
   ::

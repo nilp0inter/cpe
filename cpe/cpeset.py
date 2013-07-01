@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module contains the common characteristics of
@@ -28,7 +28,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpe import CPE
 from comp.cpecomp import CPEComponent
@@ -36,11 +36,12 @@ from comp.cpecomp import CPEComponent
 
 class CPESet(object):
     """
-    Represents a set of CPE names.
+    Represents a set of CPE Names.
 
     This class allows:
-        - create a set of CPE names.
-        - match a CPE name against a set of CPE names.
+
+        - create a set of CPE Names.
+        - match a CPE Name against a set of CPE Names.
     """
 
     ####################
@@ -49,29 +50,33 @@ class CPESet(object):
 
     def __getitem__(self, i):
         """
-        Returns the i'th CPE name of set.
+        Returns the i'th CPE Name of set.
 
-        INPUT:
-            - i: index of CPE name of set to return
-        OUTPUT:
-            - CPE name found
-        EXCEPTION:
-            - IndexError: list index out of range
+        :param int i: CPE Name index to find
+        :returns: CPE Name found
+        :rtype: CPE
+        :exception: IndexError - list index out of range
         """
 
         return self.K[i]
 
     def __init__(self):
         """
-        Creates an empty set of CPE names.
+        Creates an empty set of CPE Names.
+
+        :returns: None
         """
         self.K = []
 
     def __len__(self):
         """
-        Returns the count of CPE names of set.
+        Returns the count of CPE Names of set.
 
-        - TEST: empty set
+        :returns: count of components of CPE Name
+        :rtype: int
+
+        TEST: empty set
+
         >>> from cpeset1_1 import CPESet1_1
         >>> s = CPESet1_1()
         >>> len(s)
@@ -84,10 +89,8 @@ class CPESet(object):
         """
         Returns a human-readable representation of CPE set.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE set as string
+        :rtype: string
         """
 
         setlen = self.__len__()
@@ -105,47 +108,45 @@ class CPESet(object):
 
     def append(self, cpe):
         """
-        Adds a CPE name to the set if not already.
+        Adds a CPE Name to the set if not already.
 
-        INPUT:
-            - cpe: CPE name to store in set
-        OUTPUT:
-            - None
+        :param CPE cpe: CPE Name to store in set
+        :returns: None
+        :exception: NotImplementedError - Method not implemented
         """
 
-        errmsg = "Class method not implemented. Use the method of some child class"
+        errmsg = "Method not implemented. Use the method of some child class"
         raise NotImplementedError(errmsg)
 
     def name_match(self, cpe):
         """
-        Accepts a set of known instances of CPE names and a candidate CPE name,
+        Accepts a set of known instances of CPE Names and a candidate CPE Name,
         and returns 'True' if the candidate can be shown to be
         an instance based on the content of the known instances.
         Otherwise, it returns 'False'.
 
-        INPUT:
-            - self: A set of m known CPE names K = {K1, K2, …, Km}.
-            - cpe: A candidate CPE name X.
-        OUTPUT:
-            - True if X matches K, otherwise False.
+        :param CPESet self: A set of m known CPE Names K = {K1, K2, …, Km}.
+        :param CPE cpe: A candidate CPE Name X.
+        :returns: True if X matches K, otherwise False.
+        :rtype: boolean
         """
 
         # An empty set not matching with any CPE
         if len(self) == 0:
             return False
 
-        # If input CPE name string is in set of CPE name strings
+        # If input CPE Name string is in set of CPE Name strings
         # not do searching more because there is a matching
         for k in self.K:
             if (k.cpe_str == cpe.cpe_str):
                 return True
 
-        # If "cpe" is an empty CPE name any system matches
+        # If "cpe" is an empty CPE Name any system matches
         if len(cpe) == 0:
             return True
 
-        # There are not a CPE name string in set equal to
-        # input CPE name string
+        # There are not a CPE Name string in set equal to
+        # input CPE Name string
         match = False
 
         for p in CPE.CPE_PART_KEYS:
@@ -188,7 +189,7 @@ class CPESet(object):
                     # cpe part not match with parts in set
                     return False
 
-            # Next part in input CPE name
+            # Next part in input CPE Name
 
-        # All parts in input CPE name matched
+        # All parts in input CPE Name matched
         return True
