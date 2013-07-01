@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module is used to the treatment of identifiers
@@ -9,7 +9,7 @@ of IT platforms (hardware, operating systems or applications of system)
 in accordance with version 2.3 of CPE (Common Platform Enumeration)
 specification.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
+"""
 
 from cpe import CPE
 
@@ -45,15 +45,24 @@ class CPE2_3(CPE):
     ###############
 
     # Constants of possible CPE name styles of 2.3 version
+
+    #: Formatted string style of version 2.3 of CPE specification
     STYLE_FS = "FS"
+
+    #: Uniform Resource Identifier(URI) style of version 2.3
+    #: of CPE specification
     STYLE_URI = "URI"
+
+    #: Well-Formed Name (WFN) style of version 2.3 of CPE specification
     STYLE_WFN = "WFN"
+
+    #: Style of version 2.3 of CPE specification not set
     STYLE_UNDEFINED = "undefined"
 
-    # Version of CPE name
+    #: Version of CPE name
     VERSION = CPE.VERSION_2_3
 
-    # Style of CPE name
+    #: Style of CPE name
     STYLE = STYLE_UNDEFINED
 
     ####################
@@ -62,14 +71,14 @@ class CPE2_3(CPE):
 
     def __new__(cls, cpe_str, *args, **kwargs):
         """
-        Create a new CPE name of version 2.3.
+        Generator of CPE Names according to version 2.3.
 
-        INPUT:
-            - cpe_str: CPE name string
-        OUTPUT:
-            - CPE object with style of CPE detected correctly.
-        EXCEPTIONS:
-            - NotImplementedError: Style of CPE not implemented
+        :param string cpe_str: CPE Name string
+        :returns: CPE object of version 2.3 with style
+            detected correctly
+        :rtype: CPE2_3
+        :exception: NotImplementedError - incorrect CPE Name or
+            version of CPE not implemented
 
         This class implements the factory pattern, that is,
         this class centralizes the creation of objects of a particular
@@ -105,12 +114,10 @@ class CPE2_3(CPE):
 
     def __str__(self):
         """
-        Returns a human-readable representation of CPE name.
+        Returns a human-readable representation of CPE Name.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE Name as string
+        :rtype: string
         """
 
         return "CPE v{0} ({1}): {2}".format(CPE2_3.VERSION,

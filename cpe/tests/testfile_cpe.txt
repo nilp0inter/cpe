@@ -1,9 +1,9 @@
 >>> from cpe import CPE
->>> from cpe1_1 import CPE1_1
->>> from cpe2_3 import CPE2_3
->>> from cpe2_3_wfn import CPE2_3_WFN
->>> from cpe2_3_uri import CPE2_3_URI
->>> from cpe2_3_fs import CPE2_3_FS
+>>> from cpe.cpe1_1 import CPE1_1
+>>> from cpe.cpe2_3 import CPE2_3
+>>> from cpe.cpe2_3_wfn import CPE2_3_WFN
+>>> from cpe.cpe2_3_uri import CPE2_3_URI
+>>> from cpe.cpe2_3_fs import CPE2_3_FS
 
 
 -----------------------------------------------

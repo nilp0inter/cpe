@@ -119,14 +119,12 @@ class CPE(dict):
         :returns: URI string with trailing colons removed
         :rtype: string
 
-        - TEST: trailing colons necessary
-
+        TEST: trailing colons necessary
         >>> s = '1:2::::'
         >>> CPE._trim(s)
         '1:2'
 
-        - TEST: trailing colons not necessary
-
+        TEST: trailing colons not necessary
         >>> s = '1:2:3:4:5:6'
         >>> CPE._trim(s)
         '1:2:3:4:5:6'
@@ -183,8 +181,14 @@ class CPE(dict):
 
         :param int i: component index to find
         :returns: component string found
-        :rtype: Component
+        :rtype: CPEComponent
         :exception: IndexError - index not found in CPE Name
+
+        TEST: good index
+        >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
+        >>> c = CPE(str)
+        >>> c[0]
+        CPEComponent1_1(sun_microsystem)
         """
 
         count = 0
@@ -231,6 +235,13 @@ class CPE(dict):
 
         :returns: count of components of CPE Name
         :rtype: int
+
+        TEST: a CPE Name with two parts (hw and os) and
+        some elements empty and with values
+        >>> str = "cpe:/cisco::3825/cisco:ios:12.3"
+        >>> c = CPE(str)
+        >>> len(c)
+        6
         """
 
         count = 0
@@ -251,7 +262,7 @@ class CPE(dict):
 
         :param string cpe_str: CPE Name string
         :param string version: version of CPE specification of CPE Name
-        :returns: CPE object with version of CPE detected correctly.
+        :returns: CPE object with version of CPE detected correctly
         :rtype: CPE
         :exception: NotImplementedError - incorrect CPE Name or
             version of CPE not implemented
@@ -300,9 +311,9 @@ class CPE(dict):
 
     def __repr__(self):
         """
-        Returns a unambiguous representation of CPE component.
+        Returns a unambiguous representation of CPE Name.
 
-        :returns: Representation of CPE component as string
+        :returns: Representation of CPE Name as string
         :rtype: string
         """
 
@@ -361,7 +372,7 @@ class CPE(dict):
         """
         Returns a human-readable representation of CPE Name.
 
-        :returns: Representation of CPE component as string
+        :returns: Representation of CPE Name as string
         :rtype: string
         """
 
@@ -638,7 +649,7 @@ class CPE(dict):
         wfn = wfn[:-1]
 
         # Return the WFN string
-        wfn.append("]")
+        wfn.append(CPE2_3_WFN.CPE_SUFFIX)
 
         return "".join(wfn)
 

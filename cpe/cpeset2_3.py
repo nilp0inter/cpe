@@ -42,8 +42,9 @@ class CPESet2_3(CPESet):
     Represents a set of CPEs.
 
     This class allows:
-    - create set of CPE elements.
-    - match a CPE element against a set of CPE elements.
+
+        - create set of CPE elements.
+        - match a CPE element against a set of CPE elements.
     """
 
     ###############
@@ -72,14 +73,15 @@ class CPESet2_3(CPESet):
     @classmethod
     def _compare(cls, source, target):
         """
-        Compares two values associated with a attribute of two WFNs.
-        This function is a support function for compare_WFNs.
+        Compares two values associated with a attribute of two WFNs,
+        which may be logical values (ANY or NA) or string values.
 
-        Input
-            - A pair of attribute values, which may be logical values
-             (ANY or NA) or string values.
-        Output
-            - The attribute comparison relation.
+        :param string source: First attribute value
+        :param string target: Second attribute value
+        :returns: The attribute comparison relation.
+        :rtype: int
+
+        This function is a support function for compare_WFNs.
         """
 
         if (CPESet2_3._is_string(source)):
@@ -131,6 +133,11 @@ class CPESet2_3(CPESet):
 
         It also properly differentiates between unquoted and quoted
         special characters.
+
+        :param string source: First string value
+        :param string target: Second string value
+        :returns: The comparison relation among input strings.
+        :rtype: int
         """
 
         start = 0
@@ -196,13 +203,18 @@ class CPESet2_3(CPESet):
         Return True if the string contains any unquoted special characters
         (question-mark or asterisk), otherwise False.
 
-        This function is a support function for _compare().
-
         Ex: _contains_wildcards("foo") => FALSE
         Ex: _contains_wildcards("foo\?") => FALSE
         Ex: _contains_wildcards("foo?") => TRUE
         Ex: _contains_wildcards("\*bar") => FALSE
         Ex: _contains_wildcards("*bar") => TRUE
+
+        :param string s: string to check
+        :returns: True if string contains any unquoted special characters,
+            False otherwise.
+        :rtype: boolean
+
+        This function is a support function for _compare().
         """
 
         idx = s.find("*")
@@ -227,6 +239,11 @@ class CPESet2_3(CPESet):
         """
         Returns True if an even number of escape (backslash) characters
         precede the character at index idx in string str.
+
+        :param string str: string to check
+        :returns: True if an even number of escape characters precede
+            the character at index idx in string str, False otherwise.
+        :rtype: boolean
         """
 
         result = 0
@@ -242,6 +259,10 @@ class CPESet2_3(CPESet):
         """
         Return True if arg is a string value,
         and False if arg is a logical value (ANY or NA).
+
+        :param string arg: string to check
+        :returns: True if value is a string, False if it is a logical value.
+        :rtype: boolean
 
         This function is a support function for _compare().
         """
@@ -260,10 +281,11 @@ class CPESet2_3(CPESet):
         of novel name-comparison algorithms.
 
         Compare each attribute of the Source WFN to the Target WFN:
-        Input
-            - Two WFNs: source WFN y target WFN
-        Output
-            - List of pairwise attribute comparison results
+
+        :param CPE2_3_WFN source: first WFN CPE Name
+        :param CPE2_3_WFN target: seconds WFN CPE Name
+        :returns: List of pairwise attribute comparison results
+        :rtype: int
         """
 
         # Create a new associative array table implemented as a dictionary
@@ -291,11 +313,11 @@ class CPESet2_3(CPESet):
         Compares two WFNs and returns True if the set-theoretic relation
         between the names is DISJOINT.
 
-        Input
-            - Two WFNs: source WFN y target WFN
-        Output
-            - Returns True if the set relation between source and target
+        :param CPE2_3_WFN source: first WFN CPE Name
+        :param CPE2_3_WFN target: seconds WFN CPE Name
+        :returns: True if the set relation between source and target
             is DISJOINT, otherwise False.
+        :rtype: boolean
         """
 
         result_dict = CPESet2_3.compare_wfns(source, target)
@@ -314,13 +336,13 @@ class CPESet2_3(CPESet):
     def cpe_equal(cls, source, target):
         """
         Compares two WFNs and returns True if the set-theoretic relation
-        between the names is EQUAL
+        between the names is EQUAL.
 
-        Input
-            - Two WFNs: source WFN y target WFN
-        Output
-            - Returns True if the set relation between source and target
+        :param CPE2_3_WFN source: first WFN CPE Name
+        :param CPE2_3_WFN target: seconds WFN CPE Name
+        :returns: True if the set relation between source and target
             is EQUAL, otherwise False.
+        :rtype: boolean
         """
 
         result_dict = CPESet2_3.compare_wfns(source, target)
@@ -341,11 +363,11 @@ class CPESet2_3(CPESet):
         Compares two WFNs and returns True if the set-theoretic relation
         between the names is (non-proper) SUBSET.
 
-        Input
-            - Two WFNs: source WFN y target WFN
-        Output
-            - Returns True if the set relation between source and target
+        :param CPE2_3_WFN source: first WFN CPE Name
+        :param CPE2_3_WFN target: seconds WFN CPE Name
+        :returns: True if the set relation between source and target
             is SUBSET, otherwise False.
+        :rtype: boolean
         """
 
         result_dict = CPESet2_3.compare_wfns(source, target)
@@ -367,11 +389,11 @@ class CPESet2_3(CPESet):
         Compares two WFNs and returns True if the set-theoretic relation
         between the names is (non-proper) SUPERSET.
 
-        Input
-            - Two WFNs: source WFN y target WFN
-        Output
-            - Returns True if the set relation between source and target
+        :param CPE2_3_WFN source: first WFN CPE Name
+        :param CPE2_3_WFN target: seconds WFN CPE Name
+        :returns: True if the set relation between source and target
             is SUPERSET, otherwise False.
+        :rtype: boolean
         """
 
         result_dict = CPESet2_3.compare_wfns(source, target)
@@ -395,12 +417,16 @@ class CPESet2_3(CPESet):
     def append(self, cpe):
         """
         Adds a CPE element to the set if not already.
-        Only WFN CPE names are valid, so this function converts the input cpe
-        to WFN style.
+        Only WFN CPE Names are valid, so this function converts the input CPE
+        object of version 2.3 to WFN style.
+
+        :param CPE cpe: CPE Name to store in set
+        :returns: None
+        :exception: ValueError - invalid version of CPE Name
         """
 
         if cpe.VERSION != CPE2_3.VERSION:
-            errmsg = "CPE name version {0} not valid, version 2.3 expected".format(
+            errmsg = "CPE Name version {0} not valid, version 2.3 expected".format(
                 cpe.version)
             raise ValueError(errmsg)
 
@@ -411,7 +437,7 @@ class CPESet2_3(CPESet):
         if isinstance(cpe, CPE2_3_WFN):
             self.K.append(cpe)
         else:
-            # Convert the CPE name to WFN
+            # Convert the CPE Name to WFN
             wfn = CPE2_3_WFN(cpe.as_wfn())
             self.K.append(wfn)
 
@@ -420,11 +446,10 @@ class CPESet2_3(CPESet):
         Accepts a set of CPE Names K and a candidate CPE Name X. It returns
         'True' if X matches any member of K, and 'False' otherwise.
 
-        Inputs:
-            - self: A list of m CPE Names K = {K1, K2, …, Km}.
-            - cpe: A candidate CPE Name X.
-        Output:
-            - True if X matches K, False otherwise.
+        :param CPESet self: A set of m known CPE Names K = {K1, K2, …, Km}.
+        :param CPE cpe: A candidate CPE Name X.
+        :returns: True if X matches K, otherwise False.
+        :rtype: boolean
         """
 
         for N in self.K:

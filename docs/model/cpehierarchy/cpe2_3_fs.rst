@@ -1,5 +1,6 @@
 CPE2_3_FS class
 ===============
 
-.. .. autoclass:: cpe2_3_fs.CPE2_3_FS
-..   :members:
+.. autoclass:: cpe2_3_fs.CPE2_3_FS
+   :members:
+   :special-members:
