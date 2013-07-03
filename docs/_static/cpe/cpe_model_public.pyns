@@ -1,13 +1,13 @@
 # PynSource Version 1.1
 {'type':'meta', 'info1':'Lorem ipsum dolor sit amet, consectetur adipiscing elit is latin.'}
-{'type':'umlshape', 'id':'CPE', 'x':15, 'y':82, 'width':170, 'height':717, 'attrs':'KEY_APP|KEY_HW|KEY_OS|KEY_UNDEFINED|CPE_PART_KEYS|PREFIX_ELEM|PREFIX_ELEMENTS|SUFFIX_ELEM|SUFFIX_ELEMENTS|VERSION_1_1|VERSION_2_2|VERSION_2_3|VERSION_UNDEFINED|VERSION|system_and_parts|cpe_str', 'meths':'__eq__|__getitem__|__init__|__len__|__new__|__repr__|__str__|as_dict|as_uri_2_3|as_wfn|as_fs|get_edition|get_language|get_other|get_part|get_product|get_software_edition|get_target_hardware|get_target_software|get_update|get_vendor|get_version|is_application|is_hardware|is_operating_system'}
+{'type':'umlshape', 'id':'CPE', 'x':15, 'y':79, 'width':170, 'height':653, 'attrs':'KEY_APP|KEY_HW|KEY_OS|KEY_UNDEFINED|CPE_PART_KEYS|VERSION_1_1|VERSION_2_2|VERSION_2_3|VERSION_UNDEFINED|VERSION|system_and_parts|cpe_str', 'meths':'__eq__|__getitem__|__init__|__len__|__new__|__repr__|__str__|as_dict|as_uri_2_3|as_wfn|as_fs|get_edition|get_language|get_other|get_part|get_product|get_software_edition|get_target_hardware|get_target_software|get_update|get_vendor|get_version|is_application|is_hardware|is_operating_system'}
 {'type':'umlshape', 'id':'dict', 'x':78, 'y':25, 'width':54, 'height':31, 'attrs':'', 'meths':''}
-{'type':'umlshape', 'id':'CPE1_1', 'x':285, 'y':156, 'width':170, 'height':189, 'attrs':'PART_SEPARATOR|ELEMENT_SEPARATOR|VERSION', 'meths':'__getitem__|__len__|__new__|as_wfn|get_attribute_values'}
-{'type':'umlshape', 'id':'CPE2_2', 'x':285, 'y':370, 'width':170, 'height':141, 'attrs':'VERSION', 'meths':'__len__|__new__|as_wfn|get_attribute_values'}
-{'type':'umlshape', 'id':'CPE2_3', 'x':286, 'y':540, 'width':168, 'height':189, 'attrs':'STYLE_FS|STYLE_URI|STYLE_WFN|STYLE_UNDEFINED|VERSION|STYLE', 'meths':'__new__|__str__'}
-{'type':'umlshape', 'id':'CPE2_3_FS', 'x':545, 'y':723, 'width':170, 'height':125, 'attrs':'STYLE', 'meths':'__len__|__new__|get_attribute_values'}
-{'type':'umlshape', 'id':'CPE2_3_URI', 'x':545, 'y':392, 'width':170, 'height':157, 'attrs':'STYLE', 'meths':'__getitem__|__len__|__new__|as_wfn|get_attribute_values'}
-{'type':'umlshape', 'id':'CPE2_3_WFN', 'x':545, 'y':573, 'width':170, 'height':125, 'attrs':'STYLE|CPE_PREFIX', 'meths':'__new__|get_attribute_values'}
+{'type':'umlshape', 'id':'CPE1_1', 'x':285, 'y':121, 'width':170, 'height':189, 'attrs':'PART_SEPARATOR|ELEMENT_SEPARATOR|VERSION', 'meths':'__getitem__|__len__|__new__|as_wfn|get_attribute_values'}
+{'type':'umlshape', 'id':'CPE2_2', 'x':285, 'y':335, 'width':170, 'height':141, 'attrs':'VERSION', 'meths':'__len__|__new__|as_wfn|get_attribute_values'}
+{'type':'umlshape', 'id':'CPE2_3', 'x':285, 'y':510, 'width':171, 'height':189, 'attrs':'STYLE_FS|STYLE_URI|STYLE_WFN|STYLE_UNDEFINED|VERSION|STYLE', 'meths':'__new__|__str__'}
+{'type':'umlshape', 'id':'CPE2_3_FS', 'x':545, 'y':698, 'width':170, 'height':125, 'attrs':'STYLE', 'meths':'__len__|__new__|get_attribute_values'}
+{'type':'umlshape', 'id':'CPE2_3_URI', 'x':540, 'y':356, 'width':178, 'height':157, 'attrs':'STYLE', 'meths':'__getitem__|__len__|__new__|as_wfn|get_attribute_values'}
+{'type':'umlshape', 'id':'CPE2_3_WFN', 'x':545, 'y':535, 'width':170, 'height':141, 'attrs':'STYLE|CPE_PREFIX|CPE_SUFFIX', 'meths':'__new__|get_attribute_values'}
 {'type':'edge', 'id':'CPE_to_dict', 'source':'CPE', 'target':'dict', 'uml_edge_type':'generalisation'}
 {'type':'edge', 'id':'CPE1_1_to_CPE', 'source':'CPE1_1', 'target':'CPE', 'uml_edge_type':'generalisation'}
 {'type':'edge', 'id':'CPE2_2_to_CPE', 'source':'CPE2_2', 'target':'CPE', 'uml_edge_type':'generalisation'}
