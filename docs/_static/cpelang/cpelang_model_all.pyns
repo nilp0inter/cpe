@@ -3,7 +3,7 @@
 {'type':'umlshape', 'id':'CPELanguage', 'x':145, 'y':82, 'width':131, 'height':157, 'attrs':'expression|path|document', 'meths':'__init__|__str__|language_match'}
 {'type':'umlshape', 'id':'object', 'x':172, 'y':20, 'width':76, 'height':31, 'attrs':'', 'meths':''}
 {'type':'umlshape', 'id':'CPELanguage2_2', 'x':228, 'y':289, 'width':164, 'height':93, 'attrs':'VERSION', 'meths':'language_match'}
-{'type':'umlshape', 'id':'CPELanguage2_3', 'x':20, 'y':284, 'width':170, 'height':173, 'attrs':'VERSION', 'meths':'_fact_ref_eval|_check_fact_ref_eval|_unbind|language_match|ovalcheck|ocilcheck'}
+{'type':'umlshape', 'id':'CPELanguage2_3', 'x':20, 'y':284, 'width':170, 'height':173, 'attrs':'VERSION', 'meths':'_fact_ref_eval|_check_fact_ref_eval|_ocilcheck|_ovalcheck|_unbind|language_match'}
 {'type':'edge', 'id':'CPELanguage_to_object', 'source':'CPELanguage', 'target':'object', 'uml_edge_type':'generalisation'}
 {'type':'edge', 'id':'CPELanguage2_2_to_CPELanguage', 'source':'CPELanguage2_2', 'target':'CPELanguage', 'uml_edge_type':'generalisation'}
 {'type':'edge', 'id':'CPELanguage2_3_to_CPELanguage', 'source':'CPELanguage2_3', 'target':'CPELanguage', 'uml_edge_type':'generalisation'}

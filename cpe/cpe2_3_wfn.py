@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module is used to the treatment of identifiers
@@ -29,7 +29,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpe import CPE
 from cpe2_3 import CPE2_3
@@ -51,6 +51,7 @@ class CPE2_3_WFN(CPE2_3):
     Each platform can be broken down into many distinct parts.
     A CPE Name specifies a simple part and is used to identify
     any platform that matches the description of that part.
+
     The distinct parts are:
 
     - Hardware part: the physical platform supporting the IT system.
@@ -59,10 +60,11 @@ class CPE2_3_WFN(CPE2_3):
     - Application part: software systems, services, servers, and packages
       installed on the system.
 
-    CPE name syntax: wfn:[a1=v1, a2=v2, …, an=vn]
+    CPE Name syntax: wfn:[a1=v1, a2=v2, …, an=vn]
 
     Only the following attributes SHALL be permitted in a WFN
     attribute-value pair:
+
     a. part
     b. vendor
     c. product
@@ -80,11 +82,14 @@ class CPE2_3_WFN(CPE2_3):
     #  CONSTANTS  #
     ###############
 
-    # Style of CPE name
+    #: Style of CPE Name
     STYLE = CPE2_3.STYLE_WFN
 
-    # Prefix of CPE name with WFN style
+    #: Prefix of CPE Name with WFN style
     CPE_PREFIX = "wfn:["
+
+    #: Suffix of CPE Name with WFN style
+    CPE_SUFFIX = "]"
 
     ####################
     #  OBJECT METHODS  #
@@ -92,31 +97,32 @@ class CPE2_3_WFN(CPE2_3):
 
     def __new__(cls, cpe_str, *args, **kwargs):
         """
-        Create a new CPE name of version 2.3 with WFN style.
+        Create a new CPE Name of version 2.3 with WFN style.
+
+        :param string cpe_str: CPE Name string
+        :returns: CPE object of version 2.3 of CPE specification with
+            WFN style.
+        :rtype: CPE2_3_WFN
         """
 
         return dict.__new__(cls)
 
     def _parse(self):
         """
-        Checks if CPE name is valid.
+        Checks if the CPE Name is valid.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: bad-formed CPE name
+        :returns: None
+        :exception: ValueError - bad-formed CPE Name
         """
 
         # Check prefix and initial bracket of WFN
         if self._str[0:5] != CPE2_3_WFN.CPE_PREFIX:
-            errmsg = "Malformed CPE name: WFN prefix not found"
+            errmsg = "Bad-formed CPE Name: WFN prefix not found"
             raise ValueError(errmsg)
 
         # Check final backet
         if self._str[-1:] != "]":
-            errmsg = "Malformed CPE name: final bracket of WFN not found"
+            errmsg = "Bad-formed CPE Name: final bracket of WFN not found"
             raise ValueError(errmsg)
 
         content = self._str[5:-1]
@@ -132,7 +138,7 @@ class CPE2_3_WFN(CPE2_3):
             for e in list_component:
                 # Whitespace not valid in component names and values
                 if e.find(" ") != -1:
-                    msg = "Malformed CPE name: WFN with too many whitespaces"
+                    msg = "Bad-formed CPE Name: WFN with too many whitespaces"
                     raise ValueError(msg)
 
                 # Split pair attribute-value
@@ -142,13 +148,13 @@ class CPE2_3_WFN(CPE2_3):
 
                 # Check valid attribute name
                 if att_name not in CPEComponent.CPE_COMP_KEYS_EXTENDED:
-                    msg = "Malformed CPE name: invalid attribute name '{0}'".format(
+                    msg = "Bad-formed CPE Name: invalid attribute name '{0}'".format(
                         att_name)
                     raise ValueError(msg)
 
                 if att_name in components:
                     # Duplicate attribute
-                    msg = "Malformed CPE name: attribute '{0}' repeated".format(
+                    msg = "Bad-formed CPE Name: attribute '{0}' repeated".format(
                         att_name)
                     raise ValueError(msg)
 
@@ -171,7 +177,7 @@ class CPE2_3_WFN(CPE2_3):
 
                 else:
                     # Bad value
-                    msg = "Malformed CPE name: invalid value '{0}'".format(
+                    msg = "Bad-formed CPE Name: invalid value '{0}'".format(
                         att_value)
                     raise ValueError(msg)
 
@@ -183,7 +189,7 @@ class CPE2_3_WFN(CPE2_3):
                     components[ck] = CPEComponentUndefined()
 
             # #######################
-            #  Storage of CPE name  #
+            #  Storage of CPE Name  #
             # #######################
 
             part_comp = components[CPEComponent.ATT_PART]
@@ -192,7 +198,7 @@ class CPE2_3_WFN(CPE2_3):
                 elements.append(components)
                 self[CPE.KEY_UNDEFINED] = elements
             else:
-                # Create internal structure of CPE name in parts:
+                # Create internal structure of CPE Name in parts:
                 # one of them is filled with identified components,
                 # the rest are empty
                 part_value = part_comp.get_value()
@@ -204,20 +210,20 @@ class CPE2_3_WFN(CPE2_3):
                     self._create_cpe_parts(CPEComponent.VALUE_PART_UNDEFINED,
                                            components)
 
-        # Fills the empty parts of internal structure of CPE name
+        # Fills the empty parts of internal structure of CPE Name
         for pk in CPE.CPE_PART_KEYS:
             if pk not in self.keys():
                 self[pk] = []
 
     def get_attribute_values(self, att_name):
         """
-        Returns the values of attribute "att_name" of CPE name.
+        Returns the values of attribute "att_name" of CPE Name.
         By default a only element in each part.
 
-        INPUT:
-            - att_name: Attribute name to get
-        OUTPUT:
-            - List of attribute values
+        :param string att_name: Attribute name to get
+        :returns: List of attribute values
+        :rtype: list
+        :exception: ValueError - invalid attribute name
         """
 
         lc = []

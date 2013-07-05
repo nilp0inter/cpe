@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to store the value of the packed edition component
 of a CPE name of version 2.3 of CPE (Common Platform Enumeration)
 specification with Universal Resource Identifier (URI) style.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
+"""
 
 from cpecomp2_3_uri import CPEComponent2_3_URI
 
@@ -43,6 +43,7 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
     #  CONSTANTS  #
     ###############
 
+    #: Separator of components of an edition attribute packed
     SEPARATOR_COMP = "~"
 
     ####################
@@ -53,12 +54,9 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
         """
         Store the value of component.
 
-        INPUT:
-            - comp_str: value of component value
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
+        :param string comp_str: value of component value
+        :returns: None
+        :exception: ValueError - incorrect value of component
         """
 
         self.set_value(comp_str)
@@ -66,11 +64,6 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
     def _decode(self):
         """
         The decoding of the value of this type of component is not necesaary.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - None
         """
 
         pass
@@ -79,10 +72,8 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
         """
         This function is not necesaary in this component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True
+        :returns: True
+        :rtype: boolean
         """
 
         True
@@ -91,10 +82,8 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
         """
         This function is not necesaary in this component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True
+        :returns: True
+        :rtype: boolean
         """
 
         True
@@ -103,12 +92,9 @@ class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):
         """
         Set the value of component.
 
-        INPUT:
-            - comp_str: value of component
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
+        :param string comp_str: value of component
+        :returns: None
+        :exception: ValueError - incorrect value of component
         """
 
         self._is_negated = False

@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to store the value of the components of a CPE name
 of version 2.3 of CPE (Common Platform Enumeration) specification
 with Universal Resource Identifier (URI) style.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
+"""
 
 from cpecomp2_3 import CPEComponent2_3
 from cpecomp2_3_wfn import CPEComponent2_3_WFN
@@ -50,24 +50,32 @@ class CPEComponent2_3_URI(CPEComponent2_3):
     _SPEC_CHRS = "((%01)+|%02)"
     _UNRESERVED = "[\w\-\.]"
 
-    # Separator of components of CPE name with URI style
+    #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ":"
 
-    # Separator of language parts: language and region
+    #: Separator of language parts: language and region
     SEPARATOR_LANG = "-"
 
-    # Separator of edition part components in CPE uri
+    #: Separator of edition part components in CPE uri
     SEPARATOR_PACKED_EDITION = "~"
 
     # Logical values in string format
+
+    #: Logical value associated with a any value logical value
     VALUE_ANY = ""
+
+    #: Logical value associated with a not applicable logical value
     VALUE_NA = "-"
+
+    #: Logical value associated with a component without value
     VALUE_EMPTY = ""
+
+    #: Logical value associated with a undefined component
     VALUE_UNDEFINED = None
 
-    # Constant associated with wildcard to indicate a sequence of characters
+    #: Constant associated with wildcard to indicate a sequence of characters
     WILDCARD_MULTI = "%02"
-    # Constant associated with wildcard to indicate a character
+    #: Constant associated with wildcard to indicate a character
     WILDCARD_ONE = "%01"
 
     ###############
@@ -84,7 +92,7 @@ class CPEComponent2_3_URI(CPEComponent2_3):
     _value_pattern = "^{0}$".format(_string)
     _value_rxc = re.compile(_value_pattern)
 
-    # Characters to convert to percent-encoded characters
+    #: Characters to convert to percent-encoded characters
     char_to_pce = {
         '!': "%21",
         '"': "%22",
@@ -116,7 +124,7 @@ class CPEComponent2_3_URI(CPEComponent2_3):
         '}': "%7d",
         '~': "%7e"}
 
-    # Percent-encoded characters to decode
+    #: Percent-encoded characters to decode
     pce_char_to_decode = {
         "%21": '\\!',
         "%22": '\\\"',
@@ -159,12 +167,7 @@ class CPEComponent2_3_URI(CPEComponent2_3):
         This function scans the value of component and returns a copy
         with all percent-encoded characters decoded.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: Invalid character in value of component
+        :exception: ValueError - invalid character in value of component
         """
 
         result = []
@@ -245,10 +248,8 @@ class CPEComponent2_3_URI(CPEComponent2_3):
         Return True if the input value of attribute "edition" is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
         """
 
         comp_str = self._standard_value[0]
@@ -274,10 +275,8 @@ class CPEComponent2_3_URI(CPEComponent2_3):
         Return True if the input value CPE name attribute is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
         """
 
         comp_str = self._standard_value[0]

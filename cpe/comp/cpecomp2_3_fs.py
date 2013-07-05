@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to store the value of the components of a CPE name
 of version 2.3 of CPE (Common Platform Enumeration) specification
 with formatted string style.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
+"""
 
 from cpecomp2_3 import CPEComponent2_3
 from cpecomp2_3_wfn import CPEComponent2_3_WFN
@@ -50,19 +50,23 @@ class CPEComponent2_3_FS(CPEComponent2_3):
     _UNRESERVED = "\w|\.|\-"
     _PUNC = "\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~|\-"
 
-    # Separator of components of CPE name with URI style
+    #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ":"
 
-    # Separator of language parts: language and region
+    #: Separator of language parts: language and region
     SEPARATOR_LANG = "-"
 
     # Logical values in string format
+
+    #: Logical value associated with a any value logical value
     VALUE_ANY = "*"
+
+    #: Logical value associated with a not applicable logical value
     VALUE_NA = "-"
 
-    # Constant associated with wildcard to indicate a sequence of characters
+    #: Constant associated with wildcard to indicate a sequence of characters
     WILDCARD_MULTI = CPEComponent2_3_WFN.WILDCARD_MULTI
-    # Constant associated with wildcard to indicate a character
+    #: Constant associated with wildcard to indicate a character
     WILDCARD_ONE = CPEComponent2_3_WFN.WILDCARD_ONE
 
     ###############
@@ -93,12 +97,7 @@ class CPEComponent2_3_FS(CPEComponent2_3):
         with their escaping, into the result. Look for unquoted non
         alphanumerics and if not "*" or "?", add escaping.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: Invalid character in value of component
+        :exception: ValueError - invalid character in value of component
         """
 
         result = []
@@ -170,10 +169,8 @@ class CPEComponent2_3_FS(CPEComponent2_3):
         Return True if the value of component in generic attribute is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
         """
 
         comp_str = self._standard_value[0]

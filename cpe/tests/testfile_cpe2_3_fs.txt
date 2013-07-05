@@ -1,5 +1,5 @@
->>> from cpe2_3_fs import CPE2_3_FS
->>> from comp.cpecomp_simple import CPEComponentSimple
+>>> from cpe.cpe2_3_fs import CPE2_3_FS
+>>> from cpe.comp.cpecomp_simple import CPEComponentSimple
 
 ----------------------------------
 Test for _get_attribute_values(self)

@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module of is an implementation of name matching
@@ -28,7 +28,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpe import CPE
 from cpeset import CPESet
@@ -36,18 +36,19 @@ from cpeset import CPESet
 
 class CPESet2_2(CPESet):
     """
-    Represents a set of CPE names.
+    Represents a set of CPE Names.
 
     This class allows:
-        - create set of CPE names.
-        - match a CPE element against a set of CPE names.
+
+    - create set of CPE Names.
+    - match a CPE element against a set of CPE Names.
     """
 
     ###############
     #  CONSTANTS  #
     ###############
 
-    # Version of CPE set
+    #: Version of CPE set
     VERSION = "2.2"
 
     ####################
@@ -56,16 +57,15 @@ class CPESet2_2(CPESet):
 
     def append(self, cpe):
         """
-        Adds a CPE name to the set if not already.
+        Adds a CPE Name to the set if not already.
 
-        INPUT:
-            - cpe: CPE name to store in set
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: Invalid version of CPE name
+        :param CPE cpe: CPE Name to store in set
+        :returns: None
+        :exception: ValueError - invalid version of CPE Name
 
-        - TEST:
+
+        TEST:
+
         >>> from cpeset2_2 import CPESet2_2
         >>> from cpe2_2 import CPE2_2
         >>> uri1 = 'cpe:/h:hp'
@@ -75,7 +75,7 @@ class CPESet2_2(CPESet):
         """
 
         if cpe.VERSION != CPE.VERSION_2_2:
-            errmsg = "CPE name version {0} not valid, version 2.2 expected".format(
+            errmsg = "CPE Name version {0} not valid, version 2.2 expected".format(
                 cpe.VERSION)
             raise ValueError(errmsg)
 
@@ -87,18 +87,18 @@ class CPESet2_2(CPESet):
 
     def name_match(self, cpe):
         """
-        Accepts a set of known instances of CPE names and a candidate CPE name,
+        Accepts a set of known instances of CPE Names and a candidate CPE Name,
         and returns 'True' if the candidate can be shown to be
         an instance based on the content of the known instances.
         Otherwise, it returns 'False'.
 
-        INPUT:
-            - self: A set of m known CPE names K = {K1, K2, …, Km}.
-            - cpe: A candidate CPE name X.
-        OUTPUT:
-            - True if X matches K, otherwise False.
+        :param CPESet self: A set of m known CPE Names K = {K1, K2, …, Km}.
+        :param CPE cpe: A candidate CPE Name X.
+        :returns: True if X matches K, otherwise False.
+        :rtype: boolean
 
-        - TEST: matching with ANY values explicit
+        TEST: matching with ANY values explicit
+
         >>> from cpe2_2 import CPE2_2
         >>> uri1 = 'cpe:/o:microsoft:windows:vista'
         >>> uri2 = 'cpe:/o:cisco:ios:12.3:enterprise'

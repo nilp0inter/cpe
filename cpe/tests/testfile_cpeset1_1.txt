@@ -1,5 +1,5 @@
->>> from cpeset1_1 import CPESet1_1
->>> from cpe1_1 import CPE1_1
+>>> from cpe.cpeset1_1 import CPESet1_1
+>>> from cpe.cpe1_1 import CPE1_1
 
 -----------------------------------------------
 Test for __getitem__(self, i)
@@ -76,7 +76,7 @@ Test for append(self, cpe)
 ----------------------------------
 
 - TEST: set with invalid CPE name
->>> from cpe2_2 import CPE2_2
+>>> from cpe.cpe2_2 import CPE2_2
 >>> uri = 'cpe:/a:microsoft'
 >>> c = CPE2_2(uri)
 >>> s = CPESet1_1()

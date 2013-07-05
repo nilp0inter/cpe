@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to store the value of the components of a CPE name
 of version 2.3 of CPE (Common Platform Enumeration) specification with
 Well-Formed Name (WFN) style.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -26,9 +26,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
+"""
 
 from cpecomp2_3 import CPEComponent2_3
 
@@ -48,22 +48,26 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
     _ESCAPE = r"\\"
     _PUNC_NO_DASH = "\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\.|\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~"
 
-    # Separator of components of CPE name with URI style
+    #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ", "
 
-    # Separator of attribute and value in pairs of component
+    #: Separator of attribute and value in pairs of component
     SEPARATOR_PAIR = "="
 
-    # Separator of language parts: language and region
+    #: Separator of language parts: language and region
     SEPARATOR_LANG = r"\-"
 
     # Logical values in string format
+
+    #: Logical value associated with a any value logical value
     VALUE_ANY = "ANY"
+
+    #: Logical value associated with a not applicable logical value
     VALUE_NA = "NA"
 
-    # Constant associated with wildcard to indicate a sequence of characters
+    #: Constant associated with wildcard to indicate a sequence of characters
     WILDCARD_MULTI = "*"
-    # Constant associated with wildcard to indicate a character
+    #: Constant associated with wildcard to indicate a character
     WILDCARD_ONE = "?"
 
     ###############
@@ -98,11 +102,6 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
         Convert the encoded value of component to standard value (WFN value) is
         not necessary in this case because the internal value is in WFN
         already.
-
-        INPUT:
-            - None
-        OUTPUT:
-            - None
         """
 
         pass
@@ -112,10 +111,8 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
         Return True if the value of component in generic attribute is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
         """
 
         comp_str = self._standard_value
@@ -124,6 +121,9 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
     def get_value(self):
         """
         Returns the encoded value of component.
+
+        :returns: encoded value of component
+        :rtype: string
         """
 
         # Add double quotes
@@ -133,13 +133,10 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
         """
         Set the value of component.
 
-        INPUT:
-            - comp_str: value of component
-            - comp_att: attribute associated with comp_str
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
+        :param string comp_str: value of component
+        :param string comp_att: attribute associated with comp_str
+        :returns: None
+        :exception: ValueError - incorrect value of component
         """
 
         # Del double quotes of value

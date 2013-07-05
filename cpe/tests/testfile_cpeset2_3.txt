@@ -1,5 +1,5 @@
->>> from cpe2_3_wfn import CPE2_3_WFN
->>> from cpeset2_3 import CPESet2_3
+>>> from cpe.cpe2_3_wfn import CPE2_3_WFN
+>>> from cpe.cpeset2_3 import CPESet2_3
 
 -----------------------------------------------
 Test for _compare(cls, source, target)

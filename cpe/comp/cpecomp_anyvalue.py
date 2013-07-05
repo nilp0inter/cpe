@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to create a component of CPE name that represents any value.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,9 +24,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
+"""
 
 from cpecomp_logical import CPEComponentLogical
 
@@ -38,7 +38,7 @@ class CPEComponentAnyValue(CPEComponentLogical):
 
     For example, in version 2.3 of CPE specification, an component "any value"
     is other attribute in CPE name
-    cpe:2.3:a:microsft:windows:xp:*:*:*:*:*:*:*.
+    cpe:2.3:a:microsft:windows:xp:\*:\*:\*:\*:\*:\*:\*.
     """
 
     ####################
@@ -51,10 +51,9 @@ class CPEComponentAnyValue(CPEComponentLogical):
         self (second element of operation) are equal components,
         false otherwise.
 
-        INPUT:
-            - other: component to compare
-        OUTPUT:
-            True if other == self, False otherwise
+        :param CPEComponent other: component to compare
+        :returns: True if other == self, False otherwise
+        :rtype: boolean
         """
 
         from cpecomp_empty import CPEComponentEmpty
@@ -67,11 +66,6 @@ class CPEComponentAnyValue(CPEComponentLogical):
     def __init__(self):
         """
         Initializes the component.
-
-        INPUT:
-            - None
-        OUPUT:
-            - None
         """
 
         super(CPEComponentAnyValue, self).__init__(
@@ -81,10 +75,8 @@ class CPEComponentAnyValue(CPEComponentLogical):
         """
         Returns a human-readable representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         return "<ANY>"

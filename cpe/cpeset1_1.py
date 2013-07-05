@@ -1,8 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-
-'''
+"""
 This file is part of cpe package.
 
 This module is an implementation of name matching
@@ -26,7 +25,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 For any problems using the cpe package, or general questions and
 feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
-'''
+"""
 
 from cpe import CPE
 from comp.cpecomp import CPEComponent
@@ -35,18 +34,19 @@ from cpeset import CPESet
 
 class CPESet1_1(CPESet):
     """
-    Represents a set of CPE names.
+    Represents a set of CPE Names.
 
     This class allows:
-        - create set of CPE names.
-        - match a CPE element against a set of CPE names.
+
+    - create set of CPE Names.
+    - match a CPE element against a set of CPE Names.
     """
 
     ###############
     #  CONSTANTS  #
     ###############
 
-    # Version of CPE set
+    #: Version of CPE set
     VERSION = "1.1"
 
     ####################
@@ -55,16 +55,14 @@ class CPESet1_1(CPESet):
 
     def append(self, cpe):
         """
-        Adds a CPE name to the set if not already.
+        Adds a CPE Name to the set if not already.
 
-        INPUT:
-            - cpe: CPE name to store in set
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: Invalid version of CPE name
+        :param CPE cpe: CPE Name to store in set
+        :returns: None
+        :exception: ValueError - invalid version of CPE Name
 
-        - TEST:
+        TEST:
+
         >>> from cpeset1_1 import CPESet1_1
         >>> from cpe1_1 import CPE1_1
         >>> uri1 = 'cpe://microsoft:windows:xp!vista'
@@ -74,7 +72,7 @@ class CPESet1_1(CPESet):
         """
 
         if cpe.VERSION != CPE.VERSION_1_1:
-            msg = "CPE name version {0} not valid, version 1.1 expected".format(
+            msg = "CPE Name version {0} not valid, version 1.1 expected".format(
                 cpe.VERSION)
             raise ValueError(msg)
 
@@ -86,18 +84,18 @@ class CPESet1_1(CPESet):
 
     def name_match(self, cpe):
         """
-        Accepts a set of known instances of CPE names and a candidate CPE name,
+        Accepts a set of known instances of CPE Names and a candidate CPE Name,
         and returns 'True' if the candidate can be shown to be
         an instance based on the content of the known instances.
         Otherwise, it returns 'False'.
 
-        Inputs:
-            - self: A set of m known CPE names K = {K1, K2, …, Km}.
-            - cpe: A candidate CPE name X.
-        Output:
-            - True if X matches K, otherwise False.
+        :param CPESet self: A set of m known CPE Names K = {K1, K2, …, Km}.
+        :param CPE cpe: A candidate CPE Name X.
+        :returns: True if X matches K, otherwise False.
+        :rtype: boolean
 
-        - TEST: matching with identical CPE in set
+        TEST: matching with identical CPE in set
+
         >>> from cpe1_1 import CPE1_1
         >>> from cpeset1_1 import CPESet1_1
         >>> uri1 = 'cpe://microsoft:windows:xp!vista'
@@ -109,20 +107,21 @@ class CPESet1_1(CPESet):
         >>> s.append(c2)
         >>> s.name_match(c2)
         True
+
         """
 
         # An empty set not matching with any CPE
         if len(self) == 0:
             return False
 
-        # If input CPE name string is in set of CPE name strings
+        # If input CPE Name string is in set of CPE Name strings
         # not do searching more because there is a matching
         for k in self.K:
             if (k.cpe_str == cpe.cpe_str):
                 return True
 
-        # There are not a CPE name string in set equal to
-        # input CPE name string
+        # There are not a CPE Name string in set equal to
+        # input CPE Name string
         match = False
 
         for p in CPE.CPE_PART_KEYS:
@@ -164,9 +163,9 @@ class CPESet1_1(CPESet):
                     # cpe part not match with parts in set
                     return False
 
-            # Next part in input CPE name
+            # Next part in input CPE Name
 
-        # All parts in input CPE name matched
+        # All parts in input CPE Name matched
         return True
 
 if __name__ == "__main__":

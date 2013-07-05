@@ -1,6 +1,11 @@
 Installation
 ============
 
-Install the package executing the setup.py file in package::
+Install the package using pip::
 
-  python setup.py install
+    pip install cpe
+
+or execute the setup.py file in package::
+
+    python setup.py install
+

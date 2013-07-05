@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
-This module allows to store the value of the components of a CPE name and
+This module allows to store the value of the components of a CPE Name and
 compare it with others.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,16 +25,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
+"""
 
 import types
 
 
 class CPEComponent(object):
     """
-    Represents a generic component of CPE name,
+    Represents a generic component of CPE Name,
     compatible with the components of all versions of CPE specification.
     """
 
@@ -43,29 +43,78 @@ class CPEComponent(object):
     ###############
 
     # Constants of possible versions of CPE components
+
+    #: Version 1.1 of CPE component
     COMP_1_1 = "1.1"
+
+    #: Version 2.2 of CPE component
     COMP_2_2 = "2.2"
+
+    #: Version 2.3 with WFN style of CPE component
     COMP_2_3_WFN = "2.3_wfn"
+
+    #: Version 2.3 with URI style of CPE component
     COMP_2_3_URI = "2.3_uri"
+
+    #: Version 2.3 with formatted string style of CPE component
     COMP_2_3_FS = "2.3_fs"
 
     # Attributes associated with components of all versions of CPE
+
+    #: Part attribute of CPE Name that indicates the type of system
+    #: associated with the product
     ATT_PART = "part"
+
+    #: Vendor attribute of CPE Name that describes or identify the person or
+    #: organization that manufactured or created the product
     ATT_VENDOR = "vendor"
+
+    #: Product attribute of CPE Name that describes or identify the most common
+    #: and recognizable title or name of the product
     ATT_PRODUCT = "product"
+
+    #: Version attribute of CPE Name that indicates vendor-specific
+    #: alphanumeric strings characterizing the particular release version
+    #: of the product
     ATT_VERSION = "version"
+
+    #: Version attribute of CPE Name that indicates vendor-specific
+    #: alphanumeric strings characterizing the particular update,
+    #: service pack, or point release of the product
     ATT_UPDATE = "update"
+
+    #: Edition attribute of CPE Name that captures the edition-related terms
+    #: applied by the vendor to the product
     ATT_EDITION = "edition"
+
+    #: Language attribute of CPE Name that defines the language supported
+    #: in the user interface of the product being described
     ATT_LANGUAGE = "language"
 
     # Attributes associated with components of version 2.3 of CPE
+
+    #: SW_edition attribute of version 2.3 of CPE Name that characterizes
+    #: how the product is tailored to a particular market or class of
+    #: end users
     ATT_SW_EDITION = "sw_edition"
+
+    #: Target_SW attribute of version 2.3 of CPE Name that characterizes the
+    #: software computing environment within which the product operates
     ATT_TARGET_SW = "target_sw"
+
+    #: Target_HW attribute of version 2.3 of CPE Name that characterizes the
+    #: instruction set architecture (e.g., x86) on which the product being
+    #: described or identified by the WFN operates
     ATT_TARGET_HW = "target_hw"
+
+    #: Other attribute of version 2.3 of CPE Name that capture any other
+    #: general descriptive or identifying information which is vendor-
+    #: or product-specific and which does not logically fit in any other
+    #: attribute value
     ATT_OTHER = "other"
 
-    # List of attribute names associated with CPE name components
-    # Versions 1.1 and 2.2
+    #: List of attribute names associated with CPE Name components
+    #: (versions 1.1 and 2.2 of CPE specification)
     CPE_COMP_KEYS = (ATT_PART,
                      ATT_VENDOR,
                      ATT_PRODUCT,
@@ -74,8 +123,8 @@ class CPEComponent(object):
                      ATT_EDITION,
                      ATT_LANGUAGE)
 
-    # List of attribute names associated with CPE name components
-    # Versions 2.3
+    #: List of attribute names associated with CPE Name components
+    #: of version 2.3
     CPE_COMP_KEYS_EXTENDED = (ATT_PART,
                               ATT_VENDOR,
                               ATT_PRODUCT,
@@ -89,13 +138,22 @@ class CPEComponent(object):
                               ATT_OTHER)
 
     # Possible values of "part" attribute of CPE (type of system)
+
+    #: Value of part attribute associated with a hardware system
     VALUE_PART_HW = "h"
+
+    #: Value of part attribute associated with an operating system
     VALUE_PART_OS = "o"
+
+    #: Value of part attribute associated with an application
     VALUE_PART_APP = "a"
+
+    #: Value of part attribute that indicates a CPE Name with
+    #: undefined type of system
     VALUE_PART_UNDEFINED = "u"
 
-    # Types of systems in CPE specification:
-    # hardware, operating system, software and undefined
+    #: Possible values of a type of system in CPE specification:
+    #: hardware, operating system, software and undefined
     SYSTEM_VALUES = (VALUE_PART_HW,
                      VALUE_PART_OS,
                      VALUE_PART_APP,
@@ -105,7 +163,7 @@ class CPEComponent(object):
     #  VARIABLES  #
     ###############
 
-    # Order of attributes of CPE name components
+    #: Order of attributes of CPE Name components
     ordered_comp_parts = {0: ATT_PART,
                           1: ATT_VENDOR,
                           2: ATT_PRODUCT,
@@ -127,12 +185,12 @@ class CPEComponent(object):
         """
         Check if input attribute name is correct.
 
-        INPUT:
-            - att_name: attribute name to check
-        OUTPUT:
-            - True is attribute name is valid, otherwise False
+        :param string att_name: attribute name to check
+        :returns: True is attribute name is valid, otherwise False
+        :rtype: boolean
 
         TEST: a wrong attribute
+
         >>> from cpecomp import CPEComponent
         >>> att = CPEComponent.ATT_PRODUCT
         >>> CPEComponent.is_valid_attribute(att)
@@ -149,10 +207,9 @@ class CPEComponent(object):
         """
         Returns True if item is included in set of values of self.
 
-        INPUT:
-            - item: component to find in self
-        OUTPUT:
-            - True if item is included in set of self, otherwise False
+        :param CPEComponent item: component to find in self
+        :returns: True if item is included in set of self, otherwise False
+        :rtype: boolean
         """
 
         from cpecomp_undefined import CPEComponentUndefined
@@ -174,23 +231,22 @@ class CPEComponent(object):
         self (second element of operation) are equal components,
         false otherwise.
 
-        INPUT:
-            - other: component to compare
-        OUTPUT:
-            True if other == self, False otherwise
+        :param CPEComponent other: component to compare
+        :returns: True if other == self, False otherwise
+        :rtype: boolean
         """
 
         len_self = len(self._standard_value)
         len_other = len(other._standard_value)
 
         if isinstance(self._standard_value, types.ListType):
-            # Self is version 1.1 of CPE name
+            # Self is version 1.1 of CPE Name
             if isinstance(other._standard_value, types.ListType):
-                # Other is version 1.1 of CPE name
+                # Other is version 1.1 of CPE Name
                 value_self = self._standard_value
                 value_other = other._standard_value
 
-            # Other is higher version than to 1.1 of CPE name
+            # Other is higher version than to 1.1 of CPE Name
             elif len_self == 1:
                 value_self = self._standard_value[0]
                 value_other = other._standard_value
@@ -199,9 +255,9 @@ class CPEComponent(object):
                 # The comparation between components is impossible
                 return False
         else:
-            # Self is higher version than 1.1 of CPE name
+            # Self is higher version than 1.1 of CPE Name
             if isinstance(other._standard_value, types.ListType):
-                # Other is version 1.1 of CPE name
+                # Other is version 1.1 of CPE Name
                 if len_other == 1:
                     value_self = self._standard_value
                     value_other = other._standard_value[0]
@@ -220,10 +276,8 @@ class CPEComponent(object):
         """
         Store the value of component.
 
-        INPUT:
-            - comp_str: value of component value
-        OUPUT:
-            - None
+        :param string comp_str: value of component value
+        :returns: None
         """
 
         self._is_negated = False
@@ -236,10 +290,9 @@ class CPEComponent(object):
         self (second element of operation) are not equal components,
         false otherwise.
 
-        INPUT:
-            - other: component to compare
-        OUTPUT:
-            True if other != self, False otherwise
+        :param CPEComponent other: component to compare
+        :returns: True if other != self, False otherwise
+        :rtype: boolean
         """
 
         return not (self == other)
@@ -248,10 +301,8 @@ class CPEComponent(object):
         """
         Returns a unambiguous representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         return "{0}()".format(self.__class__.__name__)
