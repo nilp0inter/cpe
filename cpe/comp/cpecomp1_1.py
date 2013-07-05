@@ -7,7 +7,7 @@ This file is part of cpe package.
 This module allows to store the value of the components of a CPE name
 of version 1.1 of CPE (Common Platform Enumeration) specification.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 For any problems using the cpe package, or general questions and
 feedback about it, please contact:
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
 '''
 
 from cpecomp_simple import CPEComponentSimple

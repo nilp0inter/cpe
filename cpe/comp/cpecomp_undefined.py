@@ -6,7 +6,7 @@ This file is part of cpe package.
 
 This module allows to create an undefined component of CPE name.
 
-Copyright (C) 2013  Alejandro Galindo García, Roberto Abdelkader Martínez Pérez
+Copyright (C) 2013  Alejandro Galindo GarcÃ­a, Roberto Abdelkader MartÃ­nez PÃ©rez
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-- Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
-- Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
+- Alejandro Galindo GarcÃ­a: galindo.garcia.alejandro@gmail.com
+- Roberto Abdelkader MartÃ­nez PÃ©rez: robertomartinezp@gmail.com
 '''
 
 from cpecomp_logical import CPEComponentLogical

@@ -9,6 +9,7 @@ This section shows the diagrams of model parts of cpe package. These diagrams ha
     model/cpehierarchy
     model/cpesethierarchy
     model/cpelanghierarchy
+    model/cpecomphierarchy
 
 Categories of main classes
 --------------------------
