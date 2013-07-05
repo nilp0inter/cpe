@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to create an empty component of CPE name.
@@ -26,7 +26,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpecomp_logical import CPEComponentLogical
 
@@ -50,10 +50,9 @@ class CPEComponentEmpty(CPEComponentLogical):
         self (second element of operation) are equal components,
         false otherwise.
 
-        INPUT:
-            - other: component to compare
-        OUTPUT:
-            True if other == self, False otherwise
+        :param CPEComponent other: component to compare
+        :returns: True if other == self, False otherwise
+        :rtype: boolean
         """
 
         from cpecomp_anyvalue import CPEComponentAnyValue
@@ -66,11 +65,6 @@ class CPEComponentEmpty(CPEComponentLogical):
     def __init__(self):
         """
         Initializes the component.
-
-        INPUT:
-            - None
-        OUPUT:
-            - None
         """
 
         super(CPEComponentEmpty, self).__init__(
@@ -80,10 +74,8 @@ class CPEComponentEmpty(CPEComponentLogical):
         """
         Returns a human-readable representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         return "<EMPTY>"

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to create an undefined component of CPE name.
@@ -23,7 +23,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpecomp_logical import CPEComponentLogical
 
@@ -45,10 +45,9 @@ class CPEComponentUndefined(CPEComponentLogical):
         """
         Returns True if item is included in set of values of self.
 
-        INPUT:
-            - item: component to find in self
-        OUTPUT:
-            - True if item is included in set of self
+        :param CPEComponent item: component to find in self
+        :returns: True if item is included in set of self
+        :rtype: boolean
         """
 
         return super(CPEComponentUndefined, self).__contains__(item)
@@ -59,10 +58,8 @@ class CPEComponentUndefined(CPEComponentLogical):
         self (second element of operation) are equal components,
         false otherwise.
 
-        INPUT:
-            - other: component to compare
-        OUTPUT:
-            True if other == self, False otherwise
+        :param CPEComponent other: component to compare
+        :returns: True if other == self, False otherwise
         """
 
         from cpecomp_anyvalue import CPEComponentAnyValue
@@ -75,11 +72,6 @@ class CPEComponentUndefined(CPEComponentLogical):
     def __init__(self):
         """
         Initializes the component.
-
-        INPUT:
-            - None
-        OUPUT:
-            - None
         """
 
         super(CPEComponentUndefined, self).__init__(
@@ -89,10 +81,8 @@ class CPEComponentUndefined(CPEComponentLogical):
         """
         Returns a human-readable representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         return "<UNDEFINED>"

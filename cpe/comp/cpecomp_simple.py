@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to store the value of the string components
@@ -27,7 +27,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpecomp import CPEComponent
 
@@ -44,21 +44,21 @@ class CPEComponentSimple(CPEComponent):
     #  CONSTANTS  #
     ###############
 
-    # Pattern to check if a character is a alphanumeric or underscore
+    #: Pattern to check if a character is a alphanumeric or underscore
     _ALPHANUM_PATTERN = "\w"
 
-    # Pattern to check the value of language component of CPE name
+    #: Pattern to check the value of language component of CPE name
     _LANGTAG_PATTERN = "^([a-z]{2,3}(-([a-z]{2}|[\d]{3}))?)$"
 
-    # Pattern to check the value of part component of CPE name
+    #: Pattern to check the value of part component of CPE name
     _PART_PATTERN = "^(h|o|a)$"
 
     ###############
     #  VARIABLES  #
     ###############
 
-    # Characters to convert to percent-encoded characters when converts
-    # WFN to URI
+    #: Characters to convert to percent-encoded characters when converts
+    #: WFN to URI
     spechar_to_pce = {
         '!': "%21",
         '"': "%22",
@@ -100,10 +100,10 @@ class CPEComponentSimple(CPEComponent):
         Returns True if c is an uppercase letter, a lowercase letter,
         a digit or an underscore, otherwise False.
 
-        INPUT:
-            - Character to check
-        OUTPUT:
-            - True if char is alphanumeric or an underscore, False otherwise
+        :param string c: Character to check
+        :returns: True if char is alphanumeric or an underscore,
+            False otherwise
+        :rtype: boolean
 
         TEST: a wrong character
         >>> c = "#"
@@ -120,17 +120,18 @@ class CPEComponentSimple(CPEComponent):
         Return the appropriate percent-encoding of character c (URI string).
         Certain characters are returned without encoding.
 
-        INPUT:
-            - Character to check
-        OUTPUT:
-            - Encoded character as URI
+        :param string c: Character to check
+        :returns: Encoded character as URI
+        :rtype: string
 
         TEST:
+
         >>> c = '.'
         >>> CPEComponentSimple._pct_encode_uri(c)
         '.'
 
         TEST:
+
         >>> c = '@'
         >>> CPEComponentSimple._pct_encode_uri(c)
         '%40'
@@ -149,13 +150,10 @@ class CPEComponentSimple(CPEComponent):
         """
         Store the value of component.
 
-        INPUT:
-            - comp_str: value of component value
-            - comp_att: attribute associated with component value
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
+        :param string comp_str: value of component value
+        :param string comp_att: attribute associated with component value
+        :returns: None
+        :exception: ValueError - incorrect value of component
         """
 
         super(CPEComponentSimple, self).__init__(comp_str)
@@ -166,10 +164,8 @@ class CPEComponentSimple(CPEComponent):
         """
         Returns a human-readable representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         return self.get_value()
@@ -179,10 +175,8 @@ class CPEComponentSimple(CPEComponent):
         Return True if the value of component in attribute "edition" is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
         """
 
         return self._is_valid_value() is not None
@@ -192,10 +186,8 @@ class CPEComponentSimple(CPEComponent):
         Return True if the value of component in attribute "language" is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
         """
 
         comp_str = self._encoded_value.lower()
@@ -207,10 +199,8 @@ class CPEComponentSimple(CPEComponent):
         Return True if the value of component in attribute "part" is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value of component is valid, False otherwise
+        :returns: True if value of component is valid, False otherwise
+        :rtype: boolean
         """
 
         comp_str = self._encoded_value.lower()
@@ -222,12 +212,9 @@ class CPEComponentSimple(CPEComponent):
         Return True if the value of component in generic attribute is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
-        EXCEPTIONS:
-            - NotImplementedError: class method not implemented
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
+        :exception: NotImplementedError - class method not implemented
         """
 
         errmsg = "Class method not implemented. Use the method of some child class"
@@ -237,12 +224,9 @@ class CPEComponentSimple(CPEComponent):
         """
         Check if the value of component is correct in the attribute "comp_att".
 
-        INPUT:
-            - comp_att: attribute associated with value of component
-        OUTPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
+        :param string comp_att: attribute associated with value of component
+        :returns: None
+        :exception: ValueError - incorrect value of component
         """
 
         errmsg = "Invalid attribute '{0}'".format(comp_att)
@@ -282,10 +266,8 @@ class CPEComponentSimple(CPEComponent):
         Certain nonalpha characters pass thru without escaping
         into the result, but most retain escaping.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Formatted string
+        :returns: Formatted string associated with component
+        :rtype: string
         """
 
         s = self._standard_value
@@ -320,14 +302,13 @@ class CPEComponentSimple(CPEComponent):
         Returns the value of component encoded as URI string.
 
         Scans an input string s and applies the following transformations:
+
         - Pass alphanumeric characters thru untouched
         - Percent-encode quoted non-alphanumerics as needed
         - Unquoted special characters are mapped to their special forms.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - URI string
+        :returns: URI string associated with component
+        :rtype: string
         """
 
         s = self._standard_value
@@ -367,10 +348,8 @@ class CPEComponentSimple(CPEComponent):
         Returns the value of component encoded as Well-Formed Name (WFN)
         string.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - WFN string
+        :returns: WFN string associated with component
+        :rtype: string
         """
 
         return self._standard_value
@@ -379,10 +358,8 @@ class CPEComponentSimple(CPEComponent):
         """
         Returns the encoded value of component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - The encoded value of component
+        :returns: The encoded value of component
+        :rtype: string
         """
 
         return self._encoded_value
@@ -392,13 +369,10 @@ class CPEComponentSimple(CPEComponent):
         Set the value of component. By default, the component has a simple
         value.
 
-        INPUT:
-            - comp_str: new value of component
-            - comp_att: attribute associated with value of component
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
+        :param string comp_str: new value of component
+        :param string comp_att: attribute associated with value of component
+        :returns: None
+        :exception: ValueError - incorrect value of component
         """
 
         old_value = self._encoded_value

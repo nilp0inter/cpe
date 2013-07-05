@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to store the value of the components of a CPE name
@@ -27,7 +27,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpecomp_simple import CPEComponentSimple
 from cpecomp_undefined import CPEComponentUndefined
@@ -41,6 +41,7 @@ class CPEComponent1_1(CPEComponentSimple):
     Represents a component of version 1.1 of CPE specification.
 
     TEST: simple value
+
     >>> value = "microsoft"
     >>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
     """
@@ -49,21 +50,25 @@ class CPEComponent1_1(CPEComponentSimple):
     #  CONSTANTS  #
     ###############
 
-    # Escape component separator
+    #: Escape component separator
     _ESCAPE_SEPARATOR = "\\!"
 
-    # Pattern used in regular expression of the value of a component
+    #: Pattern used in regular expression of the value of a component
     _STRING = "\w\.\-,\(\)@\#"
 
-    # Separator of components of CPE name with URI style
+    #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ":"
 
-    # Characters of version 1.1 of CPE name to convert
-    # to standard value (WFN value)
+    #: Characters of version 1.1 of CPE name to convert
+    #: to standard value (WFN value)
     NON_STANDARD_VALUES = [".", "-", ",", "(", ")", "@", "#"]
 
     # Logical values in string format
+
+    #: Logical value associated with a undefined component of CPE Name
     VALUE_UNDEFINED = None
+
+    #: Logical value associated with a component without value set
     VALUE_EMPTY = ""
 
     ####################
@@ -76,21 +81,21 @@ class CPEComponent1_1(CPEComponentSimple):
 
         Comparatives in name matching of version 1.1 of CPE:
 
-        c = self._standard_value
-        d = item._standard_value
+        | c = self._standard_value
+        | d = item._standard_value
 
-        IF c is empty THEN match True.
-        ELSE IF c is a singleton AND c = d THEN match True.
-        ELSE IF c has form ~v AND v != d THEN match True.
-        ELSE IF c has form v1!v2!..!vn AND v = d for some v THEN match True.
-        ENDIF.
+        | IF c is empty THEN match True.
+        | ELSE IF c is a singleton AND c = d THEN match True.
+        | ELSE IF c has form ~v AND v != d THEN match True.
+        | ELSE IF c has form v1!v2!..!vn AND v = d for some v THEN match True.
+        | ENDIF.
 
-        INPUT:
-            - item: component to find in self
-        OUTPUT:
-            - True if item is included in set of self
+        :param CPEComponent item: component to find in self
+        :returns: True if item is included in set of self
+        :rtype: boolean
 
         TEST: two different simple values
+
         >>> comp1 = CPEComponent1_1('5.0', CPEComponentSimple.ATT_VERSION)
         >>> comp2 = CPEComponent1_1('9.0', CPEComponentSimple.ATT_VERSION)
         >>> comp1 in comp2
@@ -130,10 +135,8 @@ class CPEComponent1_1(CPEComponentSimple):
         """
         Returns a unambiguous representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         value = self.get_value()
@@ -153,18 +156,6 @@ class CPEComponent1_1(CPEComponentSimple):
     def _decode(self):
         """
         Convert the encoded value of component to standard value (WFN value).
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Decoded encoded value of component to WFN value
-
-        TEST: OR operator
-        >>> val ='microsoft'
-        >>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VENDOR)
-        >>> comp1._decode()
-        >>> comp1._standard_value
-        ['microsoft']
         """
 
         s = self._encoded_value
@@ -196,10 +187,8 @@ class CPEComponent1_1(CPEComponentSimple):
         Return True if the value of component in generic attribute is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
         """
 
         comp_str = self._encoded_value
@@ -228,12 +217,11 @@ class CPEComponent1_1(CPEComponentSimple):
         Certain nonalpha characters pass thru without escaping
         into the result, but most retain escaping.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Formatted string
+        :returns: Formatted string associated with the component
+        :rtype: string
 
-        - TEST
+        TEST:
+
         >>> val = 'xp!vista'
         >>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
         >>> comp1.as_fs()
@@ -274,16 +262,16 @@ class CPEComponent1_1(CPEComponentSimple):
         Returns the value of compoment encoded as URI string.
 
         Scans an input string s and applies the following transformations:
+
         - Pass alphanumeric characters thru untouched
         - Percent-encode quoted non-alphanumerics as needed
         - Unquoted special characters are mapped to their special forms.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - URI string
+        :returns: URI string
+        :rtype: string
 
-        - TEST
+        TEST:
+
         >>> val = '#nvidi@'
         >>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VENDOR)
         >>> comp1.as_uri_2_3()
@@ -323,12 +311,11 @@ class CPEComponent1_1(CPEComponentSimple):
         Returns the value of compoment encoded as Well-Formed Name (WFN)
         string.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - WFN string
+        :returns: WFN string
+        :rtype: string
 
-        - TEST
+        TEST:
+
         >>> val = 'xp!vista'
         >>> comp1 = CPEComponent1_1(val, CPEComponentSimple.ATT_VERSION)
         >>> comp1.as_wfn()
@@ -348,14 +335,12 @@ class CPEComponent1_1(CPEComponentSimple):
         Set the value of component. By default, the component has a simple
         value.
 
-        INPUT:
-            - comp_att: attribute associated with value of component
-        OUPUT:
-            - None
-        EXCEPTIONS:
-            - ValueError: incorrect value of component
+        :param string comp_att: attribute associated with value of component
+        :returns: None
+        :exception: ValueError - incorrect value of component
 
-        - TEST
+        TEST:
+
         >>> val = 'xp!vista'
         >>> val2 = 'sp2'
         >>> att = CPEComponentSimple.ATT_VERSION

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to store the value of the components of a CPE name
@@ -27,7 +27,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpecomp_simple import CPEComponentSimple
 
@@ -47,10 +47,8 @@ class CPEComponent2_3(CPEComponentSimple):
         """
         Returns a unambiguous representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         value = self.get_value()
@@ -62,43 +60,42 @@ class CPEComponent2_3(CPEComponentSimple):
         Return True if the value of component in attribute "language" is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
 
         Possible values of language attribute: a=letter, 1=digit
-        LANGUAGE VALUES
-        *a
-        *aa
-        aa
-        aaa
-        ?a
-        ?aa
-        ??
-        ??a
-        ???
 
-        LANGUAGE WITHOUT REGION VALUES
-        a*
-        aa*
-        aaa*
-        *111
-        *11
-        *1
+        | LANGUAGE VALUES
+        | *a
+        | *aa
+        | aa
+        | aaa
+        | ?a
+        | ?aa
+        | ??
+        | ??a
+        | ???
+
+        | LANGUAGE WITHOUT REGION VALUES
+        | a*
+        | aa*
+        | aaa*
+        | *111
+        | *11
+        | *1
 
         REGION WITH LANGUAGE VALUES
-        *
-        ??
-        a*
-        a?
-        aa
-        1*
-        1?
-        1??
-        11*
-        11?
-        111
+        | *
+        | ??
+        | a*
+        | a?
+        | aa
+        | 1*
+        | 1?
+        | 1??
+        | 11*
+        | 11?
+        | 111
         """
 
         comp_str = self._encoded_value.lower()
@@ -172,10 +169,8 @@ class CPEComponent2_3(CPEComponentSimple):
         Return True if the value of component in attribute "part" is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value of component is valid, False otherwise
+        :returns: True if value of component is valid, False otherwise
+        :rtype: boolean
         """
 
         comp_str = self._encoded_value

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to store the value of the components of a CPE name
@@ -27,7 +27,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpecomp_simple import CPEComponentSimple
 
@@ -39,6 +39,7 @@ class CPEComponent2_2(CPEComponentSimple):
     Represents a component of version 2.2 of CPE specification.
 
     TEST: simple value
+
     >>> value = "microsoft"
     >>> comp = CPEComponent2_2(value, CPEComponentSimple.ATT_VENDOR)
     """
@@ -47,25 +48,29 @@ class CPEComponent2_2(CPEComponentSimple):
     #  CONSTANTS  #
     ###############
 
-    # Pattern used to check the value of component
+    #: Pattern used to check the value of component
     _VALUE_PATTERN = "^([\d\w\._\-~%]+)$"
 
-    # Separator of components of CPE name with URI style
+    #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ":"
 
-    # Characters of version 2.2 of CPE name to convert
-    # to standard value (WFN value)
+    #: Characters of version 2.2 of CPE name to convert
+    #: to standard value (WFN value)
     NON_STANDARD_VALUES = [".", "-", "~", "%"]
 
     # Logical values in string format
+
+    #: Logical value associated with a undefined component of CPE Name
     VALUE_UNDEFINED = None
+
+    #: Logical value associated with a component without value set
     VALUE_EMPTY = ""
 
     ###############
     #  VARIABLES  #
     ###############
 
-    # Compilation of pattern used to check the value of component
+    #: Compilation of pattern used to check the value of component
     _value_rxc = re.compile(_VALUE_PATTERN)
 
     ####################
@@ -76,10 +81,8 @@ class CPEComponent2_2(CPEComponentSimple):
         """
         Returns a unambiguous representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
+        :returns: Representation of CPE component as string
+        :rtype: string
         """
 
         return "{0}({1})".format(self.__class__.__name__, self.get_value())
@@ -87,11 +90,6 @@ class CPEComponent2_2(CPEComponentSimple):
     def _decode(self):
         """
         Convert the encoded value of component to standard value (WFN value).
-
-        INPUT:
-            - None
-        OUTPUT:
-            - Decoded encoded value of component to WFN value
         """
 
         result = []
@@ -119,10 +117,8 @@ class CPEComponent2_2(CPEComponentSimple):
         Return True if the value of component in generic attribute is valid,
         and otherwise False.
 
-        INPUT:
-            - None
-        OUTPUT:
-            True if value is valid, False otherwise
+        :returns: True if value is valid, False otherwise
+        :rtype: boolean
         """
 
         comp_str = self._encoded_value

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-'''
+"""
 This file is part of cpe package.
 
 This module allows to store the value of the logical components
@@ -27,7 +27,7 @@ feedback about it, please contact:
 
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
-'''
+"""
 
 from cpecomp import CPEComponent
 
@@ -44,20 +44,20 @@ class CPEComponentLogical(CPEComponent):
 
     # Logical values in integer format
 
-    # Value of an undefined component. For example, edition attribute in the
-    # CPE name cpe:/cisco::2345 of version 1.1 of CPE specification
+    #: Value of an undefined component. For example, edition attribute in the
+    #: CPE name cpe:/cisco::2345 of version 1.1 of CPE specification
     _VALUE_INT_UNDEFINED = -1
 
-    # Value of an empty component. For example, product attribute in the
-    # CPE name cpe:/cisco::2345 of version 1.1 of CPE specification
+    #: Value of an empty component. For example, product attribute in the
+    #: CPE name cpe:/cisco::2345 of version 1.1 of CPE specification
     _VALUE_INT_EMPTY = 0
 
-    # Value of a component "any value". For example, product attribute in the
-    # CPE name cpe:/h:cisco:*:2345 of version 2.3 of CPE specification
+    #: Value of a component "any value". For example, product attribute in the
+    #: CPE name cpe:/h:cisco:*:2345 of version 2.3 of CPE specification
     _VALUE_INT_ANY = 1
 
-    # Value of a not applicable component. For example, product attribute in
-    # the CPE name cpe:/h:cisco:-:2345 of version 2.3 of CPE specification
+    #: Value of a not applicable component. For example, product attribute in
+    #: the CPE name cpe:/h:cisco:-:2345 of version 2.3 of CPE specification
     _VALUE_INT_NA = 2
 
     ####################
@@ -68,10 +68,9 @@ class CPEComponentLogical(CPEComponent):
         """
         Returns True if item is included in set of values of self.
 
-        INPUT:
-            - item: component to find in self
-        OUTPUT:
-            - True if item is included in set of self
+        :param CPEComponent item: component to find in self
+        :returns: True if item is included in set of self
+        :rtype: boolean
         """
 
         return True
@@ -82,12 +81,10 @@ class CPEComponentLogical(CPEComponent):
         self (second element of operation) are equal components,
         false otherwise.
 
-        INPUT:
-            - other: component to compare
-        OUTPUT:
-            True if other == self, False otherwise
-        EXCEPTIONS:
-            - NotImplementedError: class method not implemented
+        :param CPEComponent other: component to compare
+        :returns: True if other == self, False otherwise
+        :rtype: boolean
+        :exception: NotImplementedError - class method not implemented
         """
 
         errmsg = "Class method not implemented. Use the method of some child class"
@@ -97,12 +94,9 @@ class CPEComponentLogical(CPEComponent):
         """
         Returns a human-readable representation of CPE component.
 
-        INPUT:
-            - None
-        OUTPUT:
-            - Representation of CPE component as string
-        EXCEPTIONS:
-            - NotImplementedError: class method not implemented
+        :returns: Representation of CPE component as string
+        :rtype: string
+        :exception: NotImplementedError - class method not implemented
         """
 
         errmsg = "Class method not implemented. Use the method of some child class"
