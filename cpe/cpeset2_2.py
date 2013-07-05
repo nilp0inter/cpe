@@ -40,8 +40,8 @@ class CPESet2_2(CPESet):
 
     This class allows:
 
-        - create set of CPE Names.
-        - match a CPE element against a set of CPE Names.
+    - create set of CPE Names.
+    - match a CPE element against a set of CPE Names.
     """
 
     ###############

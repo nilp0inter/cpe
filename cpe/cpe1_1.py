@@ -98,6 +98,7 @@ class CPE1_1(CPE):
         :exception: IndexError - index not found in CPE Name
 
         TEST: good index
+
         >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
         >>> c = CPE1_1(str)
         >>> c[0]
@@ -135,6 +136,7 @@ class CPE1_1(CPE):
 
         TEST: a CPE Name with two parts (hw and os) and
         some elements empty and with values
+
         >>> str = "cpe:/cisco::3825/cisco:ios:12.3:enterprise"
         >>> c = CPE1_1(str)
         >>> len(c)

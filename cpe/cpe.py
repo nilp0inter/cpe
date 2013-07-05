@@ -120,11 +120,13 @@ class CPE(dict):
         :rtype: string
 
         TEST: trailing colons necessary
+
         >>> s = '1:2::::'
         >>> CPE._trim(s)
         '1:2'
 
         TEST: trailing colons not necessary
+
         >>> s = '1:2:3:4:5:6'
         >>> CPE._trim(s)
         '1:2:3:4:5:6'
@@ -185,6 +187,7 @@ class CPE(dict):
         :exception: IndexError - index not found in CPE Name
 
         TEST: good index
+
         >>> str = 'cpe:///sun_microsystem:sun@os:5.9:#update'
         >>> c = CPE(str)
         >>> c[0]
@@ -238,6 +241,7 @@ class CPE(dict):
 
         TEST: a CPE Name with two parts (hw and os) and
         some elements empty and with values
+
         >>> str = "cpe:/cisco::3825/cisco:ios:12.3"
         >>> c = CPE(str)
         >>> len(c)

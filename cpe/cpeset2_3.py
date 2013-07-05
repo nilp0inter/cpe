@@ -43,8 +43,8 @@ class CPESet2_3(CPESet):
 
     This class allows:
 
-        - create set of CPE elements.
-        - match a CPE element against a set of CPE elements.
+    - create set of CPE elements.
+    - match a CPE element against a set of CPE elements.
     """
 
     ###############

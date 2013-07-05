@@ -62,6 +62,7 @@ class CPE2_3_FS(CPE2_3):
       installed on the system.
 
     CPE Name syntax:
+
         cpe:2.3:part:vendor:product:version:update:edition:language:sw_edition:target_sw:target_hw:other
     """
 
