@@ -3,18 +3,14 @@
 from setuptools import setup
 from setuptools import find_packages
 
-VERSION = '1.0.1'
+VERSION = '1.0.2'
 AUTHORS = u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'
 EMAILS = 'galindo.garcia.alejandro@gmail.com, robertomartinezp@gmail.com'
 
 setup(name='cpe',
       version=VERSION,
-      summary="""\
-              Implementation of Common Platform Enumeration (CPE)
-              specification""",
-      description="""\
-              Package to create and operate with CPE names of 1.1, 2.2 and 2.3
-              versions of CPE (Common Platform Enumeration) specification""",
+      summary='Implementation of versions 1.1, 2.2 and 2.3 of CPE specification.',
+      description='Package to create and operate with CPE Names of versions 1.1, 2.2 and 2.3 of Common Platform Enumeration (CPE) specification. The main functionality implemented is: naming, name matching and language matching.',
       classifiers=[
           "Development Status :: 3 - Alpha",
           "Intended Audience :: Developers",
