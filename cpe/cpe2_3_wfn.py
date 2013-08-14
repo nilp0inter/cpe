@@ -163,9 +163,9 @@ class CPE2_3_WFN(CPE2_3):
 
                     # Logical value
                     strUpper = att_value.upper()
-                    if strUpper in CPEComponent2_3_WFN.VALUE_ANY:
+                    if strUpper == CPEComponent2_3_WFN.VALUE_ANY:
                         comp = CPEComponentAnyValue()
-                    elif strUpper in CPEComponent2_3_WFN.VALUE_NA:
+                    elif strUpper == CPEComponent2_3_WFN.VALUE_NA:
                         comp = CPEComponentNotApplicable()
                     else:
                         msg = "Invalid logical value '{0}'".format(att_value)
