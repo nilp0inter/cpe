@@ -105,11 +105,11 @@ The cpe package provides methods to get the value of components of a CPE Name (t
 Finally, the cpe package contains methods to convert any CPE Name defined under a particular style (URI version 2.3, WFN or formatted string) in other different styles:
 
 	>>> c23_uri.as_wfn()
-	'wfn:[part="o", vendor="redhat", product="enterprise_linux", version="4", update="update4"]'
+        'wfn:[part="a", vendor="hp", product="insight_diagnostics", version="8", update=ANY, edition=ANY, sw_edition="online", target_sw="win2003", target_hw="x64", other=ANY]'
 	>>> c23_uri.as_uri_2_3()
-	'cpe:/a:hp:insight_diagnostics:8::~~online~win2003~x64~'
+        'cpe:/a:hp:insight_diagnostics:8::~~online~win2003~x64~'
 	>>> c23_uri.as_fs()
-	'cpe:2.3:a:hp:?insight_diagnostics?:8.*:*:*:*:*:*:x32:*'
+        'cpe:2.3:a:hp:insight_diagnostics:8:*:*:*:online:win2003:x64:*'
 
 [--- Return to index ---](#index)
 

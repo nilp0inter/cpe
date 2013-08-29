@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup
-from setuptools import find_packages
 
-VERSION = '1.0.2'
+VERSION = '1.0.3'
 AUTHORS = u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'
 EMAILS = 'galindo.garcia.alejandro@gmail.com, robertomartinezp@gmail.com'
 
 setup(name='cpe',
       version=VERSION,
-      summary='Implementation of versions 1.1, 2.2 and 2.3 of CPE specification.',
-      description='Package to create and operate with CPE Names of versions 1.1, 2.2 and 2.3 of Common Platform Enumeration (CPE) specification. The main functionality implemented is: naming, name matching and language matching.',
+      description='Implementation of versions 1.1, 2.2 and 2.3 of CPE specification.',
       classifiers=[
           "Development Status :: 3 - Alpha",
           "Intended Audience :: Developers",
@@ -27,7 +25,7 @@ setup(name='cpe',
       maintainer_email=EMAILS,
       license='GPLv3',
       url="https://github.com/galindale/cpe",
-      packages=find_packages(exclude=['ez_setup', 'examples', 'tests']),
+      long_description=open("README.md").read(),
       include_package_data=True,
       zip_safe=False,
       )
