@@ -1,0 +1,40 @@
+News
+====
+
+1.0.4
+-----
+
+ New funtionality has not added, only there are small changes:
+
+ * Add NEWS.txt file with the updates in the cpe package releases.
+ * Added issue about language attribute in CPE Names in documentation.
+ * Changed some files to follow PEP8.
+ * Fixed language validation method in CPE components with version 2.3.
+ * Added integration with travis-ci and version badge and Pypi shield/pin images.
+ * Added option "packages" in setup.py.
+
+1.0.3
+-----
+
+ * Fixed an error to check logical values in parsing with CPE names with WFN style.
+ * Fixed example about convertion methods between CPE styles in naming section.
+
+1.0.2
+-----
+
+ * New release.
+
+1.0.1
+-----
+
+ * New release.
+
+1.0.0
+-----
+
+ * New release.
+
+0.1.0
+-----
+
+ * Starting development.
