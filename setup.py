@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-VERSION = '1.0.3'
+VERSION = '1.0.4'
 AUTHORS = u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'
 EMAILS = 'galindo.garcia.alejandro@gmail.com, robertomartinezp@gmail.com'
 
@@ -21,8 +21,8 @@ setup(name='cpe',
       keywords='cpe identification naming matching standard specification mitre nist',
       author=AUTHORS,
       author_email=EMAILS,
-      maintainer=AUTHORS,
-      maintainer_email=EMAILS,
+      maintainer=u'Alejandro Galindo García',
+      maintainer_email='galindo.garcia.alejandro@gmail.com',
       license='GPLv3',
       url="https://github.com/galindale/cpe",
       packages=['cpe'],
