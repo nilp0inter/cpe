@@ -8,4 +8,4 @@ script:
   # Test local installation
   - "python setup.py install"
   # Test doctests and unittests with nose
-  - "nosetests -v --with-doctest --doctest-extension=txt"
+  - "nosetests --with-doctest --doctest-extension=txt"
