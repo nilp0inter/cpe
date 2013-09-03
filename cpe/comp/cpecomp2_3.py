@@ -202,7 +202,7 @@ class CPEComponent2_3(CPEComponentSimple):
         def check_region_without_language(self, value):
             """
             Check possible values in region part when language part not exist.
-            
+
             Possible values of language attribute: 1=digit
             | *111
             | *11
@@ -218,7 +218,6 @@ class CPEComponent2_3(CPEComponentSimple):
 
             region_rxc = re.compile("".join(region_pattern))
             return region_rxc.match(region)
-            
 
         comp_str = self._encoded_value.lower()
 
