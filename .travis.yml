@@ -1,11 +1,11 @@
 language: python
 python:
-  - "2.7"
+    - "2.7"
 install:
-  # Get package cpe to test it
-  - "pip install ."
+    # Get package cpe to test it
+    - pip install cpe
 script:
-  # Test local installation
-  - "python setup.py install"
-  # Test doctests and unittests with nose
-  - "nosetests --with-doctest --doctest-extension=txt"
+    # Test local installation
+    - python setup.py install
+    # Test doctests and unittests with nose
+    - nosetests --with-doctest --doctest-extension=txt
