@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/galindale/cpe.png)](https://travis-ci.org/galindale/cpe)
+[![Coverage Status](https://coveralls.io/repos/galindale/cpe/badge.png)](https://coveralls.io/r/galindale/cpe)
 [![PyPI version](https://badge.fury.io/py/cpe.png)](http://badge.fury.io/py/cpe)
 [![Downloads](https://pypip.in/d/cpe/badge.png)](https://crate.io/packages/cpe)
 

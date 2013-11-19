@@ -4,8 +4,13 @@ python:
 install:
     # Get package cpe to test it
     - pip install cpe
+    # Get coveralls for python
+    pip install coveralls
 script:
     # Test local installation
     - python setup.py install
     # Test doctests and unittests with nose
-    - nosetests --with-doctest --doctest-extension=txt
+    - nosetests --with-doctest --doctest-extension=txt --cover-package=cpe --with-coverage
+    #- coverage run --source=cpe setup.py test --with-doctest --doctest-extension=txt
+after_success:
+    - coveralls
