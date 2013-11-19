@@ -5,7 +5,7 @@ install:
     # Get package cpe to test it
     - pip install cpe
     # Get coveralls for python
-    pip install coveralls
+    - pip install coveralls
 script:
     # Test local installation
     - python setup.py install
