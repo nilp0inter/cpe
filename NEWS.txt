@@ -1,6 +1,11 @@
 News
 ====
 
+1.0.5
+-----
+
+ * Fixed an issue reported by @TauPan. Added cpe.comp as sub-package. https://github.com/galindale/cpe/pull/2. (@TauPan)
+
 1.0.4
 -----
 
