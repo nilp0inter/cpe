@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-VERSION = '1.0.4'
+VERSION = '1.0.5'
 AUTHORS = u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'
 EMAILS = 'galindo.garcia.alejandro@gmail.com, robertomartinezp@gmail.com'
 
