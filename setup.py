@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import sys
+reload(sys).setdefaultencoding("UTF-8")
 
 from setuptools import setup
 
