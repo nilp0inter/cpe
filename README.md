@@ -70,7 +70,7 @@ The CPE naming of version 2.3 supports the definition of three different styles 
 <h2 id="3-installation">3. Installation</h2>
 Install the package using pip:
 
-	pip install cpe
+	pip install --upgrade cpe
 
 or download it and execute the setup.py file:
 

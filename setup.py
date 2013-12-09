@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-VERSION = '1.0.4'
+VERSION = '1.0.5'
 AUTHORS = u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'
 EMAILS = 'galindo.garcia.alejandro@gmail.com, robertomartinezp@gmail.com'
 
@@ -25,7 +25,7 @@ setup(name='cpe',
       maintainer_email='galindo.garcia.alejandro@gmail.com',
       license='GPLv3',
       url="https://github.com/galindale/cpe",
-      packages=['cpe'],
+      packages=['cpe', 'cpe.comp'],
       long_description=open("README.md").read(),
       include_package_data=True,
       zip_safe=False,
