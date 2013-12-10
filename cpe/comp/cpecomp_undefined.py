@@ -25,7 +25,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpecomp_logical import CPEComponentLogical
+from .cpecomp_logical import CPEComponentLogical
 
 
 class CPEComponentUndefined(CPEComponentLogical):
@@ -62,8 +62,8 @@ class CPEComponentUndefined(CPEComponentLogical):
         :returns: True if other == self, False otherwise
         """
 
-        from cpecomp_anyvalue import CPEComponentAnyValue
-        from cpecomp_empty import CPEComponentEmpty
+        from .cpecomp_anyvalue import CPEComponentAnyValue
+        from .cpecomp_empty import CPEComponentEmpty
 
         return (isinstance(other, CPEComponentUndefined) or
                 isinstance(other, CPEComponentEmpty) or

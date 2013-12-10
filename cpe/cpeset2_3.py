@@ -30,11 +30,11 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpe2_3 import CPE2_3
-from cpe2_3_wfn import CPE2_3_WFN
-from comp.cpecomp import CPEComponent
-from comp.cpecomp2_3_wfn import CPEComponent2_3_WFN
-from cpeset import CPESet
+from .cpe2_3 import CPE2_3
+from .cpe2_3_wfn import CPE2_3_WFN
+from .comp.cpecomp import CPEComponent
+from .comp.cpecomp2_3_wfn import CPEComponent2_3_WFN
+from .cpeset import CPESet
 
 
 class CPESet2_3(CPESet):

@@ -27,9 +27,9 @@ For any problems using the cpe package, or general questions and
 feedback about it, please contact: galindo.garcia.alejandro@gmail.com.
 """
 
-from cpe import CPE
-from comp.cpecomp import CPEComponent
-from cpeset import CPESet
+from .cpe import CPE
+from .comp.cpecomp import CPEComponent
+from .cpeset import CPESet
 
 
 class CPESet1_1(CPESet):
@@ -63,8 +63,8 @@ class CPESet1_1(CPESet):
 
         TEST:
 
-        >>> from cpeset1_1 import CPESet1_1
-        >>> from cpe1_1 import CPE1_1
+        >>> from .cpeset1_1 import CPESet1_1
+        >>> from .cpe1_1 import CPE1_1
         >>> uri1 = 'cpe://microsoft:windows:xp!vista'
         >>> c1 = CPE1_1(uri1)
         >>> s = CPESet1_1()
@@ -96,8 +96,8 @@ class CPESet1_1(CPESet):
 
         TEST: matching with identical CPE in set
 
-        >>> from cpe1_1 import CPE1_1
-        >>> from cpeset1_1 import CPESet1_1
+        >>> from .cpe1_1 import CPE1_1
+        >>> from .cpeset1_1 import CPESet1_1
         >>> uri1 = 'cpe://microsoft:windows:xp!vista'
         >>> uri2 = 'cpe:/cisco::3825;cisco:2:44/cisco:ios:12.3:enterprise'
         >>> c1 = CPE1_1(uri1)

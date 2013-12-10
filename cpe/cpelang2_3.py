@@ -30,11 +30,11 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpeset2_3 import CPESet2_3
-from cpelang import CPELanguage
-from cpe2_3_wfn import CPE2_3_WFN
-from cpe2_3_uri import CPE2_3_URI
-from cpe2_3_fs import CPE2_3_FS
+from .cpeset2_3 import CPESet2_3
+from .cpelang import CPELanguage
+from .cpe2_3_wfn import CPE2_3_WFN
+from .cpe2_3_uri import CPE2_3_URI
+from .cpe2_3_fs import CPE2_3_FS
 
 
 class CPELanguage2_3(CPELanguage):

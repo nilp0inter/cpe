@@ -31,13 +31,13 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpe import CPE
-from cpe2_3 import CPE2_3
-from comp.cpecomp import CPEComponent
-from comp.cpecomp_logical import CPEComponentLogical
-from comp.cpecomp2_3_fs import CPEComponent2_3_FS
-from comp.cpecomp_anyvalue import CPEComponentAnyValue
-from comp.cpecomp_notapplicable import CPEComponentNotApplicable
+from .cpe import CPE
+from .cpe2_3 import CPE2_3
+from .comp.cpecomp import CPEComponent
+from .comp.cpecomp_logical import CPEComponentLogical
+from .comp.cpecomp2_3_fs import CPEComponent2_3_FS
+from .comp.cpecomp_anyvalue import CPEComponentAnyValue
+from .comp.cpecomp_notapplicable import CPEComponentNotApplicable
 
 import re
 

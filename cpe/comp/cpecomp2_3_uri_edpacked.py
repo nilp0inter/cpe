@@ -30,7 +30,7 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpecomp2_3_uri import CPEComponent2_3_URI
+from .cpecomp2_3_uri import CPEComponent2_3_URI
 
 
 class CPEComponent2_3_URI_edpacked(CPEComponent2_3_URI):

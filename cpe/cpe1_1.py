@@ -31,13 +31,13 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpe import CPE
-from cpe2_3_wfn import CPE2_3_WFN
-from comp.cpecomp import CPEComponent
-from comp.cpecomp1_1 import CPEComponent1_1
-from comp.cpecomp2_3_wfn import CPEComponent2_3_WFN
-from comp.cpecomp_empty import CPEComponentEmpty
-from comp.cpecomp_undefined import CPEComponentUndefined
+from .cpe import CPE
+from .cpe2_3_wfn import CPE2_3_WFN
+from .comp.cpecomp import CPEComponent
+from .comp.cpecomp1_1 import CPEComponent1_1
+from .comp.cpecomp2_3_wfn import CPEComponent2_3_WFN
+from .comp.cpecomp_empty import CPEComponentEmpty
+from .comp.cpecomp_undefined import CPEComponentUndefined
 
 import re
 
