@@ -167,7 +167,7 @@ class CPESet2_3(CPESet):
             ends = -1
         else:
             while ((end > 0) and
-                   source.endswith(CPEComponent2_3_WFN.WILDCARD_ONE, end - 1, end - 1) and
+                   source.endswith(CPEComponent2_3_WFN.WILDCARD_ONE, end - 1, end) and
                    CPESet2_3._is_even_wildcards(source, end - 1)):
 
                 # Source ends in "?"
