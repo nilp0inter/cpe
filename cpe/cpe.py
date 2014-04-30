@@ -463,7 +463,8 @@ class CPE(dict):
                isinstance(comp, CPEComponentAnyValue)):
 
                 value = ""
-
+            elif (isinstance(comp, CPEComponentNotApplicable)):
+                value = CPEComponent2_3_URI.VALUE_NA
             else:
                 # Component has some value; transform this original value
                 # in URI value
