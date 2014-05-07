@@ -1,7 +1,7 @@
 CPE 
 ===
 
-####Common Platform Enumeration for Python
+###Common Platform Enumeration for Python
 
 *CPE* (this code) is a LGPL licensed Python package, implementing the
 CPE standard.
