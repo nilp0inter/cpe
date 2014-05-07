@@ -1,4 +1,4 @@
-CPE: Common Platform Enumeration for Python ![CPE specification logo](http://cpe.mitre.org/images/cpe_logo.gif)
+CPE: Common Platform Enumeration for Python
 ===========================================
 
 [![Stories in Ready](https://badge.waffle.io/galindale/cpe.png?label=ready&title=Ready)](https://waffle.io/galindale/cpe)
@@ -9,6 +9,8 @@ CPE: Common Platform Enumeration for Python ![CPE specification logo](http://cpe
 
 `CPE` (this code) is a LGPL licensed Python package, implementing the
 CPE standard.
+
+![CPE specification logo](http://cpe.mitre.org/images/cpe_logo.gif)
 
 
 About the CPE standard
