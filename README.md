@@ -1,10 +1,8 @@
-CPE 
-===
-
+#CPE
 ###Common Platform Enumeration for Python
 
 *CPE* (this code) is a LGPL licensed Python package, implementing the
-CPE standard.
+CPE standards.
 
 <p align="center">
   <img src="http://cpe.mitre.org/images/cpe_logo.gif" alt="CPE Logo" />
@@ -19,7 +17,8 @@ and identifying classes of applications, operating systems, and hardware
 devices present among an enterprise's computing assets.
 
 For more information, please visit the official website of CPE,
-maintained by MITRE: [http://cpe.mitre.org/](http://cpe.mitre.org/)
+developed by [MITRE](http://cpe.mitre.org/) and maintained by
+[NIST](http://nvd.nist.gov/cpe.cfm).
 
 
 Features
@@ -33,7 +32,7 @@ Features
 - Tests.
 
 
-Installation
+Installation [![Build Status](https://travis-ci.org/galindale/cpe.png)](https://travis-ci.org/galindale/cpe) [![PyPI version](https://badge.fury.io/py/cpe.png)](http://badge.fury.io/py/cpe)
 ------------
 
 To install `CPE` execute:
@@ -41,9 +40,6 @@ To install `CPE` execute:
     pip install cpe
 
 The latest stable version is is always in [https://pypi.python.org/pypi/cpe/](PyPI)
-
-[![Build Status](https://travis-ci.org/galindale/cpe.png)](https://travis-ci.org/galindale/cpe)
-[![PyPI version](https://badge.fury.io/py/cpe.png)](http://badge.fury.io/py/cpe)
 
 
 Documentation
@@ -60,10 +56,9 @@ Compatibility
 - CPE Formats: WFN, URI, FS.
 
 
-Contribute
+Contribute [![Stories in Ready](https://badge.waffle.io/galindale/cpe.png?label=ready&title=Ready)](https://waffle.io/galindale/cpe)
 ----------
 
-[![Stories in Ready](https://badge.waffle.io/galindale/cpe.png?label=ready&title=Ready)](https://waffle.io/galindale/cpe)
 
 1. Check for open issues or open a fresh issue to start a discussion
    around a feature idea or a bug.
