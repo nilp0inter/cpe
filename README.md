@@ -1,5 +1,8 @@
-CPE: Common Platform Enumeration for Python
-===========================================
+CPE
+===
+
+Common Platform Enumeration for Python
+======================================
 
 [![Stories in Ready](https://badge.waffle.io/galindale/cpe.png?label=ready&title=Ready)](https://waffle.io/galindale/cpe)
 [![Build Status](https://travis-ci.org/galindale/cpe.png)](https://travis-ci.org/galindale/cpe)
