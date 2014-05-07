@@ -11,7 +11,7 @@ CPE: Common Platform Enumeration for Python
 CPE standard.
 
 <p align="center">
-![CPE specification logo](http://cpe.mitre.org/images/cpe_logo.gif)
+  <img src="http://cpe.mitre.org/images/cpe_logo.gif" alt="CPE Logo" />
 </p>
 
 
