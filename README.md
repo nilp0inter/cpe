@@ -3,12 +3,6 @@ CPE
 
 ####Common Platform Enumeration for Python
 
-[![Stories in Ready](https://badge.waffle.io/galindale/cpe.png?label=ready&title=Ready)](https://waffle.io/galindale/cpe)
-[![Build Status](https://travis-ci.org/galindale/cpe.png)](https://travis-ci.org/galindale/cpe)
-[![Coverage Status](https://coveralls.io/repos/galindale/cpe/badge.png)](https://coveralls.io/r/galindale/cpe)
-[![PyPI version](https://badge.fury.io/py/cpe.png)](http://badge.fury.io/py/cpe)
-[![Downloads](https://pypip.in/d/cpe/badge.png)](https://crate.io/packages/cpe)
-
 *CPE* (this code) is a LGPL licensed Python package, implementing the
 CPE standard.
 
@@ -48,6 +42,9 @@ To install `CPE` execute:
 
 The latest stable version is is always in [https://pypi.python.org/pypi/cpe/](PyPI)
 
+[![Build Status](https://travis-ci.org/galindale/cpe.png)](https://travis-ci.org/galindale/cpe)
+[![PyPI version](https://badge.fury.io/py/cpe.png)](http://badge.fury.io/py/cpe)
+
 
 Documentation
 -------------
@@ -66,6 +63,8 @@ Compatibility
 Contribute
 ----------
 
+[![Stories in Ready](https://badge.waffle.io/galindale/cpe.png?label=ready&title=Ready)](https://waffle.io/galindale/cpe)
+
 1. Check for open issues or open a fresh issue to start a discussion
    around a feature idea or a bug.
 2. Fork the repository on GitHub to start making your changes to the
@@ -74,3 +73,10 @@ Contribute
    works as expected.
 4. Send a pull request and bug the maintainer until it gets merged and
    published. :) Make sure to add yourself to AUTHORS.
+
+
+Statistics
+----------
+
+[![Coverage Status](https://coveralls.io/repos/galindale/cpe/badge.png)](https://coveralls.io/r/galindale/cpe)
+[![Downloads](https://pypip.in/d/cpe/badge.png)](https://crate.io/packages/cpe)
