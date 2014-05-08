@@ -31,7 +31,7 @@ Features
 - Tests.
 
 
-Installation [![Build Status](https://travis-ci.org/galindale/cpe.png)](https://travis-ci.org/galindale/cpe) [![PyPI version](https://badge.fury.io/py/cpe.png)](http://badge.fury.io/py/cpe)
+Installation [![Build Status](https://travis-ci.org/nilp0inter/cpe.png?branch=master)](https://travis-ci.org/nilp0inter/cpe) [![PyPI version](https://badge.fury.io/py/cpe.png)](http://badge.fury.io/py/cpe)
 ------------
 
 To install `CPE` execute:
@@ -55,7 +55,7 @@ Compatibility
 - CPE Formats: WFN, URI, FS.
 
 
-Contribute [![Stories in Ready](https://badge.waffle.io/galindale/cpe.png?label=ready&title=Ready)](https://waffle.io/galindale/cpe)
+Contribute [![Build Status](https://travis-ci.org/nilp0inter/cpe.png?branch=develop)](https://travis-ci.org/nilp0inter/cpe) [![Stories in Ready](https://badge.waffle.io/nilp0inter/cpe.png?label=ready&title=Ready)](https://waffle.io/nilp0inter/cpe)
 ----------
 
 
