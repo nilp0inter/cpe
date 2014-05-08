@@ -20,7 +20,7 @@ LICENSE = u'GPLv3'
 PACKAGE_URL = "https://github.com/galindale/cpe"
 
 here = os.path.abspath(os.path.dirname(__file__))
-readme = open(os.path.join(here, 'README.md')).read()
+readme = open(os.path.join(here, 'README.rst')).read()
 news = open(os.path.join(here, 'NEWS.txt')).read()
 
 PACKAGE_STR = 'cpe'
