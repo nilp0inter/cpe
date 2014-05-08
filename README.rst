@@ -1,5 +1,6 @@
-|CPE_Logo|
-==========
+.. image:: http://cpe.mitre.org/images/cpe_logo.gif
+   :alt: CPE Logo
+   :align: center
 
 Common Platform Enumeration for Python
 --------------------------------------
@@ -30,7 +31,7 @@ Features
 - Tests.
 
 
-Installation |TravisCI_master| |Version|
+Installation |Version| |TravisCI_master|
 ----------------------------------------
 
 To install `CPE` execute:
@@ -80,10 +81,6 @@ Statistics
 .. _NIST: http://nvd.nist.gov/cpe.cfm
 .. _ReadTheDocs: https://cpe.readthedocs.org/en/latest/
 
-
-.. |CPE_Logo| image:: http://cpe.mitre.org/images/cpe_logo.gif
-   :alt: CPE Logo
-   :align: center
 
 .. |TravisCI_master| image:: https://travis-ci.org/nilp0inter/cpe.svg?branch=master
    :alt: Build Status (master)
