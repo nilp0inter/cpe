@@ -1,12 +1,10 @@
-#CPE
+#CPE <p align="right" style="float:right;"><img src="http://cpe.mitre.org/images/cpe_logo.gif" alt="CPE Logo" /> </p>
 ###Common Platform Enumeration for Python
 
 *CPE* (this code) is a LGPL licensed Python package, implementing the
 CPE standards.
 
-<p align="center">
-  <img src="http://cpe.mitre.org/images/cpe_logo.gif" alt="CPE Logo" />
-</p>
+
 
 
 About the CPE standard
