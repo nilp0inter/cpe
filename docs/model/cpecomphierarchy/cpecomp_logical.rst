@@ -1,6 +1,6 @@
 CPEComponentLogical class
 =========================
 
-.. autoclass:: cpecomp_logical.CPEComponentLogical
+.. autoclass:: cpe.comp.cpecomp_logical.CPEComponentLogical
    :members:
    :special-members:

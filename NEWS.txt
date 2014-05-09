@@ -1,10 +1,20 @@
 News
 ====
 
+
+1.0.6
+-----
+
+ * Using OrderedDict for `_system_and_parts` and `_CPE_VERSIONS`. For force evaluation order. Tests was failing randomly.
+ * Changed testing tools: tox + pytest + coverage.
+ * Changed license to LGPLv3.
+
+
 1.0.5
 -----
 
  * Fixed an issue reported by @TauPan. Added cpe.comp as sub-package. https://github.com/galindale/cpe/pull/2. (@TauPan)
+
 
 1.0.4
 -----
@@ -18,26 +28,31 @@ News
  * Added integration with travis-ci and version badge and Pypi shield/pin images.
  * Added option "packages" in setup.py.
 
+
 1.0.3
 -----
 
  * Fixed an error to check logical values in parsing with CPE names with WFN style.
  * Fixed example about convertion methods between CPE styles in naming section.
 
+
 1.0.2
 -----
 
  * New release.
+
 
 1.0.1
 -----
 
  * New release.
 
+
 1.0.0
 -----
 
  * New release.
+
 
 0.1.0
 -----
