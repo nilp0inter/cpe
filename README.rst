@@ -56,8 +56,8 @@ Compatibility
 - CPE Formats: WFN, URI, FS.
 
 
-Contribute |TravisCI_develop| |Waffle.IO_ready|
------------------------------------------------
+Contribute |Coverage| |TravisCI_develop| |Waffle.IO_ready|
+----------------------------------------------------------
 
 0. Star us on `GitHub`_ ;)
 1. Check for open issues or open a fresh issue to start a discussion
@@ -68,13 +68,6 @@ Contribute |TravisCI_develop| |Waffle.IO_ready|
    works as expected.
 4. Send a pull request and bug the maintainer until it gets merged and
    published. :) Make sure to add yourself to AUTHORS.
-
-
-Statistics
-----------
-
-|Coverage| |Downloads|
-
 
 
 .. _PyPI: https://pypi.python.org/pypi/cpe/
