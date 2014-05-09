@@ -51,7 +51,7 @@ Documentation is available at `ReadTheDocs`_.
 Compatibility
 -------------
 
-- Python: 2.7
+- Python: 2.7, 3.4
 - CPE: 1.1, 2.2, 2.3
 - CPE Formats: WFN, URI, FS.
 
