@@ -29,6 +29,7 @@ feedback about it, please contact:
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
+from collections import OrderedDict
 
 from comp.cpecomp import CPEComponent
 from comp.cpecomp2_3_uri import CPEComponent2_3_URI
@@ -100,11 +101,11 @@ class CPE(dict):
 
     #: Dictionary with the relation between the values of "part"
     #: component and the part name in internal structure of CPE Name
-    _system_and_parts = {
-        CPEComponent.VALUE_PART_HW: KEY_HW,
-        CPEComponent.VALUE_PART_OS: KEY_OS,
-        CPEComponent.VALUE_PART_APP: KEY_APP,
-        CPEComponent.VALUE_PART_UNDEFINED: KEY_UNDEFINED}
+    _system_and_parts = OrderedDict((
+        (CPEComponent.VALUE_PART_HW, KEY_HW),
+        (CPEComponent.VALUE_PART_OS, KEY_OS),
+        (CPEComponent.VALUE_PART_APP, KEY_APP),
+        (CPEComponent.VALUE_PART_UNDEFINED, KEY_UNDEFINED)))
 
     ###################
     #  CLASS METHODS  #
@@ -281,10 +282,13 @@ class CPE(dict):
         from cpe2_3 import CPE2_3
 
         # List of implemented versions of CPE Names
-        _CPE_VERSIONS = {
-            CPE.VERSION_1_1: CPE1_1,
-            CPE.VERSION_2_2: CPE2_2,
-            CPE.VERSION_2_3: CPE2_3}
+        #
+        # Note: Order matters here, because some regexp can parse
+        #       multiple versions at once.
+        _CPE_VERSIONS = OrderedDict((
+            (CPE.VERSION_2_3, CPE2_3),
+            (CPE.VERSION_2_2, CPE2_2),
+            (CPE.VERSION_1_1, CPE1_1),))
 
         errmsg = 'Version of CPE not implemented'
 
