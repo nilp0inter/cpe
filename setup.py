@@ -14,10 +14,10 @@ EMAILS = "{0}, {1}".format(
     'galindo.garcia.alejandro@gmail.com',
     'robertomartinezp@gmail.com')
 KEYWORDS = u'cpe identification naming matching standard specification mitre nist'
-MAINTAINER = u'Alejandro Galindo García'
-MAINTAINER_EMAIL = u'galindo.garcia.alejandro@gmail.com'
-LICENSE = u'GPLv3'
-PACKAGE_URL = "https://github.com/galindale/cpe"
+MAINTAINER = u'Roberto Abdelkader Martínez Pérez'
+MAINTAINER_EMAIL = u'robertomartinezp@gmail.com'
+LICENSE = u'LGPLv3'
+PACKAGE_URL = "https://github.com/nilp0inter/cpe"
 
 here = os.path.abspath(os.path.dirname(__file__))
 readme = open(os.path.join(here, 'README.rst')).read()
@@ -29,7 +29,7 @@ package_name = __import__(PACKAGE_STR).PACKAGE_NAME
 description = __import__(PACKAGE_STR).DESCRIPTION
 authors = __import__(PACKAGE_STR).AUTHORS
 
-long_description = readme,
+long_description = readme
 
 packages = [
     'cpe',

@@ -4,7 +4,7 @@ from .cpe import CPE
 
 VERSION = (1, 0, 5)
 PACKAGE_NAME = u'cpe'
-DESCRIPTION = u'Implementation of versions 1.1, 2.2 and 2.3 of CPE specification.'
+DESCRIPTION = u'CPE: Common Platform Enumeration for Python'
 AUTHORS = u"{0}, {1}".format(
     u'Alejandro Galindo García',
     u'Roberto Abdelkader Martínez Pérez')

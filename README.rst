@@ -1,6 +1,5 @@
 .. image:: http://cpe.mitre.org/images/cpe_logo.gif
    :alt: CPE Logo
-   :align: center
 
 Common Platform Enumeration for Python
 --------------------------------------
@@ -36,9 +35,11 @@ Installation |Version| |TravisCI_master|
 
 To install `CPE` execute:
 
-    pip install cpe
+.. code-block:: bash
 
-The latest stable version is is always in `PyPI`_.
+    $ pip install cpe
+
+The latest stable version is always in `PyPI`_.
 
 
 Documentation
@@ -58,7 +59,7 @@ Compatibility
 Contribute |TravisCI_develop| |Waffle.IO_ready|
 -----------------------------------------------
 
-
+0. Star us on `GitHub`_ ;)
 1. Check for open issues or open a fresh issue to start a discussion
    around a feature idea or a bug.
 2. Fork the repository on GitHub to start making your changes to the
@@ -80,6 +81,7 @@ Statistics
 .. _MITRE: http://cpe.mitre.org/
 .. _NIST: http://nvd.nist.gov/cpe.cfm
 .. _ReadTheDocs: https://cpe.readthedocs.org/en/latest/
+.. _GitHub: https://github.com/nilp0inter/cpe
 
 
 .. |TravisCI_master| image:: https://travis-ci.org/nilp0inter/cpe.svg?branch=master
