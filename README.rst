@@ -78,7 +78,9 @@ Contribute |Coverage| |TravisCI_develop| |Waffle.IO_ready|
 
 
 .. |TravisCI_master| image:: https://travis-ci.org/nilp0inter/cpe.svg?branch=master
+   :target: https://travis-ci.org/nilp0inter/cpe
    :alt: Build Status (master)
+   
 
 .. |TravisCI_develop| image:: https://travis-ci.org/nilp0inter/cpe.svg?branch=develop
    :target: https://travis-ci.org/nilp0inter/cpe
@@ -88,10 +90,10 @@ Contribute |Coverage| |TravisCI_develop| |Waffle.IO_ready|
    :target: https://waffle.io/nilp0inter/cpe
    :alt: Stories in Ready
 
-.. |Coverage| image:: https://coveralls.io/repos/nilp0inter/cpe/badge.png
-   :target: https://coveralls.io/r/nilp0inter/cpe
+.. |Coverage| image:: https://coveralls.io/repos/nilp0inter/cpe/badge.png?branch=develop
+   :target: https://coveralls.io/r/nilp0inter/cpe?branch=develop
    :alt: Coverage Status
-
+   
 .. |Downloads| image:: https://pypip.in/d/cpe/badge.png
    :target: https://crate.io/packages/cpe
    :alt: Downloads
