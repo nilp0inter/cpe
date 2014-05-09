@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe.comp.cpecomp1_1 import CPEComponent1_1
 >>> from cpe.comp.cpecomp_simple import CPEComponentSimple
 >>> from cpe.comp.cpecomp_empty import CPEComponentEmpty
@@ -157,13 +158,13 @@ Test for __str__(self)
 TEST: simple value
 >>> value = "hp"
 >>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
->>> print comp
+>>> print(comp)
 hp
 
 TEST: negate value
 >>> value = "~microsoft"
 >>> comp = CPEComponent1_1(value, CPEComponentSimple.ATT_VENDOR)
->>> print comp
+>>> print(comp)
 ~microsoft
 
 

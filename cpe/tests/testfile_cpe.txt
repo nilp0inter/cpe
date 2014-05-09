@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe import CPE
 >>> from cpe.cpe1_1 import CPE1_1
 >>> from cpe.cpe2_3 import CPE2_3
@@ -183,7 +184,7 @@ Test for __str__(self)
 TEST: (version 1.1) not negate components
 >>> str = 'cpe:///microsoft:ie:6.0'
 >>> c = CPE(str)
->>> print c
+>>> print(c)
 CPE v1.1: cpe:///microsoft:ie:6.0
 
 

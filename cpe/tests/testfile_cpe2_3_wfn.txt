@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe.cpe2_3_wfn import CPE2_3_WFN
 >>> from cpe.comp.cpecomp_simple import CPEComponentSimple
 
@@ -119,7 +120,7 @@ Test for __str__(self)
 TEST: not negate components
 >>> str = r'wfn:[part="a", vendor="hp", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]'
 >>> c = CPE2_3_WFN(str)
->>> print c
+>>> print(c)
 CPE v2.3 (WFN): wfn:[part="a", vendor="hp", product="?insight_diagnostics?", version="8\.*", sw_edition="?", target_sw=ANY, target_hw="x32"]
 
 
