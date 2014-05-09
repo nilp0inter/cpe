@@ -13,20 +13,16 @@
 
 import sys
 import os
-import cpe
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('../cpe'))
-sys.path.insert(1, os.path.abspath('../cpe/comp'))
+sys.path.append(os.path.abspath('..'))
+import cpe
 
 # Project constants
 PACKAGE_NAME = u'cpe'
-DESCRIPTION = u'Implementation of versions 1.1, 2.2 and 2.3 of CPE specification.'
-AUTHORS = u"{0}, {1}".format(
-    u'Alejandro Galindo García',
-    u'Roberto Abdelkader Martínez Pérez')
+DESCRIPTION = u'CPE: Common Platform Enumeration for Python'
+AUTHORS = u", ".join((
+    u'Roberto Abdelkader Martínez Pérez',
+    u'Alejandro Galindo García',))
 PROJECT_NAME = PACKAGE_NAME.upper()
 COPYRIGHT = u'2013, {0}'.format(AUTHORS)
 

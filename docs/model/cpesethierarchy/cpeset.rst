@@ -1,6 +1,6 @@
 CPESet class
 ============
 
-.. autoclass:: cpeset.CPESet
+.. autoclass:: cpe.cpeset.CPESet
    :members:
    :special-members:

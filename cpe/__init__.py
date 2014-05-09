@@ -2,15 +2,16 @@
 
 from .cpe import CPE
 
-VERSION = (1, 0, 5)
+VERSION = (1, 0, 6)
 PACKAGE_NAME = u'cpe'
 DESCRIPTION = u'CPE: Common Platform Enumeration for Python'
-AUTHORS = u"{0}, {1}".format(
-    u'Alejandro Galindo García',
-    u'Roberto Abdelkader Martínez Pérez')
-EMAILS = "{0}, {1}".format(
+AUTHORS = u", ".join((
+    u'Roberto Abdelkader Martínez Pérez',
+    u'Alejandro Galindo García',))
+EMAILS = u", ".join((
+    'robertomartinezp@gmail.com',
     'alejandro.galindo@i4s.com',
-    'juandiego.gonzalez.contractor@bbva.com')
+    'juandiego.gonzalez.contractor@bbva.com'))
 
 
 def get_version():
