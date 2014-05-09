@@ -1,32 +1,67 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+try:
+    from setuptools import setup
+except ImportError:
+    from ez_setup import use_setuptools
+    use_setuptools()
+    from setuptools import setup
 
-VERSION = '1.0.5'
-AUTHORS = u'Alejandro Galindo García, Roberto Abdelkader Martínez Pérez'
-EMAILS = 'galindo.garcia.alejandro@gmail.com, robertomartinezp@gmail.com'
+import os
 
-setup(name='cpe',
-      version=VERSION,
-      description='Implementation of versions 1.1, 2.2 and 2.3 of CPE specification.',
-      classifiers=[
-          "Development Status :: 3 - Alpha",
-          "Intended Audience :: Developers",
-          "Intended Audience :: Information Technology",
-          "Intended Audience :: System Administrators",
-          "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-          "Natural Language :: English",
-          "Operating System :: OS Independent",
-          "Programming Language :: Python :: 2.7"],
-      keywords='cpe identification naming matching standard specification mitre nist',
-      author=AUTHORS,
-      author_email=EMAILS,
-      maintainer=u'Alejandro Galindo García',
-      maintainer_email='galindo.garcia.alejandro@gmail.com',
-      license='GPLv3',
-      url="https://github.com/galindale/cpe",
-      packages=['cpe', 'cpe.comp'],
-      long_description=open("README.md").read(),
-      include_package_data=True,
-      zip_safe=False,
-      )
+EMAILS = "{0}, {1}".format(
+    'galindo.garcia.alejandro@gmail.com',
+    'robertomartinezp@gmail.com')
+KEYWORDS = u'cpe identification naming matching standard specification mitre nist'
+MAINTAINER = u'Roberto Abdelkader Martínez Pérez'
+MAINTAINER_EMAIL = u'robertomartinezp@gmail.com'
+LICENSE = u'LGPLv3'
+PACKAGE_URL = "https://github.com/nilp0inter/cpe"
+
+here = os.path.abspath(os.path.dirname(__file__))
+readme = open(os.path.join(here, 'README.rst')).read()
+news = open(os.path.join(here, 'NEWS.txt')).read()
+
+PACKAGE_STR = 'cpe'
+version = __import__(PACKAGE_STR).get_version()
+package_name = __import__(PACKAGE_STR).PACKAGE_NAME
+description = __import__(PACKAGE_STR).DESCRIPTION
+authors = __import__(PACKAGE_STR).AUTHORS
+
+long_description = readme
+
+packages = [
+    'cpe',
+    'cpe.comp',
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 2.7"
+]
+
+setup(
+    name=package_name,
+    version=version,
+    description=description,
+    long_description=long_description,
+    classifiers=classifiers,
+    keywords=KEYWORDS,
+    author=authors,
+    author_email=EMAILS,
+    maintainer=MAINTAINER,
+    maintainer_email=MAINTAINER_EMAIL,
+    license=LICENSE,
+    url=PACKAGE_URL,
+    packages=packages,
+    include_package_data=True,
+    zip_safe=False,
+    install_requires=[],
+)

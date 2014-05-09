@@ -1,6 +1,6 @@
 CPEComponentAnyValue class
 ==========================
 
-.. autoclass:: cpecomp_anyvalue.CPEComponentAnyValue
+.. autoclass:: cpe.comp.cpecomp_anyvalue.CPEComponentAnyValue
    :members:
    :special-members:

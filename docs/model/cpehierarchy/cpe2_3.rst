@@ -1,6 +1,6 @@
 CPE2_3 class
 ============
 
-.. autoclass:: cpe2_3.CPE2_3
+.. autoclass:: cpe.cpe2_3.CPE2_3
    :members:
    :special-members:
