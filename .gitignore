@@ -36,3 +36,6 @@ nosetests.xml
 .project
 .pydevproject
 docs/_build/
+
+coverage.xml
+htmlcov
