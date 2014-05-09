@@ -10,7 +10,7 @@ Welcome to cpe package documentation. In this pages you can find a tutorial abou
 
 This documentation contains a brief introduction about Common Platform Enumeration (CPE) specification, the CPE version list implemented and the compatibility among them, the class model designed, the steps to install and use the cpe package (with examples), and several important issues to consider associated with the functionality of the package.
 
-For more information about cpe package implementation, please visite: `<https://github.com/galindale/cpe>`_.
+For more information about cpe package implementation, please visite: `<https://github.com/nilp0inter/cpe>`_.
 
 Contents:
 
@@ -32,6 +32,5 @@ Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 

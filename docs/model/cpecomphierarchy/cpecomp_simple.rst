@@ -1,6 +1,6 @@
 CPEComponentSimple class
 ========================
 
-.. autoclass:: cpecomp_simple.CPEComponentSimple
+.. autoclass:: cpe.comp.cpecomp_simple.CPEComponentSimple
    :members:
    :special-members:

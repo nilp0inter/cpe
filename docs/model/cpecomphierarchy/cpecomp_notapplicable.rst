@@ -1,6 +1,6 @@
 CPEComponentNotApplicable class
 ===============================
 
-.. autoclass:: cpecomp_notapplicable.CPEComponentNotApplicable
+.. autoclass:: cpe.comp.cpecomp_notapplicable.CPEComponentNotApplicable
    :members:
    :special-members:
