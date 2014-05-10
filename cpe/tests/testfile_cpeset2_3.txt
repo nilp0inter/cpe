@@ -146,7 +146,7 @@ Test for __len__(self)
 Test for name_match(self, wfn)
 ----------------------------------------
 
-- TEST: in version source with wildcards and target with a simple value (SUPERSET)
+- TEST: in version source with * wildcards and target with a simple value (SUPERSET)
 >>> wfn1 = r'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.6", update="beta", edition=ANY]'
 >>> wfn2 = r'wfn:[part="o", vendor="microsoft", product="windows", version="6\.0\*", update="sp2", edition=ANY]'
 >>> wfn3 = r'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.0\.*"]'
@@ -158,6 +158,20 @@ Test for name_match(self, wfn)
 >>> s.append(c2)
 >>> s.name_match(m)
 True
+
+- TEST: in version source with ? wildcards and target with a simple value  (SUPERSET)
+>>> wfn1 = r'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.1\.2", update="sp9", edition=ANY]'
+>>> wfn2 = r'wfn:[part="o", vendor="microsoft", product="windows", version="6\.0\*", update="sp2", edition=ANY]'
+>>> wfn3 = r'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="8\.*", update="sp?"]'
+>>> c1 = CPE2_3_WFN(wfn1)
+>>> c2 = CPE2_3_WFN(wfn2)
+>>> m = CPE2_3_WFN(wfn3)
+>>> s = CPESet2_3()
+>>> s.append(c1)
+>>> s.append(c2)
+>>> s.name_match(m)
+True
+
 
 - TEST: in version source with wildcards and target with a logical value ANY (SUBSET)
 >>> wfn1 = 'wfn:[part="a", vendor="microsoft", product="internet_explorer"]'

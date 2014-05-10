@@ -207,8 +207,8 @@ class CPEComponent2_3_URI(CPEComponent2_3):
                 # embedded is false, so must be preceded by %01
                 # embedded is true, so must be followed by %01
                 if (((idx == 0) or (idx == (len(s)-3))) or
-                   ((not embedded) and (s[idx - 3, idx - 1] == CPEComponent2_3_URI.WILDCARD_MULTI)) or
-                   (embedded and (len(s) >= idx + 6) and (s[idx + 3, idx + 5] == CPEComponent2_3_URI.PCE_ASTERISK))):
+                    ((not embedded) and (s[idx - 3:idx] == CPEComponent2_3_URI.WILDCARD_ONE)) or
+                    (embedded and (len(s) >= idx + 6) and (s[idx + 3:idx + 6] == CPEComponent2_3_URI.WILDCARD_ONE))):
 
                     # A percent-encoded question mark is found
                     # at the beginning or the end of the string,
