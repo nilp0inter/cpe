@@ -13,23 +13,27 @@ Installing dependencies
 -----------------------
 
 * Run the following command to install the developer dendencies:
-
-    pip install -r requirements/develop.txt
-
+```bash
+    $ pip install -r requirements/develop.txt
+```
 
 Developer workflow
 ------------------
 
-* Create a topic branch from the develop branch.
-
-    git checkout -b my_new_feature develop
-
+1 Create a topic branch from the develop branch.
+```bash
+    $ git checkout -b my_new_feature develop
+```
 * Run the test-suite and verify everything is fine:
-
+```bash
     tox
+```
 
-* Write your code and a test that the bug was fixed or that the feature works as expected.
-* Make sure to add yourself to AUTHORS. ;)
-* Run the tests again. 
-* Send a pull request and bug the maintainer until it gets merged and published.
+2 Write your code and a test that the bug was fixed or that the feature works as expected.
+
+3 Make sure to add yourself to AUTHORS. ;)
+
+4 Run the tests again. 
+
+5 Send a pull request and bug the maintainer until it gets merged and published.
 
