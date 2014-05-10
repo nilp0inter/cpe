@@ -18,7 +18,6 @@ TEST:
 >>> c.get_attribute_values(att)  # it is not wildcard
 ['sp%3f']
 
-
 -----------------------------------------------
 Test for __getitem__(self, i)
 -----------------------------------------------

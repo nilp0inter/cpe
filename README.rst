@@ -59,26 +59,20 @@ Compatibility
 Contribute |Coverage| |TravisCI_develop| |Waffle.IO_ready|
 ----------------------------------------------------------
 
-0. Star us on `GitHub`_ ;)
-1. Check for open issues or open a fresh issue to start a discussion
-   around a feature idea or a bug.
-2. Fork the repository on GitHub to start making your changes to the
-   *develop* branch (or branch off of it).
-3. Write a test which shows that the bug was fixed or that the feature
-   works as expected.
-4. Send a pull request and bug the maintainer until it gets merged and
-   published. :) Make sure to add yourself to AUTHORS.
-
+Follow the steps on the `how to contribute`_ document.
 
 .. _PyPI: https://pypi.python.org/pypi/cpe/
 .. _MITRE: http://cpe.mitre.org/
 .. _NIST: http://nvd.nist.gov/cpe.cfm
 .. _ReadTheDocs: https://cpe.readthedocs.org/en/latest/
 .. _GitHub: https://github.com/nilp0inter/cpe
+.. _How to contribute: https://github.com/nilp0inter/cpe/blob/develop/CONTRIBUTING.md
 
 
 .. |TravisCI_master| image:: https://travis-ci.org/nilp0inter/cpe.svg?branch=master
+   :target: https://travis-ci.org/nilp0inter/cpe
    :alt: Build Status (master)
+   
 
 .. |TravisCI_develop| image:: https://travis-ci.org/nilp0inter/cpe.svg?branch=develop
    :target: https://travis-ci.org/nilp0inter/cpe
@@ -88,10 +82,10 @@ Contribute |Coverage| |TravisCI_develop| |Waffle.IO_ready|
    :target: https://waffle.io/nilp0inter/cpe
    :alt: Stories in Ready
 
-.. |Coverage| image:: https://coveralls.io/repos/nilp0inter/cpe/badge.png
-   :target: https://coveralls.io/r/nilp0inter/cpe
+.. |Coverage| image:: https://coveralls.io/repos/nilp0inter/cpe/badge.png?branch=develop
+   :target: https://coveralls.io/r/nilp0inter/cpe?branch=develop
    :alt: Coverage Status
-
+   
 .. |Downloads| image:: https://pypip.in/d/cpe/badge.png
    :target: https://crate.io/packages/cpe
    :alt: Downloads

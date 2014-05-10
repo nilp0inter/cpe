@@ -1,0 +1,10 @@
+>>> from cpe import CPE
+>>> from cpe.cpe2_3_uri import CPE2_3_URI
+
+- TEST: multiple %01 wildcards #8
+>>> CPE2_3_URI('cpe:/a:microsoft:internet_explorer:%01%018.%02:%02s%01%01%01').as_wfn()
+'wfn:[part="a", vendor="microsoft", product="internet_explorer", version="??8\\.*", update="*s???"]'
+
+- TEST: correctly transform not applicable values for edition #11
+>>> CPE('wfn:[part="a", vendor="TauPan", product="cpelib", version="1\\.0\\.5", update=NA, edition=NA]').as_uri_2_3()
+'cpe:/a:taupan:cpelib:1.0.5:-:-'
