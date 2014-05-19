@@ -15,7 +15,7 @@ For more information about cpe package implementation, please visite: `<https://
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
 
    intro
    cpeversions
