@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe.comp.cpecomp import CPEComponent
 >>> from cpe.comp.cpecomp_undefined import CPEComponentUndefined
 
@@ -43,5 +44,5 @@ Test for __str__(self, comp_str)
 
 TEST:
 >>> c = CPEComponentUndefined()
->>> print c
+>>> print(c)
 <UNDEFINED>

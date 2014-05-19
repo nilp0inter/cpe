@@ -30,7 +30,7 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpecomp2_3 import CPEComponent2_3
+from .cpecomp2_3 import CPEComponent2_3
 
 import re
 

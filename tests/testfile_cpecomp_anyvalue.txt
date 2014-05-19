@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe.comp.cpecomp import CPEComponent
 >>> from cpe.comp.cpecomp_anyvalue import CPEComponentAnyValue
 
@@ -43,5 +44,5 @@ Test for __str__(self, comp_str)
 
 TEST:
 >>> c = CPEComponentAnyValue()
->>> print c
+>>> print(c)
 <ANY>

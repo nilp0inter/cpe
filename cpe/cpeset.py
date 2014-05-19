@@ -30,8 +30,8 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpe import CPE
-from comp.cpecomp import CPEComponent
+from .cpe import CPE
+from .comp.cpecomp import CPEComponent
 
 
 class CPESet(object):
@@ -77,7 +77,7 @@ class CPESet(object):
 
         TEST: empty set
 
-        >>> from cpeset1_1 import CPESet1_1
+        >>> from .cpeset1_1 import CPESet1_1
         >>> s = CPESet1_1()
         >>> len(s)
         0

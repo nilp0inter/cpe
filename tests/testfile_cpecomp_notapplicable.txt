@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe.comp.cpecomp import CPEComponent
 >>> from cpe.comp.cpecomp_notapplicable import CPEComponentNotApplicable
 
@@ -62,5 +63,5 @@ Test for __str__(self, comp_str)
 
 TEST:
 >>> c = CPEComponentNotApplicable()
->>> print c
+>>> print(c)
 <NA>

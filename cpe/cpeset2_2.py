@@ -30,8 +30,8 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpe import CPE
-from cpeset import CPESet
+from .cpe import CPE
+from .cpeset import CPESet
 
 
 class CPESet2_2(CPESet):
@@ -66,8 +66,8 @@ class CPESet2_2(CPESet):
 
         TEST:
 
-        >>> from cpeset2_2 import CPESet2_2
-        >>> from cpe2_2 import CPE2_2
+        >>> from .cpeset2_2 import CPESet2_2
+        >>> from .cpe2_2 import CPE2_2
         >>> uri1 = 'cpe:/h:hp'
         >>> c1 = CPE2_2(uri1)
         >>> s = CPESet2_2()
@@ -99,7 +99,7 @@ class CPESet2_2(CPESet):
 
         TEST: matching with ANY values explicit
 
-        >>> from cpe2_2 import CPE2_2
+        >>> from .cpe2_2 import CPE2_2
         >>> uri1 = 'cpe:/o:microsoft:windows:vista'
         >>> uri2 = 'cpe:/o:cisco:ios:12.3:enterprise'
         >>> c1 = CPE2_2(uri1)

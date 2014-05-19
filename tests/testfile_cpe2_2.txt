@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe.cpe import CPE
 >>> from cpe.cpe2_2 import CPE2_2
 >>> from cpe.comp.cpecomp import CPEComponent
@@ -192,5 +193,5 @@ Test for __str__(self)
 TEST: not negate components
 >>> str = 'cpe:/a:acme:product:1.0:update2:-:en-us'
 >>> c = CPE2_2(str)
->>> print c
+>>> print(c)
 CPE v2.2: cpe:/a:acme:product:1.0:update2:-:en-us
