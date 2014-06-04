@@ -76,22 +76,23 @@ class CPE2_3_FS(CPE2_3):
     ###############
     #  VARIABLES  #
     ###############
+    COMP_RE = "(?P<{0}>.*?)(?<!\\\\)"
 
     # Compilation of regular expression associated with parts of CPE Name
     _logical = "\\{0}|\\{1}".format(
         CPEComponent2_3_FS.VALUE_ANY, CPEComponent2_3_FS.VALUE_NA)
     _typesys = "(?P<{0}>(h|o|a|{1}))".format(
         CPEComponent.ATT_PART, _logical)
-    _vendor = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_VENDOR)
-    _product = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_PRODUCT)
-    _version = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_VERSION)
-    _update = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_UPDATE)
-    _edition = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_EDITION)
-    _language = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_LANGUAGE)
-    _sw_edition = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_SW_EDITION)
-    _target_sw = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_TARGET_SW)
-    _target_hw = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_TARGET_HW)
-    _other = "(?P<{0}>[^\:]+)".format(CPEComponent.ATT_OTHER)
+    _vendor = COMP_RE.format(CPEComponent.ATT_VENDOR)
+    _product = COMP_RE.format(CPEComponent.ATT_PRODUCT)
+    _version = COMP_RE.format(CPEComponent.ATT_VERSION)
+    _update = COMP_RE.format(CPEComponent.ATT_UPDATE)
+    _edition = COMP_RE.format(CPEComponent.ATT_EDITION)
+    _language = COMP_RE.format(CPEComponent.ATT_LANGUAGE)
+    _sw_edition = COMP_RE.format(CPEComponent.ATT_SW_EDITION)
+    _target_sw = COMP_RE.format(CPEComponent.ATT_TARGET_SW)
+    _target_hw = COMP_RE.format(CPEComponent.ATT_TARGET_HW)
+    _other = COMP_RE.format(CPEComponent.ATT_OTHER)
 
     _parts_pattern = "^cpe:2.3:{0}\:{1}\:{2}\:{3}\:{4}\:{5}\:{6}\:{7}\:{8}\:{9}\:{10}$".format(
         _typesys, _vendor, _product, _version, _update, _edition,
