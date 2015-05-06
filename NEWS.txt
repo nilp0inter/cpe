@@ -1,6 +1,15 @@
 News
 ====
 
+1.2.0
+-----
+
+ * Python3 support.
+ * Using tox for testing Python2.7 and Python3.4.
+ * Test directory outside of the package.
+ * Fixed sphinx warnings.
+ * Fixed problems parsing colons. Thanks to @damiengermonville. 
+ * Using a new system for package metadata management.
 
 1.1.0
 -----
