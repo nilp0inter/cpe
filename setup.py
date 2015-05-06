@@ -1,67 +1,44 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
 
-try:
-    from setuptools import setup
-except ImportError:
-    from ez_setup import use_setuptools
-    use_setuptools()
-    from setuptools import setup
-
+from io import open
 import os
+import setuptools
 
-EMAILS = "{0}, {1}".format(
-    'galindo.garcia.alejandro@gmail.com',
-    'robertomartinezp@gmail.com')
-KEYWORDS = u'cpe identification naming matching standard specification mitre nist'
-MAINTAINER = u'Roberto Abdelkader Martínez Pérez'
-MAINTAINER_EMAIL = u'robertomartinezp@gmail.com'
-LICENSE = u'LGPLv3'
-PACKAGE_URL = "https://github.com/nilp0inter/cpe"
+BASE_DIR = os.path.dirname(__file__)
+PKG_DIR = os.path.join(BASE_DIR, "cpe")
 
-here = os.path.abspath(os.path.dirname(__file__))
-readme = open(os.path.join(here, 'README.rst')).read()
-news = open(os.path.join(here, 'NEWS.txt')).read()
+meta = {}
+with open(os.path.join(PKG_DIR, "__meta__.py"), 'rb') as f:
+    exec(f.read(), meta)
 
-PACKAGE_STR = 'cpe'
-version = __import__(PACKAGE_STR).get_version()
-package_name = __import__(PACKAGE_STR).PACKAGE_NAME
-description = __import__(PACKAGE_STR).DESCRIPTION
-authors = __import__(PACKAGE_STR).AUTHORS
+with open(os.path.join(BASE_DIR, "README.rst"), encoding="utf-8") as f:
+    long_description = f.read()
 
-long_description = readme
 
-packages = [
-    'cpe',
-    'cpe.comp',
-]
-
-classifiers = [
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
-    "Natural Language :: English",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 2.7"
-]
-
-setup(
-    name=package_name,
-    version=version,
-    description=description,
+setuptools.setup(
+    name=meta["__packagename__"],
+    version=meta["__version__"],
+    description=meta["__summary__"],
     long_description=long_description,
-    classifiers=classifiers,
-    keywords=KEYWORDS,
-    author=authors,
-    author_email=EMAILS,
-    maintainer=MAINTAINER,
-    maintainer_email=MAINTAINER_EMAIL,
-    license=LICENSE,
-    url=PACKAGE_URL,
-    packages=packages,
-    include_package_data=True,
-    zip_safe=False,
-    install_requires=[],
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Information Technology",
+        "Intended Audience :: System Administrators",
+        "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+        "Natural Language :: English",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 2.7"
+    ],
+    keywords=meta["__keywords__"],
+    author=meta["__author__"],
+    author_email=meta["__email__"],
+    maintainer=meta["__maintainer__"],
+    maintainer_email=meta["__maintainer_email__"],
+    license=meta["__license__"],
+    url=meta["__url__"],
+    include_package_data=False,
+    packages=setuptools.find_packages(exclude=['tests', 'docs']),
 )

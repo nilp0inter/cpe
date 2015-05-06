@@ -191,7 +191,7 @@ class CPEComponent(object):
 
         TEST: a wrong attribute
 
-        >>> from cpecomp import CPEComponent
+        >>> from .cpecomp import CPEComponent
         >>> att = CPEComponent.ATT_PRODUCT
         >>> CPEComponent.is_valid_attribute(att)
         True
@@ -212,9 +212,9 @@ class CPEComponent(object):
         :rtype: boolean
         """
 
-        from cpecomp_undefined import CPEComponentUndefined
-        from cpecomp_empty import CPEComponentEmpty
-        from cpecomp_anyvalue import CPEComponentAnyValue
+        from .cpecomp_undefined import CPEComponentUndefined
+        from .cpecomp_empty import CPEComponentEmpty
+        from .cpecomp_anyvalue import CPEComponentAnyValue
 
         if ((self == item) or
            isinstance(self, CPEComponentUndefined) or
@@ -239,9 +239,9 @@ class CPEComponent(object):
         len_self = len(self._standard_value)
         len_other = len(other._standard_value)
 
-        if isinstance(self._standard_value, types.ListType):
+        if isinstance(self._standard_value, list):
             # Self is version 1.1 of CPE Name
-            if isinstance(other._standard_value, types.ListType):
+            if isinstance(other._standard_value, list):
                 # Other is version 1.1 of CPE Name
                 value_self = self._standard_value
                 value_other = other._standard_value
@@ -256,7 +256,7 @@ class CPEComponent(object):
                 return False
         else:
             # Self is higher version than 1.1 of CPE Name
-            if isinstance(other._standard_value, types.ListType):
+            if isinstance(other._standard_value, list):
                 # Other is version 1.1 of CPE Name
                 if len_other == 1:
                     value_self = self._standard_value

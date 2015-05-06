@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe.cpe2_3_uri import CPE2_3_URI
 >>> from cpe.comp.cpecomp_simple import CPEComponentSimple
 
@@ -145,7 +146,7 @@ Test for __str__(self)
 TEST: not negate components
 >>> str = 'cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~'
 >>> c = CPE2_3_URI(str)
->>> print c
+>>> print(c)
 CPE v2.3 (URI): cpe:/a:hp:insight_diagnostics:7.4.0.1570::~~online~win2003~x64~
 
 

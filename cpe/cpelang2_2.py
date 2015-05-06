@@ -31,8 +31,8 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpe2_2 import CPE2_2
-from cpelang import CPELanguage
+from .cpe2_2 import CPE2_2
+from .cpelang import CPELanguage
 
 
 class CPELanguage2_2(CPELanguage):

@@ -1,3 +1,10 @@
-include LICENSE
-include README.md
-include cpe/tests *
+include AUTHORS LICENSE NEWS.txt README.rst 
+include tox.ini .coveragerc
+
+recursive-include tests *.txt *.xml *.py
+recursive-include requirements *.txt
+recursive-include docs *
+
+prune docs/_build
+global-exclude *.pyc
+global-exclude __pycache__

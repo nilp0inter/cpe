@@ -29,7 +29,7 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpecomp_simple import CPEComponentSimple
+from .cpecomp_simple import CPEComponentSimple
 
 import re
 

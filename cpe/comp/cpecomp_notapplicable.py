@@ -29,7 +29,7 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpecomp_logical import CPEComponentLogical
+from .cpecomp_logical import CPEComponentLogical
 
 
 class CPEComponentNotApplicable(CPEComponentLogical):

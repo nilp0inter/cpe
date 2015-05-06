@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe.cpe2_3_fs import CPE2_3_FS
 >>> from cpe.comp.cpecomp_simple import CPEComponentSimple
 
@@ -113,7 +114,7 @@ Test for __str__(self)
 TEST: not negate components
 >>> str = r'cpe:2.3:a:foo\\bar:big\$money_2010:*:*:*:*:special:ipod_touch:80gb:*'
 >>> c = CPE2_3_FS(str)
->>> print c
+>>> print(c)
 CPE v2.3 (FS): cpe:2.3:a:foo\\bar:big\$money_2010:*:*:*:*:special:ipod_touch:80gb:*
 
 

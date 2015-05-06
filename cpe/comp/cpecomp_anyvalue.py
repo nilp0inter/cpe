@@ -28,7 +28,7 @@ feedback about it, please contact:
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
 
-from cpecomp_logical import CPEComponentLogical
+from .cpecomp_logical import CPEComponentLogical
 
 
 class CPEComponentAnyValue(CPEComponentLogical):
@@ -56,8 +56,8 @@ class CPEComponentAnyValue(CPEComponentLogical):
         :rtype: boolean
         """
 
-        from cpecomp_empty import CPEComponentEmpty
-        from cpecomp_undefined import CPEComponentUndefined
+        from .cpecomp_empty import CPEComponentEmpty
+        from .cpecomp_undefined import CPEComponentUndefined
 
         return (isinstance(other, CPEComponentUndefined) or
                 isinstance(other, CPEComponentEmpty) or

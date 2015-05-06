@@ -38,7 +38,7 @@ True
 
 
 - TEST: matching
->>> path = "cpe/tests/expression2_3.xml"
+>>> path = "expression2_3.xml"
 
 >>> c1 = CPE2_3_FS('cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*')
 >>> c2 = CPE2_3_FS('cpe:2.3:a:bea:weblogic:8.*:*:*:*:*:*:*:*')

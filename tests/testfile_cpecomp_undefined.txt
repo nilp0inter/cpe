@@ -1,12 +1,13 @@
+>>> from __future__ import print_function
 >>> from cpe.comp.cpecomp import CPEComponent
->>> from cpe.comp.cpecomp_anyvalue import CPEComponentAnyValue
+>>> from cpe.comp.cpecomp_undefined import CPEComponentUndefined
 
 -------------------------------------------
 Test for __init__(self, comp_str)
 -------------------------------------------
 
 TEST:
->>> c = CPEComponentAnyValue()
+>>> c = CPEComponentUndefined()
 
 
 -------------------------------------------
@@ -14,7 +15,7 @@ Test for __eq__(self, comp_str)
 -------------------------------------------
 
 TEST: two equal components
->>> c = CPEComponentAnyValue()
+>>> c = CPEComponentUndefined()
 >>> c == c
 True
 
@@ -22,7 +23,7 @@ True
 TEST: two equal components
 >>> value = "microsoft"
 >>> c = CPEComponent(value)
->>> c2 = CPEComponentAnyValue()
+>>> c2 = CPEComponentUndefined()
 >>> c == c2
 False
 
@@ -32,9 +33,9 @@ Test for __repr__(self, comp_str)
 -------------------------------------------
 
 TEST:
->>> c = CPEComponentAnyValue()
+>>> c = CPEComponentUndefined()
 >>> c
-CPEComponentAnyValue()
+CPEComponentUndefined()
 
 
 -------------------------------------------
@@ -42,6 +43,6 @@ Test for __str__(self, comp_str)
 -------------------------------------------
 
 TEST:
->>> c = CPEComponentAnyValue()
->>> print c
-<ANY>
+>>> c = CPEComponentUndefined()
+>>> print(c)
+<UNDEFINED>

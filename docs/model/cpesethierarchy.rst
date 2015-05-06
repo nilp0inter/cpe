@@ -21,15 +21,15 @@ The class diagrams of CPESet hierarchy are available in multiple format: PNG, PD
 
 * Classes with public and private attributes and methods:
 
-  * `Formato PNG <../_static/cpeset/cpeset_model_all.png>`_
-  * `Formato PDF <../_static/cpeset/cpeset_model_all.pyns.pdf>`_
-  * `Formato PYNS <../_static/cpeset/cpeset_model_all.pyns>`_
+  * `Formato PNG <../_static/cpeset/cpeset_model_all.png>`__
+  * `Formato PDF <../_static/cpeset/cpeset_model_all.pyns.pdf>`__
+  * `Formato PYNS <../_static/cpeset/cpeset_model_all.pyns>`__
 
 * Classes with only public attributes and methods:
 
-  * `Formato PNG <../_static/cpeset/cpeset_model_public.png>`_
-  * `Formato PDF <../_static/cpeset/cpeset_model_public.pyns.pdf>`_
-  * `Formato PYNS <../_static/cpeset/cpeset_model_public.pyns>`_
+  * `Formato PNG <../_static/cpeset/cpeset_model_public.png>`__
+  * `Formato PDF <../_static/cpeset/cpeset_model_public.pyns.pdf>`__
+  * `Formato PYNS <../_static/cpeset/cpeset_model_public.pyns>`__
 
 Next image presents the public attributes and methods of CPESet classes:
 

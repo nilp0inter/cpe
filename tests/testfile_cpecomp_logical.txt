@@ -1,3 +1,4 @@
+>>> from __future__ import print_function
 >>> from cpe.comp.cpecomp_logical import CPEComponentLogical
 >>> from cpe.comp.cpecomp_anyvalue import CPEComponentAnyValue
 >>> from cpe.comp.cpecomp_empty import CPEComponentEmpty
@@ -64,6 +65,6 @@ Test for __str__(self, comp_str)
 
 TEST:
 >>> c = CPEComponentLogical(1)
->>> print c #doctest: +IGNORE_EXCEPTION_DETAIL
+>>> print(c) #doctest: +IGNORE_EXCEPTION_DETAIL
 Traceback (most recent call last):
 NotImplementedError: Class method not implemented. Use the method of some child class
