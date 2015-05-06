@@ -26,7 +26,7 @@ DEVELOPERS = {
 }
 
 __packagename__ = "cpe"
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 __summary__ = "CPE: Common Platform Enumeration for Python"
 __keywords__ = "cpe identification naming matching standard specification mitre nist"
 __url__ = "https://github.com/nilp0inter/cpe"
