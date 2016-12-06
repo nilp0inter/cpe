@@ -555,7 +555,10 @@ class CPE(dict):
                 # Call the pack() helper function to compute the proper
                 # binding for the edition element
                 v = self._pack_edition()
-
+                if not v:
+                    set_prev_comp = True
+                    prev_comp_list.append(CPEComponent2_3_URI.VALUE_ANY)
+                    continue
             else:
                 comp = lc[0]
 
@@ -584,7 +587,7 @@ class CPE(dict):
             if set_prev_comp:
                 # Set the previous attribute as logical value any
                 v = CPEComponent2_3_URI.VALUE_ANY
-                pos_ini = len(uri) - len(prev_comp_list) - 1
+                pos_ini = max(len(uri) - len(prev_comp_list) - 1, 1)
                 increment = 2  # Count of inserted values
 
                 for p, val in enumerate(prev_comp_list):

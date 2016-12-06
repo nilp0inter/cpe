@@ -1,6 +1,15 @@
 News
 ====
 
+
+1.2.1
+-----
+
+ * Fixed #28.
+ * Some tests marked as xfail until we carify the proper behaviour for
+   ANY values.
+
+
 1.2.0
 -----
 
@@ -10,6 +19,7 @@ News
  * Fixed sphinx warnings.
  * Fixed problems parsing colons. Thanks to @damiengermonville. 
  * Using a new system for package metadata management.
+
 
 1.1.0
 -----
