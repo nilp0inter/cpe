@@ -254,7 +254,7 @@ class CompareCPEs(unittest.TestCase):
         
         with self.assertRaises(Exception):
             self.c11_2e == self.c22
-            self.c11_or == self.c23_wfn
+            #self.c11_or == self.c23_wfn
 
 
 class GetAttributeValues(unittest.TestCase):
