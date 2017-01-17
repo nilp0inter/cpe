@@ -9,8 +9,8 @@ python:
     - "nightly"
     - "pypy"
 install:
-    - pip install -r requirements/develop.txt
-    - pip install -r requirements/travis.txt
+    - pip install -r requirements-dev.txt
+    - pip install coveralls==0.4.2
 script:
     - cd tests/
     - py.test --cov cpe --doctest-modules .
