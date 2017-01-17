@@ -251,9 +251,10 @@ class CompareCPEs(unittest.TestCase):
         __eq__ should raise an exception when CPE name of version 1.1 has
         more than a element.
         """
-
-        self.assertRaises(self.c11_2e == self.c22)
-        self.assertRaises(self.c11_or == self.c23_wfn)
+        
+        with self.assertRaises(Exception):
+            self.c11_2e == self.c22
+            self.c11_or == self.c23_wfn
 
 
 class GetAttributeValues(unittest.TestCase):
