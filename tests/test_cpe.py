@@ -6,6 +6,7 @@ from cpe.cpe2_3_uri import CPE2_3_URI
 from cpe.cpe2_3_fs import CPE2_3_FS
 
 import unittest
+import pytest
 
 
 class CreateCPEs(unittest.TestCase):
