@@ -1,12 +1,20 @@
 language: python
 python:
+    - "2.6"
     - "2.7"
+    - "3.3"
     - "3.4"
+    - "3.5"
+    - "3.6"
+    - "nightly"
+    - "pypy"
 install:
     - pip install -r requirements/develop.txt
     - pip install -r requirements/travis.txt
 script:
-    - tox
-    - tox -e docs
+    - cd tests/
+    - py.test --cov cpe --doctest-modules .
+    - cd ../docs/
+    - sphinx-build -W -b html -d $(mktemp)/doctrees . $(mktemp)/html
 after_success:
     - coveralls
