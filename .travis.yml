@@ -11,10 +11,11 @@ python:
 install:
     - pip install -r requirements-dev.txt
     - pip install coveralls==0.4.2
+    - python setup.py develop
 script:
     - cd tests/
     - py.test --cov cpe --doctest-modules .
     - cd ../docs/
-    - sphinx-build -W -b html -d $(mktemp)/doctrees . $(mktemp)/html
+    - sphinx-build -W -b html -d /tmp/doctrees . /tmp/html
 after_success:
     - coveralls
