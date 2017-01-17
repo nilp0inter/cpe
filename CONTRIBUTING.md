@@ -14,7 +14,7 @@ Installing dependencies
 
 * Run the following command to install the developer dendencies:
 ```bash
-    $ pip install -r requirements/develop.txt
+    $ pip install -r requirements-dev.txt
 ```
 
 Developer workflow
@@ -26,7 +26,7 @@ Developer workflow
 ```
 * Run the test-suite and verify everything is fine:
 ```bash
-    tox
+    py.test .
 ```
 
 2 Write your code and a test that the bug was fixed or that the feature works as expected.
