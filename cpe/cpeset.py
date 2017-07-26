@@ -60,13 +60,19 @@ class CPESet(object):
 
         return self.K[i]
 
-    def __init__(self):
+    def __init__(self, members=[]):
         """
         Creates an empty set of CPE Names.
 
+        :param list members: optional list of CPEs or strings
         :returns: None
         """
         self.K = []
+
+        for member in members:
+            if not isinstance(member, CPE):
+                member = CPE(member)
+            self.append(member)
 
     def __len__(self):
         """
