@@ -406,7 +406,7 @@ class CPESet2_3(CPESet):
 
         if cpe.VERSION != CPE2_3.VERSION:
             errmsg = "CPE Name version {0} not valid, version 2.3 expected".format(
-                cpe.version)
+                cpe.VERSION)
             raise ValueError(errmsg)
 
         for k in self.K:
