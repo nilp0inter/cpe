@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+tox = "*"
+
+[dev-packages]
+pytest = "*"
+pytest-cov = "*"
+Sphinx = "==1.2.2"
+ipdb = "*"
+
+[requires]
+python_version = "3.7"
