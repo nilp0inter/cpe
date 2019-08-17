@@ -49,6 +49,14 @@ True
 >>> CPESet2_3._compare_strings("mac*", "mac") == CPESet2_3.LOGICAL_VALUE_SUPERSET
 True
 
+- TEST:
+>>> CPESet2_3._compare_strings("1\\.0\\.?", "1\\.0\\.12") == CPESet2_3.LOGICAL_VALUE_DISJOINT
+True
+
+- TEST:
+>>> CPESet2_3._compare_strings("1\\.0\\.1", "1\\.0\\.12") == CPESet2_3.LOGICAL_VALUE_DISJOINT
+True
+
 ----------------------------------
 Test for _is_string(cls, arg)
 ----------------------------------
