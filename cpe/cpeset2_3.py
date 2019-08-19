@@ -188,8 +188,9 @@ class CPESet2_3(CPESet):
 
                 break
 
-            escapes = target.count("\\", index + 1, len(target))
-            leftover = len(target) - index - escapes - len(source)
+            escapes = target.count("\\", index + 1)
+            source_escapes = source.count("\\", index + 1)
+            leftover = len(target) - index + source_escapes - escapes - len(source)
             if ((leftover > 0) and ((ends != -1) and (leftover > ends))):
                 continue
 
@@ -439,4 +440,4 @@ class CPESet2_3(CPESet):
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-    doctest.testfile("tests/testfile_cpeset2_3.txt")
+    doctest.testfile("../tests/testfile_cpeset2_3.txt")
