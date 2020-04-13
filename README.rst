@@ -1,3 +1,9 @@
+Looking or a maintainer
+=======================
+
+This repo needs a maintainer, if you want to take it over open an issue.
+
+
 .. image:: http://cpe.mitre.org/images/cpe_logo.gif
    :alt: CPE Logo
 
