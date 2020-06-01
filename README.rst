@@ -1,5 +1,5 @@
-Looking or a maintainer
-=======================
+Looking for a new maintainer
+============================
 
 This repo needs a maintainer, if you want to take it over open an issue.
 
