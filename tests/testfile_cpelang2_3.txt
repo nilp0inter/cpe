@@ -37,7 +37,7 @@ False
 True
 
 
-- TEST: matching
+- TEST: not matching
 >>> path = "expression2_3.xml"
 
 >>> c1 = CPE2_3_FS('cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*')
@@ -51,6 +51,38 @@ True
 >>> l = CPELanguage2_3(path, isFile)
 >>> l.language_match(s)
 False
+
+- TEST: not matching with JSON file
+>>> path = "expression2_3.json"
+
+>>> c1 = CPE2_3_FS('cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*')
+>>> c2 = CPE2_3_FS('cpe:2.3:a:bea:weblogic:8.*:*:*:*:*:*:*:*')
+
+>>> s = CPESet2_3()
+>>> s.append(c1)
+>>> s.append(c2)
+
+>>> isFile = True
+>>> isJSON = True
+>>> l = CPELanguage2_3(path, isFile, isJSON)
+>>> l.language_match(s)
+False
+
+- TEST: matching with JSON file
+>>> path = "expression2_3.json"
+
+>>> c1 = CPE2_3_FS('cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*')
+>>> c2 = CPE2_3_FS('cpe:2.3:a:bea:weblogic:8.1:*:*:*:*:*:*:*')
+
+>>> s = CPESet2_3()
+>>> s.append(c1)
+>>> s.append(c2)
+
+>>> isFile = True
+>>> isJSON = True
+>>> l = CPELanguage2_3(path, isFile, isJSON)
+>>> l.language_match(s)
+True
 
 -----------------------------------------------------
 Test for _unbind(cls, boundname)
