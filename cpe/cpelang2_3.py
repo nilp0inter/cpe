@@ -177,6 +177,8 @@ class CPELanguage2_3(CPELanguage):
 
         dom_impl = getDOMImplementation()
         xml_doc = dom_impl.createDocument('http://cpe.mitre.org/language/2.0', 'cpe:platform-specification', None)
+        # The XML prefix is not exported by minidom, therefore we add it as attribute so that it gets exported
+        xml_doc.documentElement.setAttribute('xmlns:cpe', 'http://cpe.mitre.org/language/2.0')
 
         platform = xml_doc.createElement('cpe:platform')
         xml_doc.documentElement.appendChild(platform)
@@ -189,10 +191,7 @@ class CPELanguage2_3(CPELanguage):
         for node in raw_json:
             root_logical_test.appendChild(cls._translate_json_child(xml_doc, node))
 
-        # Group all of them inside a big OR logical-test (todo even when there's only one?)
-        # TODO: find out why xml namespace is not being exported
-        return xml_doc.toxml().replace('<cpe:platform-specification>',
-                                       '<cpe:platform-specification xmlns:cpe="http://cpe.mitre.org/language/2.0">')
+        return xml_doc.toxml()
 
     @classmethod
     def _translate_json_child(cls, doc, child):
