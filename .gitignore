@@ -39,3 +39,6 @@ docs/_build/
 
 coverage.xml
 htmlcov
+
+.idea
+venv
