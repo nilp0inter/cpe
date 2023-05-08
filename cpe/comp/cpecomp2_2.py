@@ -49,7 +49,7 @@ class CPEComponent2_2(CPEComponentSimple):
     ###############
 
     #: Pattern used to check the value of component
-    _VALUE_PATTERN = "^([\d\w\._\-~%]+)$"
+    _VALUE_PATTERN = r"^([\d\w\._\-~%\\/]+)$"
 
     #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ":"

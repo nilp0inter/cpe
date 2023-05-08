@@ -132,6 +132,9 @@ def test_getitem_3():
     # The CPE Name below shows an example for a virtual hardware
     # platform.
     'cpe:/h:emc:vmware_esx:2.5',
+
+    # The CPE name below shows a valid CPE that contains a '/' in the product
+    'cpe:/a:intel:proset\/wireless_wifi'
 ])
 def test_new_legal_cpe(s):
     """legal cpe"""
