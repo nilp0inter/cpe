@@ -1,0 +1,35 @@
+[
+  {
+    "operator": "AND",
+    "children": [
+      {
+        "operator": "OR",
+        "children": [],
+        "cpe_match": [
+          {
+            "vulnerable": true,
+            "cpe23Uri": "cpe:2.3:o:sun:solaris:5.8:*:*:*:*:*:*:*",
+            "cpe_name": []
+          },
+          {
+            "vulnerable": true,
+            "cpe23Uri": "cpe:2.3:o:sun:solaris:5.9:*:*:*:*:*:*:*",
+            "cpe_name": []
+          }
+        ]
+      },
+      {
+        "operator": "OR",
+        "children": [],
+        "cpe_match": [
+          {
+            "vulnerable": true,
+            "cpe23Uri": "cpe:2.3:a:bea:weblogic:8.1:*:*:*:*:*:*:*",
+            "cpe_name": []
+          }
+        ]
+      }
+    ],
+    "cpe_match": []
+  }
+]

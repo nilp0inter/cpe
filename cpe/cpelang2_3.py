@@ -29,6 +29,8 @@ feedback about it, please contact:
 - Alejandro Galindo García: galindo.garcia.alejandro@gmail.com
 - Roberto Abdelkader Martínez Pérez: robertomartinezp@gmail.com
 """
+import json
+from xml.dom.minidom import getDOMImplementation
 
 from .cpeset2_3 import CPESet2_3
 from .cpelang import CPELanguage
@@ -165,9 +167,58 @@ class CPELanguage2_3(CPELanguage):
         else:
             return CPE2_3_WFN(fs.as_wfn())
 
+    @classmethod
+    def _translate_json(cls, expression, isFile):
+        if isFile:
+            with open(expression) as f:
+                raw_json = json.load(f)
+        else:
+            raw_json = json.loads(expression)
+
+        dom_impl = getDOMImplementation()
+        xml_doc = dom_impl.createDocument('http://cpe.mitre.org/language/2.0', 'cpe:platform-specification', None)
+        # The XML prefix is not exported by minidom, therefore we add it as attribute so that it gets exported
+        xml_doc.documentElement.setAttribute('xmlns:cpe', 'http://cpe.mitre.org/language/2.0')
+
+        platform = xml_doc.createElement('cpe:platform')
+        xml_doc.documentElement.appendChild(platform)
+
+        root_logical_test = xml_doc.createElement('cpe:logical-test')
+        root_logical_test.setAttribute('operator', 'OR')
+        root_logical_test.setAttribute('negate', 'FALSE')
+        platform.appendChild(root_logical_test)
+
+        for node in raw_json:
+            root_logical_test.appendChild(cls._translate_json_child(xml_doc, node))
+
+        return xml_doc.toxml()
+
+    @classmethod
+    def _translate_json_child(cls, doc, child):
+        element = doc.createElement('cpe:logical-test')
+        element.setAttribute('operator', child['operator'])
+        element.setAttribute('negate', 'FALSE')  # TODO ?
+
+        for children in child['children']:
+            element.appendChild(cls._translate_json_child(doc, children))
+
+        for cpe_match in child['cpe_match']:
+            cpe_element = doc.createElement('cpe:fact-ref')
+            cpe_element.setAttribute('name', cpe_match['cpe23Uri'])
+            element.appendChild(cpe_element)
+
+        return element
+
     ####################
     #  OBJECT METHODS  #
     ####################
+
+    def __init__(self, expression, isFile=False, isJSON=False):
+        if isJSON:
+            expression = self._translate_json(expression, isFile)
+            isFile = False
+
+        super().__init__(expression, isFile)
 
     def language_match(self, cpeset, cpel_dom=None):
         """
