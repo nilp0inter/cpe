@@ -19,7 +19,7 @@ Test for __init__(self, expression, isFile=False)
 >>> l = CPELanguage2_2(document)
 
 - TEST: matching with XML file
->>> document = "expression2_2.xml"
+>>> document = "tests/expression2_2.xml"
 
 >>> c1 = CPE2_2('cpe:/o:sun:solaris:5.9:::en-us')
 >>> c2 = CPE2_2('cpe:/a:bea:weblogic:8.1')
