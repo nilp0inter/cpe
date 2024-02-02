@@ -262,7 +262,7 @@ class CPEComponent2_3(CPEComponentSimple):
             return super(CPEComponent2_3, self)._is_valid_part()
 
         # Compilation of regular expression associated with value of part
-        part_pattern = "^(\{0}|\{1})$".format(self.WILDCARD_ONE,
+        part_pattern = r"^(\{0}|\{1})$".format(self.WILDCARD_ONE,
                                               self.WILDCARD_MULTI)
         part_rxc = re.compile(part_pattern)
 

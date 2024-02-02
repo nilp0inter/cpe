@@ -45,10 +45,10 @@ class CPEComponentSimple(CPEComponent):
     ###############
 
     #: Pattern to check if a character is a alphanumeric or underscore
-    _ALPHANUM_PATTERN = "\w"
+    _ALPHANUM_PATTERN = r"\w"
 
     #: Pattern to check the value of language component of CPE name
-    _LANGTAG_PATTERN = "^([a-z]{2,3}(-([a-z]{2}|[\d]{3}))?)$"
+    _LANGTAG_PATTERN = r"^([a-z]{2,3}(-([a-z]{2}|[\d]{3}))?)$"
 
     #: Pattern to check the value of part component of CPE name
     _PART_PATTERN = "^(h|o|a)$"

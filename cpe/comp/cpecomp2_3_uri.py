@@ -48,7 +48,7 @@ class CPEComponent2_3_URI(CPEComponent2_3):
     # Patterns used to check the value of component
     _PCT_ENCODED = "%21|%22|%23|%24|%25|%26|%27|%28|%29|%2a|%2b|%2c|%2f|%3a|%3b|%3c|%3d|%3e|%3f|%40|%5b|%5c|%5d|%5e|%60|%7b|%7c|%7d|%7e"
     _SPEC_CHRS = "((%01)+|%02)"
-    _UNRESERVED = "[\w\-\.]"
+    _UNRESERVED = r"[\w\-\.]"
 
     #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ":"

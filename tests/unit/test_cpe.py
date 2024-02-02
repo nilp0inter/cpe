@@ -241,11 +241,11 @@ class CompareCPEs(unittest.TestCase):
         the equivalent WFN string.
         """
 
-        self.assertEquals(self.c11, self.c22)
-        self.assertEquals(self.c22, self.c11)
-        self.assertEquals(self.c11, self.c23_wfn)
-        self.assertEquals(self.c11, self.c23_fs)
-        self.assertEquals(self.c23_uri, self.c23_fs)
+        self.assertEqual(self.c11, self.c22)
+        self.assertEqual(self.c22, self.c11)
+        self.assertEqual(self.c11, self.c23_wfn)
+        self.assertEqual(self.c11, self.c23_fs)
+        self.assertEqual(self.c23_uri, self.c23_fs)
     
     @pytest.mark.skip(reason="currently broken")
     def test_incompatible_versions(self):
