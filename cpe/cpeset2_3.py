@@ -295,7 +295,9 @@ class CPESet2_3(CPESet):
             if value_src.find('"') > -1:
                 # Not a logical value: del double quotes
                 value_src = value_src[1:-1]
-
+            elif value_src == '*':
+                value_src = CPEComponent2_3_WFN.VALUE_ANY
+                
             value_tar = target.get_attribute_values(att)[0]
             if value_tar.find('"') > -1:
                 # Not a logical value: del double quotes
