@@ -205,9 +205,9 @@ class CPESet2_3(CPESet):
         (question-mark or asterisk), otherwise False.
 
         Ex: _contains_wildcards("foo") => FALSE
-        Ex: _contains_wildcards("foo\?") => FALSE
+        Ex: _contains_wildcards("foo\\?") => FALSE
         Ex: _contains_wildcards("foo?") => TRUE
-        Ex: _contains_wildcards("\*bar") => FALSE
+        Ex: _contains_wildcards("\\*bar") => FALSE
         Ex: _contains_wildcards("*bar") => TRUE
 
         :param string s: string to check
