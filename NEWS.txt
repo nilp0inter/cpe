@@ -2,6 +2,15 @@ News
 ====
 
 
+1.3.0
+-----
+
+ * Primitive implementation of NVD JSON configuration #55.
+ * Fix typo in CPESet2_3 version exception #33.
+ * Fixed problem when comparing with _compare_strings #41.
+ * Updated _VALUE_PATTERN for CPE 2.2 #56.
+ * Fix DeprecationWarning issues in Python code #57.
+
 1.2.1
 -----
 
