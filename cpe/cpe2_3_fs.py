@@ -94,7 +94,7 @@ class CPE2_3_FS(CPE2_3):
     _target_hw = COMP_RE.format(CPEComponent.ATT_TARGET_HW)
     _other = COMP_RE.format(CPEComponent.ATT_OTHER)
 
-    _parts_pattern = "^cpe:2.3:{0}\:{1}\:{2}\:{3}\:{4}\:{5}\:{6}\:{7}\:{8}\:{9}\:{10}$".format(
+    _parts_pattern = r"^cpe:2.3:{0}\:{1}\:{2}\:{3}\:{4}\:{5}\:{6}\:{7}\:{8}\:{9}\:{10}$".format(
         _typesys, _vendor, _product, _version, _update, _edition,
         _language, _sw_edition, _target_sw, _target_hw, _other)
 

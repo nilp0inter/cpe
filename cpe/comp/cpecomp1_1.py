@@ -54,7 +54,7 @@ class CPEComponent1_1(CPEComponentSimple):
     _ESCAPE_SEPARATOR = "\\!"
 
     #: Pattern used in regular expression of the value of a component
-    _STRING = "\w\.\-,\(\)@\#"
+    _STRING = r"\w\.\-,\(\)@\#"
 
     #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ":"

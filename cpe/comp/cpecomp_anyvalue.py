@@ -38,7 +38,7 @@ class CPEComponentAnyValue(CPEComponentLogical):
 
     For example, in version 2.3 of CPE specification, an component "any value"
     is other attribute in CPE name
-    cpe:2.3:a:microsft:windows:xp:\*:\*:\*:\*:\*:\*:\*.
+    cpe:2.3:a:microsft:windows:xp:*:*:*:*:*:*:*.
     """
 
     ####################

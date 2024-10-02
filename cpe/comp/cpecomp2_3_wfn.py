@@ -46,7 +46,7 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
 
     # Patterns used to check the value of component
     _ESCAPE = r"\\"
-    _PUNC_NO_DASH = "\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\.|\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~"
+    _PUNC_NO_DASH = r"\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\.|\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~"
 
     #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ", "
@@ -74,8 +74,8 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
     #  VARIABLES  #
     ###############
 
-    _spec1 = "\{0}".format(WILDCARD_ONE)
-    _spec2 = "\{0}".format(WILDCARD_MULTI)
+    _spec1 = r"\{0}".format(WILDCARD_ONE)
+    _spec2 = r"\{0}".format(WILDCARD_MULTI)
     _spec_chrs = "{0}+|{1}".format(_spec1, _spec2)
     _special = "{0}|{1}".format(_spec1, _spec2)
     _punc_w_dash = "{0}|-".format(_PUNC_NO_DASH)
@@ -83,8 +83,8 @@ class CPEComponent2_3_WFN(CPEComponent2_3):
                                          _PUNC_NO_DASH)
     _quoted2 = "{0}({1}|{2}|{3})".format(_ESCAPE, _ESCAPE,
                                          _special, _punc_w_dash)
-    _body1 = "\w|{0}".format(_quoted1)
-    _body2 = "\w|{0}".format(_quoted2)
+    _body1 = r"\w|{0}".format(_quoted1)
+    _body2 = r"\w|{0}".format(_quoted2)
     _body = "(({0})({1})*)|{2}({3})+".format(_body1, _body2, _body2, _body2)
     _avstring_pattern = "^((({0})|(({1})({2})*))({3})?)$".format(_body,
                                                                  _spec_chrs,

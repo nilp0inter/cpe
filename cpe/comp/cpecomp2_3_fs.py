@@ -47,8 +47,8 @@ class CPEComponent2_3_FS(CPEComponent2_3):
     ###############
 
     # Patterns used to check the value of component
-    _UNRESERVED = "\w|\.|\-"
-    _PUNC = "\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~|\-"
+    _UNRESERVED = r"\w|\.|\-"
+    _PUNC = r"\!|\"|\;|\#|\$|\%|\&|\'|\(|\)|\+|\,|\/|\:|\<|\=|\>|\@|\[|\]|\^|\`|\{|\||\}|\~|\-"
 
     #: Separator of components of CPE name with URI style
     SEPARATOR_COMP = ":"
@@ -74,9 +74,9 @@ class CPEComponent2_3_FS(CPEComponent2_3):
     ###############
 
     # Compilation of regular expression associated with value of CPE part
-    _logical = "(\{0}|{1})".format(VALUE_ANY, VALUE_NA)
-    _quest = "\{0}".format(WILDCARD_ONE)
-    _asterisk = "\{0}".format(WILDCARD_MULTI)
+    _logical = r"(\{0}|{1})".format(VALUE_ANY, VALUE_NA)
+    _quest = r"\{0}".format(WILDCARD_ONE)
+    _asterisk = r"\{0}".format(WILDCARD_MULTI)
     _special = "{0}|{1}".format(_quest, _asterisk)
     _spec_chrs = "{0}+|{1}".format(_quest, _asterisk)
     _quoted = r"\\(\\" + "|{0}|{1})".format(_special, _PUNC)
